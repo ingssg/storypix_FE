@@ -1,3 +1,11 @@
+"use client";
+
+import AccountInfo from "@/components/accountInfo";
+import Tale from "@/components/tale";
+import Image from "next/image";
+import React, { useState } from "react";
+import { FiMenu } from "react-icons/fi";
+
 const dummy = {
   titleKor: "양치기 소년",
   titleEng: "The Boy Who Cried Wolf",
@@ -20,3 +28,42 @@ const dummy1 = {
   price: 9900,
   isAccessible: false,
 };
+
+const List = () => {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const toggleModal = () => {
+    setIsOpenModal(!isOpenModal);
+  };
+
+  return (
+    <>
+      <div className="w-full fixed flex justify-center items-center py-2 bg-white z-10">
+        <button
+          className="flex items-center absolute left-4 text-3xl w-20 h-full"
+          onClick={toggleModal}
+          type="button"
+        >
+          <FiMenu />
+        </button>
+        <Image
+          src="/images/gnb_logo.svg"
+          alt="storypix_logo"
+          width={160}
+          height={50}
+        />
+        {isOpenModal && <AccountInfo />}
+      </div>
+      <div className="pt-14 flex flex-col items-center px-[6%]">
+        <p className="w-full mt-6 text-2xl font-pretendard">작품 목록</p>
+        <ul className="mt-5">
+          <Tale taleInfo={dummy} />
+          <Tale taleInfo={dummy1} />
+          <Tale taleInfo={dummy1} />
+        </ul>
+      </div>
+    </>
+  );
+};
+
+export default List;

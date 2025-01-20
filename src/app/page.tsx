@@ -1,10 +1,4 @@
 import Image from "next/image";
-import { Poppins } from "next/font/google";
-
-const poppins = Poppins({
-  weight: ['400', '600'],
-  display: 'swap',
-});
 
 const Home = () => {
   return (
@@ -22,7 +16,7 @@ const Home = () => {
           </button>
         </div>
         <div className="flex flex-col justify-center items-center mt-16 mb-10">
-          <h1 className={`text-[#A90084] text-4xl ${poppins.className}`}>영어의 첫인상</h1>
+          <h1 className="text-[#A90084] text-4xl">영어의 첫인상</h1>
           <p className="text-5xl mt-2 mb-5 text-black">AI 동화로 특별하게</p>
           <p className="text-[#5F4056] text-xl">
             우리 아이에게 다채로운 목소리로 동화를 구연하고

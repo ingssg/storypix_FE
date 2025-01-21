@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const UserInfo = {
@@ -8,9 +9,22 @@ const UserInfo = {
 
 interface AccountInfoProps {
   hasLogin: boolean;
+  setHasLogin: (value: boolean) => void;
+  onClose: (value: boolean) => void;
 }
 
-const AccountInfo = ({ hasLogin }: AccountInfoProps) => {
+const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
+  const router = useRouter();
+
+  const handleLogin = () => {
+    setHasLogin(true);
+  }
+
+  const manageAccount = () => {
+    router.push("/account");
+    onClose(false);
+  }
+
   return (
     <div className="absolute h-screen w-full top-14 bg-opacity-0">
       <div className="absolute w-52 bg-[#FFF6EE] h-full px-3">
@@ -30,6 +44,7 @@ const AccountInfo = ({ hasLogin }: AccountInfoProps) => {
               <button
                 type="button"
                 className="w-full bg-[#FEE500] rounded-lg h-10 mb-8 text-xl flex justify-center items-center font-semibold"
+                onClick={handleLogin}
               >
                 <Image
                   src="/images/kakao_icon.svg"
@@ -81,6 +96,7 @@ const AccountInfo = ({ hasLogin }: AccountInfoProps) => {
               <button
                 type="button"
                 className="text-[#989BA2] underline text-sm mt-3 absolute right-0"
+                onClick={manageAccount}
               >
                 계정관리
               </button>

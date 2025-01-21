@@ -15,6 +15,9 @@ export default {
       fontFamily: {
         pretendard: ["var(--font-pretendard)"],
       },
+      boxShadow: {
+        'custom': '0 4px 20px rgba(0, 0, 0, 0.2)',
+      },
     },
   },
   plugins: [],

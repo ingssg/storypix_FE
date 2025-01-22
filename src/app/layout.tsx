@@ -9,6 +9,12 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 });
 
+const hammersmith = localFont({
+  src: "../fonts/HammersmithOne-Regular.ttf",
+  display: "swap",
+  variable: "--font-hammersmith",
+});
+
 export const metadata: Metadata = {
   title: "StoryPix",
   description: "for Children",
@@ -21,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${pretendard.className} font-pretendard`}>{children}</body>
+      <body className={`${pretendard.className} ${hammersmith.className} font-pretendard`}>{children}</body>
     </html>
   );
 }

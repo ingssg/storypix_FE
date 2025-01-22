@@ -14,6 +14,7 @@ export default {
       },
       fontFamily: {
         pretendard: ["var(--font-pretendard)"],
+        hammersmith: ["var(--font-hammersmith)"],
       },
       boxShadow: {
         'custom': '0 4px 20px rgba(0, 0, 0, 0.2)',

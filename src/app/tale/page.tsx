@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import PlayerHover from "@/components/playerHover";
 import { usePlayerStore } from "../store/playerStore";
@@ -14,10 +14,6 @@ const Tale = () => {
   useEffect(() => {
     if (hasStarted) playSentence();
   }, [currentPageIdx, currentSentenceIdx]);
-
-  // useEffect(() => {
-  //   setStoryContents(storyContents);
-  // }, [storyContents]);
 
   useEffect(() => {
     setStoryContents(storyContents);

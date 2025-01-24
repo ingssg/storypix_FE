@@ -54,7 +54,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   {content}
   ##############
   Please answer in only {language}`,
-  questionCount: 2,
+  questionCount: 4,
   isSpeaking: false,
   isAISpeaking: false,
   instructions: "",

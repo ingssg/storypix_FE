@@ -18,6 +18,10 @@ const hammersmith = localFont({
 export const metadata: Metadata = {
   title: "StoryPix",
   description: "for Children",
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+  },
 };
 
 export default function RootLayout({

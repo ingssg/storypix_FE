@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect } from "react";
 import { usePlayerStore } from "@/app/store/playerStore";
 import Image from "next/image";
@@ -85,11 +87,11 @@ const SettingModal = ({ onClose }: Props) => {
 
   return (
     <div
-      className=" h-full absolute right-0 z-20"
+      className=" h-full absolute right-0 z-[21]"
       onClick={(e:React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       // ref={settingModal}
     >
-      <div className="flex flex-col justify-center items-center bg-white bg-opacity-60 backdrop-blur-lg h-[95%] rounded-xl mr-4 mt-[3%] p-4">
+      <div className="flex flex-col justify-center items-center bg-white bg-opacity-60 backdrop-blur-lg h-[95%] rounded-xl mr-4 mt-[3%] p-4 w-68">
         <div className="flex justify-between items-center w-full text-black">
           <span className="text-lg font-semibold text-[#46474C]">설정</span>
           <button

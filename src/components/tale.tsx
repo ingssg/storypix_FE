@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 
@@ -23,6 +24,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const router = useRouter();
 
   const toggleExpand = () => {
     if (descRef.current) {
@@ -31,6 +33,10 @@ const Tale = ({ taleInfo }: TaleProps) => {
     setIsExpanded(!isExpanded);
   };
 
+  const playTale = () => {
+    router.push("/tale");
+  }
+
   useEffect(() => {
     if (descRef.current) {
       const element = descRef.current;
@@ -38,7 +44,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
       const maxHeight = lineHeight * 2; // 2줄 높이
       setIsOverflowing(element.scrollHeight > maxHeight); // 초과 여부 판단
     }
-  }, []);
+  }, [descRef.current]);
 
   return (
     <div className="w-full flex flex-col items-center justify-center mb-7">
@@ -88,6 +94,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
         <button
           type="button"
           className="bg-[#FF7134] text-white rounded-lg w-full h-12 flex justify-center items-center"
+          onClick={playTale}
         >
           <FaPlay className="text-white mr-2 text-xl font-bold" />
           감상하기

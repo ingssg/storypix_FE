@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import PlayController from "./playerHover/playController";

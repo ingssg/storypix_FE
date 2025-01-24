@@ -64,12 +64,12 @@ const Tale = () => {
           <ViewOptimizationModal />
           <PlayerHover />
           <div
-            className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden"
+            className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"
             style={{
               backgroundImage: `url(${storyContents[currentPageIdx].image})`,
             }}
           >
-            <p className="absolute bottom-0 py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith">
+            <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith">
               {storyContents[currentPageIdx].details[currentSentenceIdx].text}
             </p>
           </div>

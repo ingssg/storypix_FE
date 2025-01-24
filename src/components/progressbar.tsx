@@ -7,7 +7,7 @@ type Props = {
 };
 
 const ProgressBar = ({ onComplete }: Props) => {
-  const [progress, setProgress] = useState(100);
+  const [progress, setProgress] = useState(0);
   const [time, setTime] = useState(20);
   const duration = 20000;
 
@@ -22,7 +22,7 @@ const ProgressBar = ({ onComplete }: Props) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress((prev) => Math.max(prev - 100 / (duration / 1000), 0));
+      setProgress((prev) => Math.min(prev + 100 / (duration / 1000), 100));
       setTime((prev) => Math.max(prev - 1, 0));
     }, 1000);
 

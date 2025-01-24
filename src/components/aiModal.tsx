@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from "react";
 import Lottie from "react-lottie-player";
 import Image from "next/image";

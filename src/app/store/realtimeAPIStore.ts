@@ -1,0 +1,185 @@
+import { create } from "zustand";
+import { useWebRTCStore } from "./webRTCStore";
+import { usePlayerStore } from "./playerStore";
+
+interface RealtimeAPIState {
+  questions: string[];
+  answers: string[];
+  currentQuestion: string;
+  currentAnswer: string;
+  isSessionStarted: boolean;
+  template: string;
+  questionCount: number;
+  isSpeaking: boolean;
+  instructions: string;
+  hasStarted: boolean;
+
+  setQuestions: (value: string[]) => void;
+  setAnswers: (value: string[]) => void;
+  setCurrentQuestion: (value: string) => void;
+  setCurrentAnswer: (value: string) => void;
+  setIsSessionStarted: (value: boolean) => void;
+  setInstructions: (
+    title: string,
+    content: string,
+    prevSentence: string,
+    currSentence: string
+  ) => void;
+  setQuestionCount: (updateFn: (count: number) => number) => void;
+
+  sendInputSignal: () => void;
+  sendInputClear: () => void;
+  sendCreateResponse: () => void;
+  sendInitSession: () => void;
+  updateInstructions: (value: string) => void;
+  receiveServerEvent: () => void;
+}
+
+export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
+  questions: [],
+  answers: [],
+  currentQuestion: "",
+  currentAnswer: "",
+  isSessionStarted: false,
+  template: `You are a kind teacher for children. And I’m 3 years old korean learning english. Your answers must be very simple and short (within 100 characters). Always speak slowly and clearly. Your job is to help me resolve questions that come up while reading "{title}" in English. Those questions are either about English or the content of the fairy tale. If the question is about English, explain it in a very simple way that a 3-year-old can understand. If the question is unrelated to the fairy tale, politely ask the user to only ask about this fairy tale. If it feels like the user is asking about the scene they are currently viewing, refer to the context below.
+  [PreviousSentence] : {prevSentence}
+  [CurrentSentence] : {currSentence}
+  If it is related but not found in the content below, answer logically like a kindergarten teacher.
+  ##############
+  [Fairy Tale Content]
+  {content}
+  ##############
+  Please answer in only {language}`,
+  questionCount: 5,
+  isSpeaking: false,
+  instructions: "",
+  hasStarted: false,
+
+  setQuestions: (value) => set({ questions: value }),
+  setAnswers: (value) => set({ answers: value }),
+  setCurrentQuestion: (value) => set({ currentQuestion: value }),
+  setCurrentAnswer: (value) => set({ currentAnswer: value }),
+  setIsSessionStarted: (value) => set({ isSessionStarted: value }),
+  setInstructions: (title, content, prevSentence, currSentence) => {
+    const { language } = usePlayerStore.getState();
+    const template = get().template;
+    const updatedInstructions = template.replace(/{(.*?)}/g, (_, key) => {
+      type Params = {
+        title: string;
+        content: string;
+        prevSentence: string;
+        currSentence: string;
+        language: string;
+      }
+
+      const params = {
+        title,
+        content,
+        prevSentence,
+        currSentence,
+        language,
+      } as Params;
+
+      return params[key as keyof Params] || `{${key}}`; // 키가 없으면 원래 템플릿 유지
+    });
+
+    // 업데이트된 instructions 설정
+    set({ instructions: updatedInstructions });
+    if (!get().hasStarted) set({ hasStarted: true });
+
+  },
+
+  setQuestionCount: (updateFn) =>
+    set((state) => ({ questionCount: updateFn(state.questionCount) })),
+
+  sendInputSignal: () => {
+    const { dc } = useWebRTCStore.getState();
+    const responseEvent = {
+      type: "input_audio_buffer.commit",
+    };
+    if (dc && dc.readyState === "open") {
+      set({ isSpeaking: false });
+      dc.send(JSON.stringify(responseEvent));
+    }
+  },
+
+  sendInputClear: () => {
+    const { dc } = useWebRTCStore.getState();
+    const responseEvent = {
+      type: "input_audio_buffer.clear",
+    };
+    if (dc && dc.readyState === "open") {
+      set({ isSpeaking: true });
+      dc.send(JSON.stringify(responseEvent));
+    }
+  },
+
+  sendCreateResponse: () => {
+    const { dc } = useWebRTCStore.getState();
+    const responseEvent = {
+      type: "response.create",
+    };
+    if (dc && dc.readyState === "open") dc.send(JSON.stringify(responseEvent));
+  },
+
+  sendInitSession: () => {
+    const { dc } = useWebRTCStore.getState();
+    const responseEvent = {
+      type: "session.update",
+      session: {
+        turn_detection: null, // push to talk
+        input_audio_transcription: {
+          model: "whisper-1",
+        },
+      },
+    };
+    if (dc && dc.readyState === "open") {
+      dc.send(JSON.stringify(responseEvent));
+    }
+  },
+
+  updateInstructions: (value) => {
+    const { dc } = useWebRTCStore.getState();
+    const responseEvent = {
+      type: "session.update",
+      session: {
+        instructions: value,
+      },
+    };
+    if (dc && dc.readyState === "open") dc.send(JSON.stringify(responseEvent));
+  },
+
+  receiveServerEvent: () => {
+    const { dc } = useWebRTCStore.getState();
+    const {
+      setQuestionCount,
+      answers,
+      questions,
+      sendInitSession,
+      sendInputClear,
+    } = get();
+    if (dc) {
+      dc.addEventListener("message", (e) => {
+        const serverEvent = JSON.parse(e.data);
+        console.log(serverEvent);
+        if (
+          serverEvent.type ===
+          "conversation.item.input_audio_transcription.completed"
+        ) {
+          set({ currentQuestion: serverEvent.transcript });
+          set({ questions: [...questions, serverEvent.transcript] });
+        }
+        if (serverEvent.type === "response.audio_transcript.done") {
+          set({ currentAnswer: serverEvent.transcript });
+          set({ answers: [...answers, serverEvent.transcript] });
+          setQuestionCount((prevCount) => prevCount - 1);
+        }
+        if (serverEvent.type === "session.created") {
+          set({ isSessionStarted: true });
+          sendInitSession();
+          sendInputClear();
+        }
+      });
+    }
+  },
+}));

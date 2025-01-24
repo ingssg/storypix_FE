@@ -105,8 +105,9 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     try {
       await peerConnection.setRemoteDescription(sdpObject);
       // console.log("Remote SDP 설정 완료");
-    } catch (error) {
-      // console.error("Error setting remote description", error);
+    } 
+    catch (error) {;
+      console.error("Error setting remote description", error);
     }
   },
 

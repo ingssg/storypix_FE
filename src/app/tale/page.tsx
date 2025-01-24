@@ -64,7 +64,7 @@ const Tale = () => {
           <ViewOptimizationModal />
           <PlayerHover />
           <div
-            className="bg-contain bg-center bg-no-repeat h-screen max-mx-[12%] overflow-hidden"
+            className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden"
             style={{
               backgroundImage: `url(${storyContents[currentPageIdx].image})`,
             }}

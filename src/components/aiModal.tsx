@@ -51,10 +51,6 @@ const AIModal = ({ onClose }: Props) => {
 
   const startSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (questionCountRef.current === 0) {
-      alert("질문 기회를 모두 사용했습니다");
-      return;
-    }
     sendInputClear();
     setInstructions(dummyTitle, dummyTale, prevSentence, currSentence);
     if (audioElement) audioElement.volume = 1;

@@ -120,11 +120,11 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
     const dc = peerConnection.createDataChannel("dataChannel");
     set({ dc });
-    console.log("DataChannel created", dc);
+    // console.log("DataChannel created", dc);
 
-    dc.addEventListener("open", () => {
-      console.log("DataChannel opened");
-    });
+    // dc.addEventListener("open", () => {
+    //   console.log("DataChannel opened");
+    // });
 
     // dc.addEventListener("message", (event) => {
     //   const serverEvent = JSON.parse(event.data);

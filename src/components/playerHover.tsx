@@ -31,7 +31,7 @@ const PlayerHover = () => {
 
   return (
     <div
-      className="w-full h-full absolute top-0 left-0 z-10"
+      className="w-full h-dvh absolute top-0 left-0 z-10"
       onClick={toggleController}
     >
       <div

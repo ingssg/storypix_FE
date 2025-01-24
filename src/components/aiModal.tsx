@@ -66,7 +66,7 @@ const AIModal = ({ onClose }: Props) => {
 
   useEffect(() => {
     questionCountRef.current = questionCount;
-    if (questionCount === 0) {
+    if (typeof window !== "undefined" && questionCount === 0) {
       questionParagraph.current!.innerText = "모든 질문을 다 사용했어요.";
     }
   }, [questionCount]);

@@ -5,7 +5,7 @@ import Image from "next/image";
 import PlayerHover from "@/components/playerHover";
 import { usePlayerStore } from "../store/playerStore";
 import { dummy } from "@/components/playerHover/dummy";
-// import AIModal from "@/components/aiModal";
+import AIModal from "@/components/aiModal";
 import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { getToken } from "@/utils/aiService";
 import { useWebRTCStore } from "../store/webRTCStore";
@@ -25,8 +25,7 @@ const Tale = () => {
   const { setEphemeralKey, createPeerConnection } =
     useWebRTCStore();
 
-  // const [isOpenAIModal, setIsOpenAIModal] = useState(false);
-  const [, setIsOpenAIModal] = useState(false);
+  const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
 
   const openAIModal = () => {
@@ -34,9 +33,9 @@ const Tale = () => {
     stopHandler();
   };
 
-  // const closeAIModal = () => {
-  //   setIsOpenAIModal(false);
-  // };
+  const closeAIModal = () => {
+    setIsOpenAIModal(false);
+  };
 
   const fetchToken = async () => {
     const token = await getToken();
@@ -88,7 +87,7 @@ const Tale = () => {
             />
             질문하기
           </button>
-          {/* {isOpenAIModal && <AIModal onClose={closeAIModal} />} */}
+          {isOpenAIModal && <AIModal onClose={closeAIModal} />}
         </div>
       )}
     </>

@@ -16,7 +16,6 @@ interface WebRTCState {
   createAndSendOffer: () => Promise<void>;
   createDataChannel: () => void;
   connectRealtimeAPI: () => void;
-
 }
 
 export const useWebRTCStore = create<WebRTCState>((set, get) => ({
@@ -41,14 +40,16 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     });
 
     // Handle ontrack event for remote audio
-    const audioEl = document.createElement("audio");
-    audioEl.autoplay = true;
-    set({ audioElement: audioEl });
+    if (typeof document !== "undefined") {
+      const audioEl = document.createElement("audio");
+      audioEl.autoplay = true;
+      set({ audioElement: audioEl });
 
-    peerConnection.ontrack = (e) => {
-      console.log("Remote track received:", e.streams[0]);
-      audioEl.srcObject = e.streams[0];
-    };
+      peerConnection.ontrack = (e) => {
+        console.log("Remote track received:", e.streams[0]);
+        audioEl.srcObject = e.streams[0];
+      };
+    }
 
     set({ peerConnection });
     console.log(peerConnection);

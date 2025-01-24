@@ -20,6 +20,8 @@ interface PlayerState {
   audioPlayer: HTMLAudioElement | null;
   storyContents: StoryContents | null;
   language: string;
+  currSentence: string;
+  prevSentence: string;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -29,6 +31,7 @@ interface PlayerState {
   setAudioPlayer: (value: HTMLAudioElement | null) => void;
   setStoryContents: (value: StoryContents) => void;
   setLanguage: (value: string) => void;
+  setCurrPrevSentence: () => void;
 
   // 속도 및 언어 설정 함수
   decreaseSpeed: () => void;
@@ -56,6 +59,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   audioPlayer: null,
   storyContents: null,
   language: "korean",
+  currSentence: "",
+  prevSentence: "",
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -67,6 +72,27 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setStoryContents: (value: StoryContents) => set({ storyContents: value }),
   setLanguage: (value) => set({ language: value }),
 
+  setCurrPrevSentence: () => {
+    const { storyContents, currentPageIdx, currentSentenceIdx } = get();
+
+    const currentSentence =
+      storyContents![currentPageIdx]?.details[currentSentenceIdx];
+    set({ currSentence: currentSentence.text });
+    let prevSentence = "";
+    if (currentSentenceIdx > 0) {
+      prevSentence =
+        storyContents![currentPageIdx]?.details[currentSentenceIdx - 1]?.text ||
+        "";
+    } else if (currentPageIdx > 0) {
+      const prevPageDetails = storyContents![currentPageIdx - 1]?.details;
+      if (prevPageDetails && prevPageDetails.length > 0) {
+        prevSentence = prevPageDetails[prevPageDetails.length - 1]?.text || "";
+      }
+    }
+
+    set({ prevSentence });
+  },
+
   playSentence: () => {
     const {
       setIsPlaying,
@@ -76,11 +102,15 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentPageIdx,
       currentSentenceIdx,
       storyContents,
+      setCurrPrevSentence,
     } = get();
 
     const currentSentence =
       storyContents![currentPageIdx]?.details[currentSentenceIdx];
+
     if (!currentSentence) return;
+    setCurrPrevSentence();
+    
 
     if (audioPlayer) {
       audioPlayer.pause();
@@ -111,14 +141,17 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentSentenceIdx,
       currentPageIdx,
       storyContents,
+      setCurrPrevSentence,
     } = get();
 
     const currentPage = storyContents![currentPageIdx];
     if (currentSentenceIdx < currentPage.details.length - 1) {
       setCurrentSentenceIdx(currentSentenceIdx + 1);
+      setCurrPrevSentence();
     } else if (currentPageIdx < storyContents!.length - 1) {
       setCurrentPageIdx(currentPageIdx + 1);
       setCurrentSentenceIdx(0);
+      setCurrPrevSentence();
     } else {
       alert("마지막 문장입니다!");
       setIsPlaying(false);
@@ -132,15 +165,19 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentSentenceIdx,
       currentPageIdx,
       storyContents,
+      setCurrPrevSentence,
     } = get();
 
+    
     if (currentSentenceIdx > 0) {
       setCurrentSentenceIdx(currentSentenceIdx - 1);
+      setCurrPrevSentence();
     } else if (currentPageIdx > 0) {
       setCurrentPageIdx(currentPageIdx - 1);
       setCurrentSentenceIdx(
         storyContents![currentPageIdx - 1].details.length - 1
       );
+      setCurrPrevSentence();
     } else {
       alert("첫번째 문장입니다!");
     }
@@ -153,11 +190,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setIsPlaying,
       currentPageIdx,
       storyContents,
+      setCurrPrevSentence,
     } = get();
 
     if (currentPageIdx < storyContents!.length - 1) {
       setCurrentPageIdx(currentPageIdx + 1);
       setCurrentSentenceIdx(0);
+      setCurrPrevSentence();
     } else {
       alert("마지막 페이지입니다!");
       setIsPlaying(false);
@@ -165,11 +204,12 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   playPrevPage: () => {
-    const { setCurrentPageIdx, setCurrentSentenceIdx, currentPageIdx } = get();
+    const { setCurrentPageIdx, setCurrentSentenceIdx, currentPageIdx, setCurrPrevSentence } = get();
 
     if (currentPageIdx > 0) {
       setCurrentPageIdx(currentPageIdx - 1);
       setCurrentSentenceIdx(0);
+      setCurrPrevSentence();
     } else {
       alert("첫번째 페이지입니다!");
     }

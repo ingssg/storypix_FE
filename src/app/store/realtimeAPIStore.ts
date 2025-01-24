@@ -11,8 +11,10 @@ interface RealtimeAPIState {
   template: string;
   questionCount: number;
   isSpeaking: boolean;
+  isAISpeaking: boolean;
   instructions: string;
   hasStarted: boolean;
+  isButtonVisible: boolean;
 
   setQuestions: (value: string[]) => void;
   setAnswers: (value: string[]) => void;
@@ -26,6 +28,8 @@ interface RealtimeAPIState {
     currSentence: string
   ) => void;
   setQuestionCount: (updateFn: (count: number) => number) => void;
+  setIsButtonVisible: (value: boolean) => void;
+  setIsAISpeaking: (value: boolean) => void;
 
   sendInputSignal: () => void;
   sendInputClear: () => void;
@@ -50,16 +54,20 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   {content}
   ##############
   Please answer in only {language}`,
-  questionCount: 5,
+  questionCount: 2,
   isSpeaking: false,
+  isAISpeaking: false,
   instructions: "",
   hasStarted: false,
+  isButtonVisible: true,
 
   setQuestions: (value) => set({ questions: value }),
   setAnswers: (value) => set({ answers: value }),
   setCurrentQuestion: (value) => set({ currentQuestion: value }),
   setCurrentAnswer: (value) => set({ currentAnswer: value }),
   setIsSessionStarted: (value) => set({ isSessionStarted: value }),
+  setIsButtonVisible: (value: boolean) => set({ isButtonVisible: value }),
+  setIsAISpeaking: (value: boolean) => set({ isAISpeaking: value }),
   setInstructions: (title, content, prevSentence, currSentence) => {
     const { language } = usePlayerStore.getState();
     const template = get().template;
@@ -70,7 +78,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
         prevSentence: string;
         currSentence: string;
         language: string;
-      }
+      };
 
       const params = {
         title,
@@ -86,7 +94,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
     // 업데이트된 instructions 설정
     set({ instructions: updatedInstructions });
     if (!get().hasStarted) set({ hasStarted: true });
-
   },
 
   setQuestionCount: (updateFn) =>
@@ -178,6 +185,12 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           set({ isSessionStarted: true });
           sendInitSession();
           sendInputClear();
+        }
+        if (serverEvent.type === "response.output_item.added") {
+          set({ isAISpeaking: false });
+        }
+        if (serverEvent.type === "output_audio_buffer.audio_stopped" && get().questionCount > 0) {
+          set({ isButtonVisible: true });
         }
       });
     }

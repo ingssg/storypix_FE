@@ -39,7 +39,7 @@ const Tale = () => {
 
   const fetchToken = async () => {
     const token = await getToken();
-    console.log(token);
+    // console.log(token);
     const EPHEMERAL_KEY = token.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
   };

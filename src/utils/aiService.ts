@@ -1,5 +1,5 @@
 export const getToken = async () => {
-  console.log(process.env.NEXT_PUBLIC_OPENAI_API_KEY);
+  // console.log(process.env.NEXT_PUBLIC_OPENAI_API_KEY);
   const token = await fetch("https://api.openai.com/v1/realtime/sessions", {
     method: "POST",
     headers: {

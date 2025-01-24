@@ -46,15 +46,15 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       set({ audioElement: audioEl });
 
       peerConnection.ontrack = (e) => {
-        console.log("Remote track received:", e.streams[0]);
+        // console.log("Remote track received:", e.streams[0]);
         audioEl.srcObject = e.streams[0];
       };
     }
 
     set({ peerConnection });
-    console.log(peerConnection);
+    // console.log(peerConnection);
     peerConnection.addEventListener("connectionstatechange", () => {
-      console.log("Connection State:", peerConnection.connectionState);
+      // console.log("Connection State:", peerConnection.connectionState);
     });
   },
 
@@ -104,9 +104,9 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
     try {
       await peerConnection.setRemoteDescription(sdpObject);
-      console.log("Remote SDP 설정 완료");
+      // console.log("Remote SDP 설정 완료");
     } catch (error) {
-      console.error("Error setting remote description", error);
+      // console.error("Error setting remote description", error);
     }
   },
 

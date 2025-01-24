@@ -22,7 +22,7 @@ const Tale = () => {
     stopHandler,
   } = usePlayerStore();
 
-  const { setEphemeralKey, createPeerConnection } =
+  const { setEphemeralKey, } =
     useWebRTCStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
@@ -51,7 +51,7 @@ const Tale = () => {
   useEffect(() => {
     setStoryContents(storyContents);
     fetchToken().then(() => {
-      createPeerConnection();
+      // createPeerConnection();
     });
   }, []);
 

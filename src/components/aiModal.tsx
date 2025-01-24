@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useEffect, useRef } from "react";
-// import Lottie from "react-lottie-player";
 import Image from "next/image";
 import { FaCheck } from "react-icons/fa6";
 import { useWebRTCStore } from "@/app/store/webRTCStore";
 import { useRealtimeAPIStore } from "@/app/store/realtimeAPIStore";
 import { dummyTale, dummyTitle } from "./playerHover/dummy";
 import { usePlayerStore } from "@/app/store/playerStore";
-// import userSpeakAnimation from "@/animation/userSpeak.json";
+import userSpeakAnimation from "@/animation/userSpeak.json";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
 type Props = {
   onClose: () => void;
@@ -116,12 +118,12 @@ const AIModal = ({ onClose }: Props) => {
         </div>
         {isSpeaking ? (
           <div className="flex flex-col justify-center items-center h-full w-[30vw]">
-            {/* <Lottie
+            <Lottie
               loop
               animationData={userSpeakAnimation}
               play
-              className="w-10 h-10"
-            /> */}
+              className="w-[3.75rem] h-[3.75rem]"
+            />
             <p className="text-black mt-3">듣고 있어요.</p>
           </div>
         ) : (

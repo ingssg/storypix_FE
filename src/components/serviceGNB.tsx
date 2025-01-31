@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { FiMenu } from "react-icons/fi";
-import AccountInfo from "@/components/accountInfo";
+import AccountInfo from "@/components/accountModal/accountInfo";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useRouter } from "next/navigation";
 

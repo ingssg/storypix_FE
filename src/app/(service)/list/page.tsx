@@ -1,4 +1,8 @@
+'use client';
+
+import { fetchTales } from "@/app/services/taleService";
 import Tale from "@/components/tale";
+import { useEffect } from "react";
 
 const dummy = {
   titleKor: "양치기 소년",
@@ -35,6 +39,20 @@ const dummy2 = {
 };
 
 const List = () => {
+
+  useEffect(() => {
+    const fetchList = async () => {
+      const data = await fetchTales(1, 3);
+      console.log(data);
+    };
+    try {
+      fetchList();
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   return (
     <>
       <div className={`pt-14 flex flex-col items-center px-[6%]`}>

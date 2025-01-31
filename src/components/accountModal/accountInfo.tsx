@@ -1,11 +1,7 @@
+import { fetchUser } from "@/app/services/userService";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
-
-const UserInfo = {
-  name: "김인석",
-  email: "abcdefg@gmail.com",
-};
+import React, { useEffect, useState } from "react";
 
 interface AccountInfoProps {
   hasLogin: boolean;
@@ -14,16 +10,36 @@ interface AccountInfoProps {
 }
 
 const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+
   const router = useRouter();
 
   const handleLogin = () => {
-    setHasLogin(true);
+    const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
+    window.location.href = loginURL;
   }
 
   const manageAccount = () => {
     router.push("/account");
     onClose(false);
   }
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const data = await fetchUser();
+      console.log(data);
+      setNickname(data.nickname);
+      setEmail(data.email);
+    }
+    try {
+      fetchUserInfo();
+      setHasLogin(false);
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }, [])
 
   return (
     <div className="absolute h-screen w-full top-14 bg-opacity-0">
@@ -33,12 +49,12 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
             {hasLogin ? (
               <div>
                 <p className="text-lg font-bold">
-                  {UserInfo.name}
+                  {nickname}
                   <span className="text-[#989BA2]"> 님</span>
                   <br />
                   안녕하세요.
                 </p>
-                <p className="mt-3 mb-6 text-[#989BA2]">{UserInfo.email}</p>
+                <p className="mt-3 mb-6 text-[#989BA2]">{email}</p>
               </div>
             ) : (
               <button

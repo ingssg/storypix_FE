@@ -9,6 +9,15 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(
+  (config) => {
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -17,24 +26,25 @@ apiClient.interceptors.request.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          console.error("401 Unauthorized");
+          // console.error("401 Unauthorized");
+          console.log("로그인 필요");
           break;
         case 403:
-          console.error("403 Forbidden");
+          console.log("403 Forbidden");
           break;
         case 404:
-          console.error("404 Not Found");
+          console.log("404 Not Found");
           break;
         case 500:
-          console.error("500 Internal Server Error");
+          console.log("500 Internal Server Error");
           break;
         default:
-          console.error("API 요청 오류", error.response.status);
+          console.log("API 요청 오류", error.response.status);
       }
     } else if (error.request) {
-      console.error("API 요청 실패");
+      console.log("API 요청 실패");
     } else {
-      console.error("요청 생성 전 에러 발생", error.message);
+      console.log("요청 생성 전 에러 발생", error.message);
     }
     return Promise.reject(error);
   }

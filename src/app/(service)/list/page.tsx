@@ -47,7 +47,7 @@ const List = () => {
   useEffect(() => {
     const fetchList = async () => {
       const data = await fetchTales(1, 3);
-      // console.log(data);
+      console.log(data);
     };
     try {
       fetchList();

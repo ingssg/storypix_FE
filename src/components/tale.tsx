@@ -6,14 +6,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 
 type TaleInfo = {
+  id: number;
   titleKor: string;
   titleEng: string;
   description: string;
   image: string;
   minuteLength: number;
   totalPage: number;
-  price: number;
-  isAccessible: boolean;
+  isSubscribedUser: boolean;
+  isFree: boolean;
 };
 
 type TaleProps = {
@@ -23,6 +24,7 @@ type TaleProps = {
 const Tale = ({ taleInfo }: TaleProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+
   const descRef = useRef<HTMLParagraphElement>(null);
   const router = useRouter();
 
@@ -35,7 +37,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
 
   const playTale = () => {
     router.push("/tale");
-  }
+  };
 
   useEffect(() => {
     if (descRef.current) {
@@ -77,12 +79,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
             </button>
           </div>
         )}
-        <div className="w-full flex justify-between font-medium">
-          <p className="text-[#FF7134] text-sm">
-            {taleInfo.price
-              ? Intl.NumberFormat("ko-KR").format(taleInfo.price) + " 원"
-              : "무료"}
-          </p>
+        <div className="w-full flex justify-end font-medium">
           <div>
             <p className="text-[#5A5C63] text-sm">
               {taleInfo.minuteLength}분 | {taleInfo.totalPage}페이지
@@ -90,19 +87,11 @@ const Tale = ({ taleInfo }: TaleProps) => {
           </div>
         </div>
       </div>
-      {taleInfo.isAccessible ? (
-        <button
-          type="button"
-          className="bg-[#FF7134] text-white rounded-lg w-full h-12 flex justify-center items-center"
-          onClick={playTale}
-        >
-          <FaPlay className="text-white mr-2 text-xl font-bold" />
-          감상하기
-        </button>
-      ) : (
+      {taleInfo.isFree ? (
         <button
           type="button"
           className="border-2 rounded-lg w-full h-12 flex justify-center items-center font-bold"
+          onClick={playTale}
         >
           <Image
             src="/images/thunder.svg"
@@ -111,7 +100,16 @@ const Tale = ({ taleInfo }: TaleProps) => {
             height={20}
             className="mr-2"
           />
-          구매하기
+          무료로 감상하기
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="bg-[#FF7134] text-white rounded-lg w-full h-12 flex justify-center items-center"
+          onClick={() => router.push("/subscribe")}
+        >
+          <FaPlay className="text-white mr-2 text-xl font-bold" />
+          {taleInfo.isSubscribedUser ? "감상하기" : "구독하고 감상하기"}
         </button>
       )}
     </div>

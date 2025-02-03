@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { signout } from "@/app/services/userService";
 
 type Props = {
   onClose: () => void;
@@ -10,10 +11,18 @@ const LogOutModal = ({ onClose }: Props) => {
   const router = useRouter();
 
   const modalClose = () => onClose();
+
   const handleLogout = () => {
+    try {
+      signout();
+    }
+    catch (error) {
+      console.log(error, "로그아웃 에러");
+    }
     router.push("/");
     modalClose();
   };
+  
   return (
     <div className="fixed top-16 w-screen h-screen bg-opacity-0 flex justify-center items-center z-10">
       <div className="w-64 bg-[#F6F6F6] flex flex-col shadow-custom mb-16 justify-center items-center p-5 gap-3 rounded-lg relative">

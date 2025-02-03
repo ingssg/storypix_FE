@@ -58,7 +58,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
         setNickname(nickname);
         setEmail(email);
         setUserInfo(data);
-        console.log(data);
+        // console.log(data);
         setSubscribeInfo(dummySub);
         setHasLogin(true);
       } catch (error) {

@@ -9,7 +9,7 @@ type Props = {
 };
 
 const PageController = ({ className }: Props) => {
-  const { storyContents, currentPageIdx, playNextPage, playPrevPage } =
+  const { storyContents, currentPageIdx, playNextPage, playPrevPage, totalPage } =
     usePlayerStore();
 
   return (
@@ -30,7 +30,7 @@ const PageController = ({ className }: Props) => {
           <span className="font-bold">
             Page {storyContents[currentPageIdx].page}
           </span>{" "}
-          / {storyContents.length}
+          / {totalPage}
         </p>
       )}
       <button className="p-4" onClick={playNextPage}>

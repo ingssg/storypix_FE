@@ -1,5 +1,6 @@
 "use client";
 
+import { usePlayerStore } from "@/app/store/playerStore";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -28,6 +29,8 @@ const Tale = ({ taleInfo }: TaleProps) => {
   const descRef = useRef<HTMLParagraphElement>(null);
   const router = useRouter();
 
+  const { setTotalPage, setId } = usePlayerStore();
+
   const toggleExpand = () => {
     if (descRef.current) {
       descRef.current.classList.toggle("line-clamp-2");
@@ -36,7 +39,9 @@ const Tale = ({ taleInfo }: TaleProps) => {
   };
 
   const playTale = () => {
-    router.push("/tale");
+    router.push("/tale/" + taleInfo.id);
+    setTotalPage(taleInfo.totalPage);
+    setId(taleInfo.id);
   };
 
   useEffect(() => {

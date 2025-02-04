@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { fetchTaleById } from "../services/taleService";
 
 interface StoryContent {
   page: number;
@@ -22,6 +23,9 @@ interface PlayerState {
   language: string;
   currSentence: string;
   prevSentence: string;
+  totalPage: number;
+  lastFetchedPage: number;
+  id: number;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -32,6 +36,8 @@ interface PlayerState {
   setStoryContents: (value: StoryContents) => void;
   setLanguage: (value: string) => void;
   setCurrPrevSentence: () => void;
+  setTotalPage: (value: number) => void;
+  setId: (value: number) => void;
 
   // 속도 및 언어 설정 함수
   decreaseSpeed: () => void;
@@ -47,6 +53,10 @@ interface PlayerState {
   playPrevPage: () => void;
   playHandler: () => void;
   stopHandler: () => void;
+
+  fetchPage: (page: number) => void;
+
+  reset:() => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -61,6 +71,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   language: "korean",
   currSentence: "",
   prevSentence: "",
+  totalPage: 9, //FIXME : totalPage 작품 감상하기 버튼 클릭해서 받아와야함. 기본값은 0이 맞음. 백엔드 연동 필요
+  lastFetchedPage: 3,
+  id: 0,
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -71,6 +84,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setAudioPlayer: (player) => set({ audioPlayer: player }),
   setStoryContents: (value: StoryContents) => set({ storyContents: value }),
   setLanguage: (value) => set({ language: value }),
+  setTotalPage: (value) => set({ totalPage: value }),
+  setId: (value) => set({ id: value }),
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
@@ -107,7 +122,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
     const currentSentence =
       storyContents![currentPageIdx]?.details[currentSentenceIdx];
-
     if (!currentSentence) return;
     setCurrPrevSentence();
     
@@ -142,13 +156,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentPageIdx,
       storyContents,
       setCurrPrevSentence,
+      totalPage,
+      lastFetchedPage,
+      fetchPage,
     } = get();
 
     const currentPage = storyContents![currentPageIdx];
     if (currentSentenceIdx < currentPage.details.length - 1) {
       setCurrentSentenceIdx(currentSentenceIdx + 1);
       setCurrPrevSentence();
-    } else if (currentPageIdx < storyContents!.length - 1) {
+    } else if (currentPageIdx < totalPage - 1) {
+      const nextPage = currentPageIdx + 2; // page는 1-based index
+      // console.log("페이지 넘기는중")
+      if(nextPage === lastFetchedPage - 1) {
+        fetchPage(lastFetchedPage + 1);
+        set({ lastFetchedPage: lastFetchedPage + 1 });
+      }
+
       setCurrentPageIdx(currentPageIdx + 1);
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
@@ -189,12 +213,20 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentSentenceIdx,
       setIsPlaying,
       currentPageIdx,
-      storyContents,
       setCurrPrevSentence,
+      totalPage,
+      lastFetchedPage,
+      fetchPage,
     } = get();
 
-    if (currentPageIdx < storyContents!.length - 1) {
+    if (currentPageIdx < totalPage - 1) {
       setCurrentPageIdx(currentPageIdx + 1);
+      const nextPage = currentPageIdx + 2; // page는 1-based index
+      // console.log("페이지 넘기는중")
+      if(nextPage === lastFetchedPage - 1) {
+        fetchPage(lastFetchedPage + 1);
+        set({ lastFetchedPage: lastFetchedPage + 1 });
+      }
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
     } else {
@@ -263,4 +295,34 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const { setLanguage } = get();
     setLanguage("english");
   },
+
+  fetchPage: async (page: number) => {
+    if(page > get().totalPage) return;
+    console.log(page, "페이지 추가로 가져오는중");
+    const { id, storyContents, setStoryContents } = get();
+    try {
+      const data = await fetchTaleById(id, 1, page);
+      setStoryContents([...storyContents!, ...data]);
+      console.log("페이지 추가로 가져옴", ...data);
+    } catch (error) {
+      console.log("페이지 로드 오류", error);
+    }
+  },
+
+  reset: () => set({
+    isPlaying: false,
+    hasStarted: false,
+    speed: 1,
+    currentSentenceIdx: 0,
+    currentPageIdx: 0,
+    audioPlayer: null,
+    storyContents: null,
+    language: "korean",
+    currSentence: "",
+    prevSentence: "",
+    totalPage: 0,
+    lastFetchedPage: 3,
+    id: 0,
+  }),
+
 }));

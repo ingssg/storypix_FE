@@ -4,26 +4,30 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayerHover from "@/components/playerHover";
 import { usePlayerStore } from "../store/playerStore";
-import { dummy } from "@/components/playerHover/dummy";
 import AIModal from "@/components/aiModal";
 import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { getToken } from "@/utils/aiService";
 import { useWebRTCStore } from "../store/webRTCStore";
+import { fetchTaleById } from "@/app/services/taleService";
 
-const storyContents = dummy;
+// const storyContents = dummy;
 
 const Tale = () => {
+  // const { id } = useParams<{ id: string }>();
+
   const {
+    storyContents,
     currentPageIdx,
     currentSentenceIdx,
     playSentence,
     hasStarted,
     setStoryContents,
     stopHandler,
+    reset,
+    setId,
   } = usePlayerStore();
 
-  const { setEphemeralKey, createPeerConnection } =
-    useWebRTCStore();
+  const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
@@ -49,10 +53,26 @@ const Tale = () => {
   }, [currentPageIdx, currentSentenceIdx]);
 
   useEffect(() => {
-    setStoryContents(storyContents);
+    const fetchStoryContents = async () => {
+      try {
+        // const data = await fetchTaleById(parseInt(id), 3, 1);
+        const data = await fetchTaleById(44, 3, 1); //FIXME
+        setStoryContents(data);
+      } catch (error) {
+        console.log("데이터 로딩 오류", error);
+      }
+    };
+    // setId(parseInt(id));
+    setId(44); //FIXME
+    fetchStoryContents();
+    // setStoryContents(storyContents);
     fetchToken().then(() => {
       createPeerConnection();
     });
+
+    return () => {
+      reset();
+    };
   }, []);
 
   return (
@@ -69,7 +89,7 @@ const Tale = () => {
               backgroundImage: `url(${storyContents[currentPageIdx].image})`,
             }}
           >
-            <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith">
+            <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith text-center">
               {storyContents[currentPageIdx].details[currentSentenceIdx].text}
             </p>
           </div>

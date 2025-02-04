@@ -100,7 +100,7 @@ const SettingModal = ({ onClose }: Props) => {
             onClick={closeSettings}
           >
             <Image
-              src={"images/x_icon.svg"}
+              src={"/images/x_icon.svg"}
               width={12}
               height={12}
               alt="close_icon"

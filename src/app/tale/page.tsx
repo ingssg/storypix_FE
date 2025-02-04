@@ -8,7 +8,6 @@ import AIModal from "@/components/aiModal";
 import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { getToken } from "@/utils/aiService";
 import { useWebRTCStore } from "../store/webRTCStore";
-import { useParams } from "next/navigation";
 import { fetchTaleById } from "@/app/services/taleService";
 
 // const storyContents = dummy;

@@ -52,6 +52,30 @@ const Tale = () => {
   useEffect(() => {
     if (hasStarted) playSentence();
   }, [currentPageIdx, currentSentenceIdx]);
+
+  useEffect(() => {
+    const fetchStoryContents = async () => {
+      try {
+        // const data = await fetchTaleById(parseInt(id), 3, 1);
+        const data = await fetchTaleById(44, 3, 1); //FIXME
+        setStoryContents(data);
+      } catch (error) {
+        console.log("데이터 로딩 오류", error);
+      }
+    };
+    // setId(parseInt(id));
+    setId(44); //FIXME
+    fetchStoryContents();
+    // setStoryContents(storyContents);
+    fetchToken().then(() => {
+      createPeerConnection();
+    });
+
+    return () => {
+      reset();
+    };
+  }, [id]);
+
   return (
     <>
       {!storyContents ? (

@@ -3,27 +3,32 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayerHover from "@/components/playerHover";
-import { usePlayerStore } from "../store/playerStore";
-import { dummy } from "@/components/playerHover/dummy";
+import { usePlayerStore } from "../../store/playerStore";
 import AIModal from "@/components/aiModal";
 import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { getToken } from "@/utils/aiService";
-import { useWebRTCStore } from "../store/webRTCStore";
+import { useWebRTCStore } from "../../store/webRTCStore";
+import { useParams } from "next/navigation";
+import { fetchTaleById } from "@/app/services/taleService";
 
-const storyContents = dummy;
+// const storyContents = dummy;
 
 const Tale = () => {
+  const { id } = useParams<{ id: string }>();
+
   const {
+    storyContents,
     currentPageIdx,
     currentSentenceIdx,
     playSentence,
     hasStarted,
     setStoryContents,
     stopHandler,
+    reset,
+    setId,
   } = usePlayerStore();
 
-  const { setEphemeralKey, createPeerConnection } =
-    useWebRTCStore();
+  const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
@@ -47,14 +52,6 @@ const Tale = () => {
   useEffect(() => {
     if (hasStarted) playSentence();
   }, [currentPageIdx, currentSentenceIdx]);
-
-  useEffect(() => {
-    setStoryContents(storyContents);
-    fetchToken().then(() => {
-      createPeerConnection();
-    });
-  }, []);
-
   return (
     <>
       {!storyContents ? (
@@ -69,7 +66,7 @@ const Tale = () => {
               backgroundImage: `url(${storyContents[currentPageIdx].image})`,
             }}
           >
-            <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith">
+            <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith text-center">
               {storyContents[currentPageIdx].details[currentSentenceIdx].text}
             </p>
           </div>

@@ -31,6 +31,9 @@ const AIModal = ({ onClose }: Props) => {
     sendCreateResponse,
     setIsButtonVisible,
     setIsAISpeaking,
+    sendCommuication,
+    setCurrentAnswer,
+    setCurrentQuestion,
     currentAnswer,
     currentQuestion,
     questionCount,
@@ -70,6 +73,11 @@ const AIModal = ({ onClose }: Props) => {
     setIsAISpeaking(true);
   };
 
+  const resetCommuicationBubble = () => {
+    setCurrentQuestion("");
+    setCurrentAnswer("");
+  }
+
   useEffect(() => {
     questionCountRef.current = questionCount;
     if (typeof window !== "undefined" && questionCount === 0) {
@@ -81,6 +89,11 @@ const AIModal = ({ onClose }: Props) => {
   useEffect(() => {
     if (!dc) startAI();
     if (questionCount === 0) setIsEnded(true);
+
+    return () => {
+      sendCommuication();
+      resetCommuicationBubble();
+    }
   }, []);
 
   useEffect(() => {

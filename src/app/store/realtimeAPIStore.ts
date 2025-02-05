@@ -172,7 +172,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
       questions,
       sendInitSession,
       sendInputClear,
-      records,
     } = get();
     if (dc) {
       dc.addEventListener("message", (e) => {

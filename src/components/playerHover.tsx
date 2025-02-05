@@ -4,8 +4,10 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import PlayController from "./playerHover/playController";
 import SettingModal from "./playerHover/settingModal";
+import { usePlayerStore } from "@/app/store/playerStore";
 
 const PlayerHover = () => {
+  const { titleEng } = usePlayerStore();
 
   const controller = useRef<HTMLDivElement>(null);
   const [isOpenController, setIsOpenController] = useState(false);
@@ -41,7 +43,7 @@ const PlayerHover = () => {
         ref={controller}
       >
         <p className="text-white absolute top-8 left-8 w-80 truncate font-semibold text-sm">
-          The Lion and the Mouse
+          {titleEng}
         </p>
         <div className="absolute top-1 right-5">
           <button className="p-1" onClick={openSettings}>

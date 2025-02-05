@@ -194,6 +194,8 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           set({ currentAnswer: serverEvent.transcript });
           set({ answers: [...answers, serverEvent.transcript] });
           setQuestionCount((prevCount) => prevCount - 1);
+          const storyId = usePlayerStore.getState().storyId;
+          decreaseCommuiationCountAPI(storyId);
           const aiRecord: Record = {
             text: serverEvent.transcript,
             isUser: false,

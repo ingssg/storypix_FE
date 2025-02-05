@@ -27,3 +27,8 @@ export const postCommuicationAPI = async (communication: Communication) => {
   const { data } = await apiClient.post("/communications", communication);
   return data;
 };
+
+export const decreaseCommuiationCountAPI = async (storyId: number) => {
+  const { data } = await apiClient.patch("/communications/count", { storyId });
+  return data;
+};

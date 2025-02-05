@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { useWebRTCStore } from "./webRTCStore";
 import { usePlayerStore } from "./playerStore";
+import { Communication, postCommuicationAPI, Record } from "../services/aiService";
 
 interface RealtimeAPIState {
   questions: string[];
@@ -16,6 +17,11 @@ interface RealtimeAPIState {
   hasStarted: boolean;
   isButtonVisible: boolean;
 
+  // 소통 기록
+  sessionId: string;
+  sessionCreatedAt: Date;
+  records: Record[];
+
   setQuestions: (value: string[]) => void;
   setAnswers: (value: string[]) => void;
   setCurrentQuestion: (value: string) => void;
@@ -30,7 +36,6 @@ interface RealtimeAPIState {
   setQuestionCount: (updateFn: (count: number) => number) => void;
   setIsButtonVisible: (value: boolean) => void;
   setIsAISpeaking: (value: boolean) => void;
-
   sendInputSignal: () => void;
   sendInputClear: () => void;
   sendCreateResponse: () => void;
@@ -60,6 +65,9 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   instructions: "",
   hasStarted: false,
   isButtonVisible: true,
+  sessionId: "",
+  sessionCreatedAt: new Date(),
+  records: [],
 
   setQuestions: (value) => set({ questions: value }),
   setAnswers: (value) => set({ answers: value }),
@@ -164,6 +172,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
       questions,
       sendInitSession,
       sendInputClear,
+      records,
     } = get();
     if (dc) {
       dc.addEventListener("message", (e) => {
@@ -175,22 +184,52 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
         ) {
           set({ currentQuestion: serverEvent.transcript });
           set({ questions: [...questions, serverEvent.transcript] });
+          const userRecord: Record = {
+            text: serverEvent.transcript,
+            isUser: true,
+            createdAt: new Date(),
+          };
+          set((state) => ({ records: [...state.records, userRecord] }));
         }
         if (serverEvent.type === "response.audio_transcript.done") {
           set({ currentAnswer: serverEvent.transcript });
           set({ answers: [...answers, serverEvent.transcript] });
           setQuestionCount((prevCount) => prevCount - 1);
+          const aiRecord: Record = {
+            text: serverEvent.transcript,
+            isUser: false,
+            createdAt: new Date(),
+          };
+          console.log(aiRecord);
+          set((state) => ({ records: [...state.records, aiRecord] }));
         }
         if (serverEvent.type === "session.created") {
           set({ isSessionStarted: true });
+          set({ sessionCreatedAt: new Date() });
+          set({ sessionId: serverEvent.session.id });
+          console.log("Session ID:", serverEvent.session.id);
           sendInitSession();
           sendInputClear();
         }
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
         }
-        if (serverEvent.type === "output_audio_buffer.audio_stopped" && get().questionCount > 0) {
-          set({ isButtonVisible: true });
+        if (serverEvent.type === "output_audio_buffer.audio_stopped") {
+          if (get().questionCount > 0) {
+            set({ isButtonVisible: true });
+          }
+          const { storyId, currentPageIdx, prevSentence, currSentence } = usePlayerStore.getState();
+          const communication: Communication = {
+            storyId: storyId,
+            openaiSessionId: get().sessionId,
+            questionPage: currentPageIdx + 1,
+            previousSentence: prevSentence,
+            currentSentence: currSentence,
+            records: get().records,
+            createdAt: get().sessionCreatedAt,
+          }
+          console.log(communication);
+          postCommuicationAPI(communication);
         }
       });
     }

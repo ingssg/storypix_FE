@@ -73,10 +73,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   language: "korean",
   currSentence: "",
   prevSentence: "",
-  totalPage: 9, //FIXME : totalPage 작품 감상하기 버튼 클릭해서 받아와야함. 기본값은 0이 맞음. 백엔드 연동 필요
+  totalPage: 0,
   lastFetchedPage: 3,
   storyId: 0,
-  titleEng: "The Lion and the Mouse", //FIXME "" 로 초기화해야함
+  titleEng: "", 
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),

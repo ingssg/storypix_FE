@@ -14,15 +14,15 @@ type TaleInfo = {
   image: string;
   minuteLength: number;
   totalPage: number;
-  isSubscribedUser: boolean;
   isFree: boolean;
 };
 
 type TaleProps = {
   taleInfo: TaleInfo;
+  isSubscribedUser: boolean;
 };
 
-const Tale = ({ taleInfo }: TaleProps) => {
+const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -39,7 +39,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
   };
 
   const playTale = () => {
-    router.push("/tale/" + taleInfo.id);
+    router.push("/tale");
     setTotalPage(taleInfo.totalPage);
     setStoryId(taleInfo.id);
     setTitleEng(taleInfo.titleEng);
@@ -116,7 +116,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
           onClick={() => router.push("/subscribe")}
         >
           <FaPlay className="text-white mr-2 text-xl font-bold" />
-          {taleInfo.isSubscribedUser ? "감상하기" : "구독하고 감상하기"}
+          {isSubscribedUser ? "감상하기" : "구독하고 감상하기"}
         </button>
       )}
     </div>

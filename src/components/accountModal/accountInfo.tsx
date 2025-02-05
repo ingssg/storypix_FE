@@ -19,7 +19,6 @@ type SubscriptionInfo = {
 const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
-  const [userInfo, setUserInfo] = useState({});
   const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo | null>(
     null
   );
@@ -36,12 +35,6 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
     onClose(false);
   };
 
-  const dummySub = {
-    status: "active",
-    renewsAt: "2025.03.31",
-    createdAt: "2024.12.31",
-  };
-
   // const dummySub2 = {
   //   status: "paused",
   //   renewsAt: "2025.03.31",
@@ -50,19 +43,18 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      console.log(userInfo, subscriptionInfo);
       try {
         const data = await fetchUser();
         // const {user, subscription} = data;
-        const { nickname, email } = data;
-        setNickname(nickname);
-        setEmail(email);
-        setUserInfo(data);
+        const { userInfo, subscriptionInfo } = data;
+        setNickname(userInfo.nickname);
+        setEmail(userInfo.email);
+        // setUserInfo(data);
         // console.log(data);
-        setSubscriptionInfo(dummySub);
+        setSubscriptionInfo(subscriptionInfo);
         setHasLogin(true);
       } catch (error) {
-        console.log(error);
+        console.log("로그인 안되어 있음", error);
       }
     };
     fetchUserInfo();
@@ -88,8 +80,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
                   안녕하세요.
                 </p>
                 <p className="mt-3 mb-2 text-[#989BA2]">{email}</p>
-                {/* <SubscribeInfo subscribeInfo={subscribeInfo} onClose={onClose}/> */}
-                <SubscribeInfo subscribeInfo={null} onClose={onClose} />
+                <SubscribeInfo subscribeInfo={subscriptionInfo} onClose={onClose}/>
               </div>
             ) : (
               <button

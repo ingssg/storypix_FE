@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import { useWebRTCStore } from "./webRTCStore";
 import { usePlayerStore } from "./playerStore";
-import { Communication, postCommuicationAPI, Record } from "../services/aiService";
+import {
+  Communication,
+  decreaseCommuiationCountAPI,
+  postCommuicationAPI,
+  Record,
+} from "../services/aiService";
 
 interface RealtimeAPIState {
   questions: string[];
@@ -36,12 +41,14 @@ interface RealtimeAPIState {
   setQuestionCount: (updateFn: (count: number) => number) => void;
   setIsButtonVisible: (value: boolean) => void;
   setIsAISpeaking: (value: boolean) => void;
+
   sendInputSignal: () => void;
   sendInputClear: () => void;
   sendCreateResponse: () => void;
   sendInitSession: () => void;
   updateInstructions: (value: string) => void;
   receiveServerEvent: () => void;
+  sendCommuication: () => void;
 }
 
 export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
@@ -59,7 +66,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   {content}
   ##############
   Please answer in only {language}`,
-  questionCount: 4,
+  questionCount: 5, //FIXME 기본값 0
   isSpeaking: false,
   isAISpeaking: false,
   instructions: "",
@@ -176,7 +183,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
-        // console.log(serverEvent);
         if (
           serverEvent.type ===
           "conversation.item.input_audio_transcription.completed"
@@ -194,12 +200,13 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           set({ currentAnswer: serverEvent.transcript });
           set({ answers: [...answers, serverEvent.transcript] });
           setQuestionCount((prevCount) => prevCount - 1);
+          const storyId = usePlayerStore.getState().storyId;
+          decreaseCommuiationCountAPI(storyId);
           const aiRecord: Record = {
             text: serverEvent.transcript,
             isUser: false,
             createdAt: new Date(),
           };
-          console.log(aiRecord);
           set((state) => ({ records: [...state.records, aiRecord] }));
         }
         if (serverEvent.type === "session.created") {
@@ -209,6 +216,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           console.log("Session ID:", serverEvent.session.id);
           sendInitSession();
           sendInputClear();
+          usePlayerStore.getState().setCurrPrevSentence();
         }
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
@@ -217,20 +225,25 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           if (get().questionCount > 0) {
             set({ isButtonVisible: true });
           }
-          const { storyId, currentPageIdx, prevSentence, currSentence } = usePlayerStore.getState();
-          const communication: Communication = {
-            storyId: storyId,
-            openaiSessionId: get().sessionId,
-            questionPage: currentPageIdx + 1,
-            previousSentence: prevSentence,
-            currentSentence: currSentence,
-            records: get().records,
-            createdAt: get().sessionCreatedAt,
-          }
-          console.log(communication);
-          postCommuicationAPI(communication);
         }
       });
     }
+  },
+  sendCommuication: () => {
+    if (get().records.length === 0) return;
+    const { storyId, currentPageIdx, prevSentence, currSentence } =
+      usePlayerStore.getState();
+    const communication: Communication = {
+      storyId: storyId,
+      openaiSessionId: get().sessionId,
+      questionPage: currentPageIdx + 1,
+      previousSentence: prevSentence,
+      currentSentence: currSentence,
+      records: get().records,
+      createdAt: get().sessionCreatedAt,
+    };
+    console.log(communication);
+    postCommuicationAPI(communication);
+    set({ records: [] });
   },
 }));

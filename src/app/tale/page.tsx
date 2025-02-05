@@ -9,11 +9,14 @@ import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { useWebRTCStore } from "../store/webRTCStore";
 import { fetchTaleById } from "@/app/services/taleService";
 import { getTokenAPI } from "../services/aiService";
+import { useRouter } from "next/navigation";
+import WithAuth from "@/components/HOC/withAuth";
+// import { useRealtimeAPIStore } from "../store/realtimeAPIStore"; //FIXME
 
 // const storyContents = dummy;
 
 const Tale = () => {
-
+  const router = useRouter();
   const {
     storyContents,
     currentPageIdx,
@@ -23,7 +26,7 @@ const Tale = () => {
     setStoryContents,
     stopHandler,
     reset,
-    setStoryId,
+    storyId,
   } = usePlayerStore();
 
   const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
@@ -41,29 +44,36 @@ const Tale = () => {
   };
 
   const fetchToken = async () => {
-    // const token = await getTokenAPI(id);
-    const token = await getTokenAPI(44); //FIXME
+    // const { setQuestionCount } = useRealtimeAPIStore(); //FIXME
+    const token = await getTokenAPI(storyId);
     const EPHEMERAL_KEY = token.session.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
+    // setQuestionCount(token.remainedCount); //FIXME
   };
 
   useEffect(() => {
-    if (hasStarted) playSentence();
+    if (hasStarted) {
+      playSentence();
+    }
   }, [currentPageIdx, currentSentenceIdx]);
 
   useEffect(() => {
+    if(storyId === 0) {
+      alert("잘못된 접근입니다.");
+      router.push("/list");
+      return () => {
+        reset();
+      }
+    }
     const fetchStoryContents = async () => {
       try {
-        // const data = await fetchTaleById(parseInt(id), 3, 1);
-        const data = await fetchTaleById(44, 3, 1); //FIXME
+        const data = await fetchTaleById(storyId, 3, 1);
         setStoryContents(data);
       } catch (error) {
         console.log("데이터 로딩 오류", error);
       }
     };
-    setStoryId(44); //FIXME
     fetchStoryContents();
-    // setStoryContents(storyContents);
     fetchToken().then(() => {
       createPeerConnection();
     });
@@ -112,4 +122,4 @@ const Tale = () => {
   );
 };
 
-export default Tale;
+export default WithAuth(Tale);

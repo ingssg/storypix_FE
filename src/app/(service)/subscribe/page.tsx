@@ -1,6 +1,7 @@
 "use client";
 
 import { subscribeAPI } from "@/app/services/purchaseService";
+import WithAuth from "@/components/HOC/withAuth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -155,4 +156,4 @@ const Subscribe = () => {
   );
 };
 
-export default Subscribe;
+export default WithAuth(Subscribe);

@@ -10,7 +10,7 @@ interface AccountInfoProps {
   onClose: (value: boolean) => void;
 }
 
-type SubscribeInfo = {
+type SubscriptionInfo = {
   status: string;
   renewsAt: string;
   createdAt: string;
@@ -20,7 +20,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [userInfo, setUserInfo] = useState({});
-  const [subscribeInfo, setSubscribeInfo] = useState<SubscribeInfo | null>(
+  const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo | null>(
     null
   );
 
@@ -50,7 +50,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      console.log(userInfo, subscribeInfo);
+      console.log(userInfo, subscriptionInfo);
       try {
         const data = await fetchUser();
         // const {user, subscription} = data;
@@ -59,7 +59,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
         setEmail(email);
         setUserInfo(data);
         // console.log(data);
-        setSubscribeInfo(dummySub);
+        setSubscriptionInfo(dummySub);
         setHasLogin(true);
       } catch (error) {
         console.log(error);

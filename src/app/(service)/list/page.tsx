@@ -12,7 +12,6 @@ interface Tale {
   image: string;
   minuteLength: number;
   totalPage: number;
-  isSubscribedUser: boolean;
   isFree: boolean;
 }
 
@@ -23,6 +22,7 @@ const List = () => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [isSubscribedUser, setIsSubscribedUser] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   const loadMoreTales = async () => {
@@ -31,10 +31,11 @@ const List = () => {
 
     try {
       const data = await fetchTales(page, PAGE_COUNT);
-      setTales((prev) => [...prev, ...data]);
+      setTales((prev) => [...prev, ...data.stories]);
       setPage((prev) => prev + 1);
+      setIsSubscribedUser(data.isSubscribedUser);
 
-      if (data.length < PAGE_COUNT) {
+      if (data.stories.length < PAGE_COUNT) {
         setHasMore(false);
       }
     } catch (error) {
@@ -70,7 +71,7 @@ const List = () => {
       <p className="w-full mt-6 text-2xl font-semibold">작품 목록</p>
       <ul className="mt-5">
         {tales.map((tale) => (
-          <Tale key={tale.id} taleInfo={tale} />
+          <Tale key={tale.id} taleInfo={tale} isSubscribedUser={isSubscribedUser}/>
         ))}
       </ul>
       {isLoading && <p className="mt-10 w-full text-center">로딩중...</p>}

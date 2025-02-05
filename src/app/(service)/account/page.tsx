@@ -6,6 +6,7 @@ import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
+import WithAuth from "@/components/HOC/withAuth";
 
 const Account = () => {
   const [isDeletionModalOpen, setIsDeletionModalOpen] = useState(false);
@@ -68,4 +69,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default WithAuth(Account);

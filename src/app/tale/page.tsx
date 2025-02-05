@@ -6,14 +6,13 @@ import PlayerHover from "@/components/playerHover";
 import { usePlayerStore } from "../store/playerStore";
 import AIModal from "@/components/aiModal";
 import ViewOptimizationModal from "@/components/viewOptimizationModal";
-import { getToken } from "@/utils/aiService";
 import { useWebRTCStore } from "../store/webRTCStore";
 import { fetchTaleById } from "@/app/services/taleService";
+import { getTokenAPI } from "../services/aiService";
 
 // const storyContents = dummy;
 
 const Tale = () => {
-  // const { id } = useParams<{ id: string }>();
 
   const {
     storyContents,
@@ -24,7 +23,7 @@ const Tale = () => {
     setStoryContents,
     stopHandler,
     reset,
-    setId,
+    setStoryId,
   } = usePlayerStore();
 
   const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
@@ -42,9 +41,9 @@ const Tale = () => {
   };
 
   const fetchToken = async () => {
-    const token = await getToken();
-    // console.log(token);
-    const EPHEMERAL_KEY = token.client_secret.value;
+    // const token = await getTokenAPI(id);
+    const token = await getTokenAPI(44); //FIXME
+    const EPHEMERAL_KEY = token.session.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
   };
 
@@ -62,8 +61,7 @@ const Tale = () => {
         console.log("데이터 로딩 오류", error);
       }
     };
-    // setId(parseInt(id));
-    setId(44); //FIXME
+    setStoryId(44); //FIXME
     fetchStoryContents();
     // setStoryContents(storyContents);
     fetchToken().then(() => {

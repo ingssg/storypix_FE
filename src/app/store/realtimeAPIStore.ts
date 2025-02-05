@@ -211,6 +211,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           console.log("Session ID:", serverEvent.session.id);
           sendInitSession();
           sendInputClear();
+          usePlayerStore.getState().setCurrPrevSentence();
         }
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });

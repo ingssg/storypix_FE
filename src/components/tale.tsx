@@ -29,7 +29,7 @@ const Tale = ({ taleInfo }: TaleProps) => {
   const descRef = useRef<HTMLParagraphElement>(null);
   const router = useRouter();
 
-  const { setTotalPage, setId } = usePlayerStore();
+  const { setTotalPage, setStoryId, setTitleEng } = usePlayerStore();
 
   const toggleExpand = () => {
     if (descRef.current) {
@@ -41,7 +41,8 @@ const Tale = ({ taleInfo }: TaleProps) => {
   const playTale = () => {
     router.push("/tale/" + taleInfo.id);
     setTotalPage(taleInfo.totalPage);
-    setId(taleInfo.id);
+    setStoryId(taleInfo.id);
+    setTitleEng(taleInfo.titleEng);
   };
 
   useEffect(() => {

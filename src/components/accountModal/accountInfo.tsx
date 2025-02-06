@@ -62,7 +62,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
 
   return (
     <div
-      className="absolute h-screen w-full top-12 bg-opacity-50 bg-black"
+      className="absolute h-dvh w-full top-12 bg-opacity-50 bg-black"
       onClick={() => onClose(false)}
     >
       <div

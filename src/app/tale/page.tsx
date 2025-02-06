@@ -11,7 +11,7 @@ import { fetchTaleById } from "@/app/services/taleService";
 import { getTokenAPI } from "../services/aiService";
 import { useRouter } from "next/navigation";
 import WithAuth from "@/components/HOC/withAuth";
-// import { useRealtimeAPIStore } from "../store/realtimeAPIStore"; //FIXME
+import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
 
 // const storyContents = dummy;
 
@@ -27,9 +27,11 @@ const Tale = () => {
     stopHandler,
     reset,
     storyId,
+    setFullContent,
   } = usePlayerStore();
 
   const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
+  const { setQuestionCount } = useRealtimeAPIStore(); 
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
@@ -44,11 +46,11 @@ const Tale = () => {
   };
 
   const fetchToken = async () => {
-    // const { setQuestionCount } = useRealtimeAPIStore(); //FIXME
     const token = await getTokenAPI(storyId);
     const EPHEMERAL_KEY = token.session.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
-    // setQuestionCount(token.remainedCount); //FIXME
+    setFullContent(token.instruction);
+    setQuestionCount(() => token.remainedCount); 
   };
 
   useEffect(() => {
@@ -98,7 +100,7 @@ const Tale = () => {
             }}
           >
             <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith text-center">
-              {storyContents[currentPageIdx].details[currentSentenceIdx].text}
+              {storyContents[currentPageIdx].details[currentSentenceIdx].sentence}
             </p>
           </div>
           <button

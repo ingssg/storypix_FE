@@ -10,6 +10,7 @@ import userSpeakAnimation from "@/animation/userSpeak.json";
 import aiSpeakAnimation from "@/animation/AISpeak.json";
 import dynamic from "next/dynamic";
 import ProgressBar from "./progressbar";
+import { decreaseCommuiationCountAPI } from "@/app/services/aiService";
 
 const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
@@ -19,8 +20,8 @@ type Props = {
 
 const AIModal = ({ onClose }: Props) => {
   const questionParagraph = useRef<HTMLParagraphElement>(null);
-  const { connectRealtimeAPI, audioElement, dc } = useWebRTCStore();
-  const { prevSentence, currSentence, fullContent, titleEng } = usePlayerStore();
+  const { connectRealtimeAPI, audioElement, dc, closeWebRTCSession } = useWebRTCStore();
+  const { prevSentence, currSentence, fullContent, titleEng, storyId } = usePlayerStore();
   const {
     sendInputSignal,
     sendInputClear,
@@ -58,11 +59,22 @@ const AIModal = ({ onClose }: Props) => {
     receiveServerEvent();
   };
 
-  const startSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const startSpeaking = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    sendInputClear();
-    setInstructions(titleEng, fullContent, prevSentence, currSentence);
-    if (audioElement) audioElement.volume = 1;
+    try { 
+      const { remainedCount } = await decreaseCommuiationCountAPI(storyId);
+      if(remainedCount < 1) {
+        console.log("소통 기회 소진, 악의적인 사용자 발견");
+        return;
+      }
+      sendInputClear();
+      setInstructions(titleEng, fullContent, prevSentence, currSentence);
+      if (audioElement) audioElement.volume = 1;
+    }
+    catch {
+      console.log("소통 기회 소진");
+      closeWebRTCSession();
+    }
   };
 
   const finishSpeaking = () => {
@@ -82,11 +94,12 @@ const AIModal = ({ onClose }: Props) => {
     if (typeof window !== "undefined" && questionCount === 0) {
       questionParagraph.current!.innerText = "모든 질문을 다 사용했어요.";
       setIsButtonVisible(false);
+      closeWebRTCSession();
     }
   }, [questionCount]);
 
   useEffect(() => {
-    if (!dc) startAI();
+    if (!dc && questionCount > 0) startAI();
     if (questionCount === 0) setIsEnded(true);
 
     return () => {

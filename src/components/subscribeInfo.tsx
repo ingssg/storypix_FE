@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 type SubscribeInfoProps = {
   subscribeInfo: {
@@ -10,22 +10,40 @@ type SubscribeInfoProps = {
   onClose: (value: boolean) => void;
 };
 
-const SubscribeInfo = ({subscribeInfo, onClose}: SubscribeInfoProps) => {
+const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
+  const [renewsAt, setRenewsAt] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+
   const router = useRouter();
   const startSubscribe = () => {
     router.push("/subscribe");
     onClose(false);
-  }
+  };
 
-  if(!subscribeInfo) return (
-    <button
-    type="button"
-    className="bg-[#FF7134] rounded-lg w-24 text-white p-1 font-semibold text-[0.6rem]" 
-    onClick={startSubscribe}
-    >
-      스토리패스 구독하기
-  </button>
-  );
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}.${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    if (!subscribeInfo) return;
+    setRenewsAt(formatDate(subscribeInfo.renewsAt) || "");
+    setCreatedAt(formatDate(subscribeInfo.createdAt) || "");
+  }, [subscribeInfo]);
+
+  if (!subscribeInfo)
+    return (
+      <button
+        type="button"
+        className="bg-[#FF7134] rounded-lg w-24 text-white p-1 font-semibold text-[0.6rem]"
+        onClick={startSubscribe}
+      >
+        스토리패스 구독하기
+      </button>
+    );
 
   return (
     <div className="flex flex-col gap-1 pb-4 font-semibold text-[0.6rem] border-b-[1px] border-[#D4DADF]">
@@ -35,7 +53,9 @@ const SubscribeInfo = ({subscribeInfo, onClose}: SubscribeInfoProps) => {
           subscribeInfo.status === "paused" &&
           "bg-inherit border-[1px] border-[#5A5C6338] text-[#5A5C6338]"
         }`}
-        disabled={subscribeInfo.status === "active" || subscribeInfo.status === "paused"}
+        disabled={
+          subscribeInfo.status === "active" || subscribeInfo.status === "paused"
+        }
       >
         {subscribeInfo.status === "active" && "스토리패스 구독중"}
         {subscribeInfo.status === "paused" && "구독 종료 예정"}
@@ -45,12 +65,12 @@ const SubscribeInfo = ({subscribeInfo, onClose}: SubscribeInfoProps) => {
           <div className="flex items-center">
             <span className="w-16 mb-1">구독 기간</span>
             <span className="text-[#46474C]">
-              {subscribeInfo.createdAt + "~" + subscribeInfo.renewsAt}
+              {createdAt + "~" + renewsAt}
             </span>
           </div>
           <div className="flex items-center">
             <span className="w-16">다음 결제일</span>
-            <span className="text-[#46474C]">{subscribeInfo.renewsAt}</span>
+            <span className="text-[#46474C]">{renewsAt}</span>
           </div>
         </div>
       )}
@@ -59,7 +79,7 @@ const SubscribeInfo = ({subscribeInfo, onClose}: SubscribeInfoProps) => {
           <div className="flex items-center">
             <span className="w-16 mb-1">구독 기간</span>
             <span className="text-[#46474C]">
-              {subscribeInfo.createdAt + "~" + subscribeInfo.renewsAt}
+              {createdAt + "~" + renewsAt}
             </span>
           </div>
           <button type="button" className="underline" onClick={startSubscribe}>

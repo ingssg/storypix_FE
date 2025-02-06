@@ -49,6 +49,8 @@ interface RealtimeAPIState {
   updateInstructions: (value: string) => void;
   receiveServerEvent: () => void;
   sendCommuication: () => void;
+
+  reset: () => void;
 }
 
 export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
@@ -183,6 +185,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
+        console.log(serverEvent);
         if (
           serverEvent.type ===
           "conversation.item.input_audio_transcription.completed"
@@ -221,7 +224,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
         }
-        if (serverEvent.type === "output_audio_buffer.audio_stopped") {
+        if (serverEvent.type === "output_audio_buffer.stopped") {
           if (get().questionCount > 0) {
             set({ isButtonVisible: true });
           }
@@ -246,4 +249,21 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
     postCommuicationAPI(communication);
     set({ records: [] });
   },
+  reset: () =>
+    set({
+      questions: [],
+      answers: [],
+      currentQuestion: "",
+      currentAnswer: "",
+      isSessionStarted: false,
+      questionCount: 0,
+      isSpeaking: false,
+      isAISpeaking: false,
+      instructions: "",
+      hasStarted: false,
+      isButtonVisible: true,
+      sessionId: "",
+      sessionCreatedAt: new Date(),
+      records: [],
+    }),
 }));

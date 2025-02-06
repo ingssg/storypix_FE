@@ -4,7 +4,7 @@ import { fetchTaleById } from "../services/taleService";
 interface StoryContent {
   page: number;
   details: {
-    text: string;
+    sentence: string;
     narration: string;
   }[];
   image: string;
@@ -27,6 +27,7 @@ interface PlayerState {
   lastFetchedPage: number;
   storyId: number;
   titleEng: string;
+  fullContent: string;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -40,6 +41,7 @@ interface PlayerState {
   setTotalPage: (value: number) => void;
   setStoryId: (value: number) => void;
   setTitleEng: (value: string) => void;
+  setFullContent: (value: string) => void;
 
   // 속도 및 언어 설정 함수
   decreaseSpeed: () => void;
@@ -77,6 +79,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   lastFetchedPage: 3,
   storyId: 0,
   titleEng: "", 
+  fullContent: "",
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -90,22 +93,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setTotalPage: (value) => set({ totalPage: value }),
   setStoryId: (value) => set({ storyId: value }),
   setTitleEng: (value) => set({ titleEng: value }),
+  setFullContent: (value) => set({ fullContent: value }),
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
 
     const currentSentence =
       storyContents![currentPageIdx]?.details[currentSentenceIdx];
-    set({ currSentence: currentSentence.text });
+    set({ currSentence: currentSentence.sentence });
     let prevSentence = "";
     if (currentSentenceIdx > 0) {
       prevSentence =
-        storyContents![currentPageIdx]?.details[currentSentenceIdx - 1]?.text ||
+        storyContents![currentPageIdx]?.details[currentSentenceIdx - 1]?.sentence ||
         "";
     } else if (currentPageIdx > 0) {
       const prevPageDetails = storyContents![currentPageIdx - 1]?.details;
       if (prevPageDetails && prevPageDetails.length > 0) {
-        prevSentence = prevPageDetails[prevPageDetails.length - 1]?.text || "";
+        prevSentence = prevPageDetails[prevPageDetails.length - 1]?.sentence || "";
       }
     }
 

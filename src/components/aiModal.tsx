@@ -5,7 +5,6 @@ import Image from "next/image";
 import { FaCheck } from "react-icons/fa6";
 import { useWebRTCStore } from "@/app/store/webRTCStore";
 import { useRealtimeAPIStore } from "@/app/store/realtimeAPIStore";
-import { dummyTale, dummyTitle } from "./playerHover/dummy";
 import { usePlayerStore } from "@/app/store/playerStore";
 import userSpeakAnimation from "@/animation/userSpeak.json";
 import aiSpeakAnimation from "@/animation/AISpeak.json";
@@ -21,7 +20,7 @@ type Props = {
 const AIModal = ({ onClose }: Props) => {
   const questionParagraph = useRef<HTMLParagraphElement>(null);
   const { connectRealtimeAPI, audioElement, dc } = useWebRTCStore();
-  const { prevSentence, currSentence } = usePlayerStore();
+  const { prevSentence, currSentence, fullContent, titleEng } = usePlayerStore();
   const {
     sendInputSignal,
     sendInputClear,
@@ -62,7 +61,7 @@ const AIModal = ({ onClose }: Props) => {
   const startSpeaking = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     sendInputClear();
-    setInstructions(dummyTitle, dummyTale, prevSentence, currSentence);
+    setInstructions(titleEng, fullContent, prevSentence, currSentence);
     if (audioElement) audioElement.volume = 1;
   };
 
@@ -98,7 +97,7 @@ const AIModal = ({ onClose }: Props) => {
 
   useEffect(() => {
     if (isSessionStarted && !hasStarted) {
-      setInstructions(dummyTitle, dummyTale, prevSentence, currSentence);
+      setInstructions(titleEng, fullContent, prevSentence, currSentence);
     }
   }, [isSessionStarted]);
 

@@ -31,7 +31,7 @@ const Tale = () => {
   } = usePlayerStore();
 
   const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
-  const { setQuestionCount } = useRealtimeAPIStore(); 
+  const { questionCount, setQuestionCount } = useRealtimeAPIStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
@@ -50,7 +50,7 @@ const Tale = () => {
     const EPHEMERAL_KEY = token.session.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
     setFullContent(token.instruction);
-    setQuestionCount(() => token.remainedCount); 
+    setQuestionCount(() => token.remainedCount);
   };
 
   useEffect(() => {
@@ -60,12 +60,12 @@ const Tale = () => {
   }, [currentPageIdx, currentSentenceIdx]);
 
   useEffect(() => {
-    if(storyId === 0) {
+    if (storyId === 0) {
       alert("잘못된 접근입니다.");
       router.push("/list");
       return () => {
         reset();
-      }
+      };
     }
     const fetchStoryContents = async () => {
       try {
@@ -100,23 +100,28 @@ const Tale = () => {
             }}
           >
             <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith text-center">
-              {storyContents[currentPageIdx].details[currentSentenceIdx].sentence}
+              {
+                storyContents[currentPageIdx].details[currentSentenceIdx]
+                  .sentence
+              }
             </p>
           </div>
-          <button
-            type="button"
-            className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"
-            onClick={openAIModal}
-            ref={AIModalRef}
-          >
-            <Image
-              src={"/images/mike_icon.svg"}
-              width={16}
-              height={18}
-              alt="question_icon"
-            />
-            질문하기
-          </button>
+          {questionCount > 0 && (
+            <button
+              type="button"
+              className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"
+              onClick={openAIModal}
+              ref={AIModalRef}
+            >
+              <Image
+                src={"/images/mike_icon.svg"}
+                width={16}
+                height={18}
+                alt="question_icon"
+              />
+              질문하기
+            </button>
+          )}
           {isOpenAIModal && <AIModal onClose={closeAIModal} />}
         </div>
       )}

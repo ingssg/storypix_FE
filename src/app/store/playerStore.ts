@@ -60,7 +60,7 @@ interface PlayerState {
 
   fetchPage: (page: number) => void;
 
-  reset:() => void;
+  reset: () => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -78,7 +78,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   totalPage: 0,
   lastFetchedPage: 3,
   storyId: 0,
-  titleEng: "", 
+  titleEng: "",
   fullContent: "",
 
   // 상태 변경 함수
@@ -104,12 +104,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     let prevSentence = "";
     if (currentSentenceIdx > 0) {
       prevSentence =
-        storyContents![currentPageIdx]?.details[currentSentenceIdx - 1]?.sentence ||
-        "";
+        storyContents![currentPageIdx]?.details[currentSentenceIdx - 1]
+          ?.sentence || "";
     } else if (currentPageIdx > 0) {
       const prevPageDetails = storyContents![currentPageIdx - 1]?.details;
       if (prevPageDetails && prevPageDetails.length > 0) {
-        prevSentence = prevPageDetails[prevPageDetails.length - 1]?.sentence || "";
+        prevSentence =
+          prevPageDetails[prevPageDetails.length - 1]?.sentence || "";
       }
     }
 
@@ -132,7 +133,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       storyContents![currentPageIdx]?.details[currentSentenceIdx];
     if (!currentSentence) return;
     setCurrPrevSentence();
-    
 
     if (audioPlayer) {
       audioPlayer.pause();
@@ -149,9 +149,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     setIsPlaying(true);
 
     player.onended = () => {
-      setTimeout(() => {
-        get().playNextSentence();
-      }, 1000);
+      get().playNextSentence();
     };
   },
 
@@ -176,7 +174,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     } else if (currentPageIdx < totalPage - 1) {
       const nextPage = currentPageIdx + 2; // page는 1-based index
       // console.log("페이지 넘기는중")
-      if(nextPage === lastFetchedPage - 1) {
+      if (nextPage === lastFetchedPage - 1) {
         fetchPage(lastFetchedPage + 1);
         set({ lastFetchedPage: lastFetchedPage + 1 });
       }
@@ -200,7 +198,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrPrevSentence,
     } = get();
 
-    
     if (currentSentenceIdx > 0) {
       setCurrentSentenceIdx(currentSentenceIdx - 1);
       setCurrPrevSentence();
@@ -231,7 +228,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentPageIdx(currentPageIdx + 1);
       const nextPage = currentPageIdx + 2; // page는 1-based index
       // console.log("페이지 넘기는중")
-      if(nextPage === lastFetchedPage - 1) {
+      if (nextPage === lastFetchedPage - 1) {
         fetchPage(lastFetchedPage + 1);
         set({ lastFetchedPage: lastFetchedPage + 1 });
       }
@@ -244,7 +241,12 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   playPrevPage: () => {
-    const { setCurrentPageIdx, setCurrentSentenceIdx, currentPageIdx, setCurrPrevSentence } = get();
+    const {
+      setCurrentPageIdx,
+      setCurrentSentenceIdx,
+      currentPageIdx,
+      setCurrPrevSentence,
+    } = get();
 
     if (currentPageIdx > 0) {
       setCurrentPageIdx(currentPageIdx - 1);
@@ -263,6 +265,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   stopHandler: () => {
     const { setIsPlaying, audioPlayer } = get();
+    console.log("정지버튼 누름");
     setIsPlaying(false);
     if (audioPlayer) {
       audioPlayer.pause();
@@ -305,7 +308,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   fetchPage: async (page: number) => {
-    if(page > get().totalPage) return;
+    if (page > get().totalPage) return;
     console.log(page, "페이지 추가로 가져오는중");
     const { storyId, storyContents, setStoryContents } = get();
     try {
@@ -317,21 +320,21 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
-  reset: () => set({
-    isPlaying: false,
-    hasStarted: false,
-    speed: 1,
-    currentSentenceIdx: 0,
-    currentPageIdx: 0,
-    audioPlayer: null,
-    storyContents: null,
-    language: "korean",
-    currSentence: "",
-    prevSentence: "",
-    totalPage: 0,
-    lastFetchedPage: 3,
-    storyId: 0,
-    titleEng: "",
-  }),
-
+  reset: () =>
+    set({
+      isPlaying: false,
+      hasStarted: false,
+      speed: 1,
+      currentSentenceIdx: 0,
+      currentPageIdx: 0,
+      audioPlayer: null,
+      storyContents: null,
+      language: "korean",
+      currSentence: "",
+      prevSentence: "",
+      totalPage: 0,
+      lastFetchedPage: 3,
+      storyId: 0,
+      titleEng: "",
+    }),
 }));

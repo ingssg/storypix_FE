@@ -9,13 +9,15 @@ interface WebRTCState {
 
   setPeerConnection: (value: RTCPeerConnection | null) => void;
   setEphemeralKey: (value: string) => void;
-  setSdp: (value: RTCSessionDescriptionInit) => void;
-  setDc: (value: RTCDataChannel) => void;
+  setSdp: (value: RTCSessionDescriptionInit | null) => void;
+  setDc: (value: RTCDataChannel | null) => void;
 
   createPeerConnection: () => Promise<void>;
   createAndSendOffer: () => Promise<void>;
   createDataChannel: () => void;
   connectRealtimeAPI: () => void;
+
+  closeWebRTCSession: () => void;
 }
 
 export const useWebRTCStore = create<WebRTCState>((set, get) => ({
@@ -136,5 +138,45 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     const { createDataChannel, createAndSendOffer } = get();
     createDataChannel();
     await createAndSendOffer();
+  },
+
+  closeWebRTCSession: () => {
+    const { peerConnection, setPeerConnection, setSdp, setDc, audioElement } = get();
+
+    if (peerConnection) {
+      console.log("WebRTC 세션 종료 중...");
+
+      // 1️⃣ 모든 미디어 트랙 중지
+      peerConnection.getSenders().forEach((sender) => {
+        if (sender.track) {
+          sender.track.stop();
+        }
+      });
+
+      // 2️⃣ PeerConnection 종료
+      peerConnection.close();
+
+      // 3️⃣ 이벤트 핸들러 초기화
+      peerConnection.onicecandidate = null;
+      peerConnection.ontrack = null;
+      peerConnection.oniceconnectionstatechange = null;
+      peerConnection.onsignalingstatechange = null;
+      peerConnection.onnegotiationneeded = null;
+      peerConnection.ondatachannel = null;
+
+      // 4️⃣ Zustand 상태 초기화
+      setPeerConnection(null);
+      setSdp(null);
+      setDc(null);
+
+      // 5️⃣ 오디오 스트림 제거
+      if (audioElement) {
+        audioElement.srcObject = null;
+      }
+
+      console.log("WebRTC 세션 종료 완료");
+    } else {
+      console.log("종료할 WebRTC 세션이 없습니다.");
+    }
   },
 }));

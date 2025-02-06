@@ -113,7 +113,7 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
         <button
           type="button"
           className="bg-[#FF7134] text-white rounded-lg w-full h-12 flex justify-center items-center"
-          onClick={() => router.push("/subscribe")}
+          onClick={isSubscribedUser ? (playTale) : (() => router.push("/subscribe"))}
         >
           <FaPlay className="text-white mr-2 text-xl font-bold" />
           {isSubscribedUser ? "감상하기" : "구독하고 감상하기"}

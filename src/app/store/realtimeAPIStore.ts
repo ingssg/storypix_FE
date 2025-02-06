@@ -174,7 +174,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   },
 
   receiveServerEvent: () => {
-    const { dc } = useWebRTCStore.getState();
+    const { dc, closeWebRTCSession } = useWebRTCStore.getState();
     const {
       setQuestionCount,
       answers,
@@ -203,8 +203,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           set({ currentAnswer: serverEvent.transcript });
           set({ answers: [...answers, serverEvent.transcript] });
           setQuestionCount((prevCount) => prevCount - 1);
-          const storyId = usePlayerStore.getState().storyId;
-          decreaseCommuiationCountAPI(storyId);
           const aiRecord: Record = {
             text: serverEvent.transcript,
             isUser: false,
@@ -217,9 +215,25 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           set({ sessionCreatedAt: new Date() });
           set({ sessionId: serverEvent.session.id });
           console.log("Session ID:", serverEvent.session.id);
-          sendInitSession();
-          sendInputClear();
           usePlayerStore.getState().setCurrPrevSentence();
+
+          const serverCheck = async () => {
+            try {
+              const { remainedCount } = await decreaseCommuiationCountAPI(
+                usePlayerStore.getState().storyId
+              );
+              if (remainedCount < 1) {
+                console.log("소통 기회 소진, 악의적인 사용자 발견");
+                return;
+              }
+              sendInitSession();
+              sendInputClear();
+            } catch {
+              console.log("소통 기회 소진");
+              closeWebRTCSession();
+            }
+          }
+          serverCheck();
         }
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
@@ -227,7 +241,9 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
         if (serverEvent.type === "output_audio_buffer.stopped") {
           if (get().questionCount > 0) {
             set({ isButtonVisible: true });
+            return;
           }
+          closeWebRTCSession();
         }
       });
     }

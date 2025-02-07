@@ -35,22 +35,13 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
     onClose(false);
   };
 
-  // const dummySub2 = {
-  //   status: "paused",
-  //   renewsAt: "2025.03.31",
-  //   createdAt: "2024.12.31",
-  // };
-
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const data = await fetchUser();
-        // const {user, subscription} = data;
         const { userInfo, subscriptionInfo } = data;
         setNickname(userInfo.nickname);
         setEmail(userInfo.email);
-        // setUserInfo(data);
-        // console.log(data);
         setSubscriptionInfo(subscriptionInfo);
         setHasLogin(true);
       } catch (error) {

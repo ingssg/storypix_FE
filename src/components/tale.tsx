@@ -57,8 +57,7 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
   return (
     <div className="w-full flex flex-col items-center justify-center mb-7">
       <Image
-        // src={taleInfo.image}
-        src="/images/dummy-tale.svg"
+        src={taleInfo.image}
         alt="fairyTale_Thumbnail"
         width={1920}
         height={230}

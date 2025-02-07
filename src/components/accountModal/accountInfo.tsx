@@ -93,6 +93,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
               <button
                 className="flex gap-2 items-center text-lg font-medium"
                 type="button"
+                onClick={() => router.push("/list")}
               >
                 <Image
                   src={"/images/articles-img.svg"}

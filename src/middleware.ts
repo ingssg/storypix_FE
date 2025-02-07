@@ -5,8 +5,13 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
 
   if (url.pathname === "/") {
-    return NextResponse.redirect("https://storypix.spartastudio.app/");
+    url.hostname = "storypix.spartastudio.app"; 
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: "/:path*",
+};

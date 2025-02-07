@@ -14,12 +14,14 @@ const Account = () => {
 
   const router = useRouter();
 
-  const openDeletionModal = () => {
+  const openDeletionModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsDeletionModalOpen(true);
+    e.stopPropagation();
   };
 
-  const openLogoutModal = () => {
+  const openLogoutModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsLogoutModalOpen(true);
+    e.stopPropagation();
   };
 
   const closeDeletionModal = () => {
@@ -34,11 +36,17 @@ const Account = () => {
   useBodyScrollLock(isLogoutModalOpen);
 
   return (
-    <div className="bg-[#FFF6EE] h-screen absolute w-full pt-14">
+    <div
+      className="bg-[#FFF6EE] h-screen absolute w-full pt-14 max-w-[1400px]"
+      onClick={() => {
+        closeDeletionModal();
+        closeLogoutModal();
+      }}
+    >
       <button
         type="button"
         className="mt-7 ml-5"
-        onClick={() => router.push("/list")}
+        onClick={() => router.back()}
       >
         <Image
           src={"/images/playerHover/nextPageIcon.svg"}

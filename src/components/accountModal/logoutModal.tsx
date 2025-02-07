@@ -19,13 +19,13 @@ const LogOutModal = ({ onClose }: Props) => {
     catch (error) {
       console.log(error, "로그아웃 에러");
     }
-    router.push("/");
+    router.push("/list");
     modalClose();
   };
   
   return (
-    <div className="fixed top-16 w-screen h-screen bg-opacity-0 flex justify-center items-center z-10">
-      <div className="w-64 bg-[#F6F6F6] flex flex-col shadow-custom mb-16 justify-center items-center p-5 gap-3 rounded-lg relative">
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onClick={(e) => e.stopPropagation()}>
+      <div className="w-64 bg-[#F6F6F6] flex flex-col shadow-custom justify-center items-center p-5 gap-3 rounded-lg relative">
         <button className="absolute top-5 right-4" onClick={modalClose}>
           <Image src="/images/x_icon.svg" alt="close" width={12} height={20} />
         </button>

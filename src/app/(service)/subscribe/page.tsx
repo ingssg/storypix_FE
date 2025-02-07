@@ -62,7 +62,7 @@ const Subscribe = () => {
             height={150}
           />
           <div
-            className="w-screen bg-contain h-full"
+            className="w-screen bg-contain h-full max-w-[1400px]"
             style={{
               backgroundImage: `url(${"/images/subscribeGradient.svg"})`,
             }}

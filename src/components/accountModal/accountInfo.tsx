@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SubscribeInfo from "../subscribeInfo";
+import { motion } from "framer-motion";
 
 interface AccountInfoProps {
   hasLogin: boolean;
@@ -19,9 +20,8 @@ type SubscriptionInfo = {
 const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
-  const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo | null>(
-    null
-  );
+  const [subscriptionInfo, setSubscriptionInfo] =
+    useState<SubscriptionInfo | null>(null);
 
   const router = useRouter();
 
@@ -35,22 +35,18 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
     onClose(false);
   };
 
-  // const dummySub2 = {
-  //   status: "paused",
-  //   renewsAt: "2025.03.31",
-  //   createdAt: "2024.12.31",
-  // };
+  const redirectListPage = () => {
+    onClose(false);
+    router.push("/list");
+  }
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const data = await fetchUser();
-        // const {user, subscription} = data;
         const { userInfo, subscriptionInfo } = data;
         setNickname(userInfo.nickname);
         setEmail(userInfo.email);
-        // setUserInfo(data);
-        // console.log(data);
         setSubscriptionInfo(subscriptionInfo);
         setHasLogin(true);
       } catch (error) {
@@ -62,10 +58,15 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
 
   return (
     <div
-      className="absolute h-dvh w-full top-12 bg-opacity-50 bg-black"
+      className="absolute h-dvh w-full top-12 bg-opacity-50 bg-black overflow-hidden"
       onClick={() => onClose(false)}
     >
-      <div
+      <motion.div
+        initial={{ x: "-100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "-100%" }}
+        // transition={{ type: "tween", ease: "easeInOut", duration:0.3}}
+        transition={{ type: "spring", stiffness: 120, damping: 20 }}
         className="absolute w-[50%] max-w-96 bg-[#FFF6EE] h-full px-3 max-[425px]:w-[57%] z-20"
         onClick={(e) => e.stopPropagation()}
       >
@@ -73,14 +74,20 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
           <div>
             {hasLogin ? (
               <div>
-                <p className="text-lg font-bold">
-                  {nickname}
-                  <span className="text-[#989BA2]"> 님</span>
-                  <br />
+                <div className="text-lg font-bold">
+                  <p className="flex items-center gap-2">
+                    <span className="truncate">
+                      {nickname}
+                    </span>
+                    <span className="text-[#989BA2]">님</span>
+                  </p>
                   안녕하세요.
-                </p>
-                <p className="mt-3 mb-2 text-[#989BA2]">{email}</p>
-                <SubscribeInfo subscribeInfo={subscriptionInfo} onClose={onClose}/>
+                </div>
+                <p className="mt-3 mb-2 text-[#989BA2] truncate">{email}</p>
+                <SubscribeInfo
+                  subscribeInfo={subscriptionInfo}
+                  onClose={onClose}
+                />
               </div>
             ) : (
               <button
@@ -102,6 +109,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
               <button
                 className="flex gap-2 items-center text-lg font-medium"
                 type="button"
+                onClick={redirectListPage}
               >
                 <Image
                   src={"/images/articles-img.svg"}
@@ -132,9 +140,9 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
                 서비스 이용 관련 문의는 아래 이메일로 주시면 2영업일 이내로
                 회신드리겠습니다.
               </p>
-              <p className="text-[#989BA2] underline text-xs">
+              <a href="mailto:productcamp@teamsparta.co" className="text-[#989BA2] underline text-xs">
                 productcamp@teamsparta.co
-              </p>
+              </a>
             </div>
             {hasLogin && (
               <button
@@ -147,7 +155,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

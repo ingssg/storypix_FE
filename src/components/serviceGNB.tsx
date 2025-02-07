@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
@@ -6,6 +6,7 @@ import { FiMenu } from "react-icons/fi";
 import AccountInfo from "@/components/accountModal/accountInfo";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useRouter } from "next/navigation";
+import { AnimatePresence } from "framer-motion";
 
 const ServiceGNB = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -18,12 +19,12 @@ const ServiceGNB = () => {
 
   const goHome = () => {
     router.push("/");
-  }
+  };
 
   useBodyScrollLock(isOpenModal);
 
   return (
-    <div className="w-full fixed flex justify-center items-center py-2 bg-white z-10">
+    <div className="w-full fixed flex justify-center items-center py-2 bg-white z-10 max-w-[1400px]">
       <button
         className="flex items-center absolute left-4 text-2xl w-20 h-full"
         onClick={toggleModal}
@@ -37,9 +38,17 @@ const ServiceGNB = () => {
         width={130}
         height={50}
         onClick={goHome}
+        className="cursor-pointer"
       />
-      {isOpenModal && <AccountInfo hasLogin={hasLogin} setHasLogin={setHasLogin} onClose={setIsOpenModal}/>}
-
+      <AnimatePresence>
+        {isOpenModal && (
+          <AccountInfo
+            hasLogin={hasLogin}
+            setHasLogin={setHasLogin}
+            onClose={setIsOpenModal}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

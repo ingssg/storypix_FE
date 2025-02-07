@@ -36,6 +36,8 @@ const Tale = () => {
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
 
+  const [isLandscape, setIsLandscape] = useState(false);
+
   const openAIModal = () => {
     setIsOpenAIModal(true);
     stopHandler();
@@ -85,13 +87,27 @@ const Tale = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const checkOrientation = () => {
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    };
+    checkOrientation();
+
+    window.addEventListener("resize", checkOrientation);
+
+    return () => {
+      window.removeEventListener("resize", checkOrientation);
+    };
+
+  }, []);
+
   return (
     <>
       {!storyContents ? (
         <>로딩중</>
       ) : (
-        <div className="bg-black h-screen w-screen text-white">
-          <ViewOptimizationModal />
+        <div className="bg-black h-screen text-white w-full">
+          {!isLandscape && <ViewOptimizationModal />}
           <PlayerHover />
           <div
             className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"

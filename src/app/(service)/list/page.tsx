@@ -67,7 +67,7 @@ const List = () => {
   }, [hasMore, isLoading]);
 
   return (
-    <div className={`pt-12 flex flex-col items-center px-[6%]`}>
+    <div className={`max-w-[1000px] mx-auto pt-12 flex flex-col items-center px-[6%]`}>
       <p className="w-full mt-6 text-2xl font-semibold">작품 목록</p>
       <ul className="mt-5">
         {tales.map((tale) => (

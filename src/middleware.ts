@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
 
   if (url.pathname === "/") {
-    url.hostname = "https://storypix.webflow.io/"; 
+    url.hostname = "storypix.webflow.io/";
     return NextResponse.rewrite(url);
   }
 

@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import PlayController from "./playerHover/playController";
 import SettingModal from "./playerHover/settingModal";
 import { usePlayerStore } from "@/app/store/playerStore";
+import { useRouter } from "next/navigation";
 
 const PlayerHover = () => {
   const { titleEng } = usePlayerStore();
@@ -12,9 +13,10 @@ const PlayerHover = () => {
   const controller = useRef<HTMLDivElement>(null);
   const [isOpenController, setIsOpenController] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
+  const router = useRouter();
 
   const toggleController = (e: React.MouseEvent<HTMLDivElement>) => {
-    if(isOpenSettings) {
+    if (isOpenSettings) {
       setIsOpenSettings(false);
       return;
     }
@@ -25,11 +27,11 @@ const PlayerHover = () => {
   const openSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsOpenSettings(true);
     e.stopPropagation();
-  }
+  };
 
   const closeSettings = () => {
     setIsOpenSettings(false);
-  }
+  };
 
   return (
     <div
@@ -42,10 +44,19 @@ const PlayerHover = () => {
         }`}
         ref={controller}
       >
-        <p className="text-white absolute top-8 left-8 w-80 truncate font-semibold text-sm">
+        <p className="text-white absolute top-8 left-8 w-80 truncate font-semibold text-sm flex items-center gap-2">
+          <button className="p-1" onClick={() => router.push("/list")}>
+            <Image
+              src={"/images/playerHover/nextPageIcon.svg"}
+              alt="prevPage"
+              width={10}
+              height={50}
+              className="rotate-180"
+            />
+          </button>
           {titleEng}
         </p>
-        <div className="absolute top-1 right-5">
+        <div className="absolute top-2 right-5">
           <button className="p-1" onClick={openSettings}>
             <Image
               src="/images/setting_icon.svg"
@@ -56,7 +67,7 @@ const PlayerHover = () => {
           </button>
         </div>
         <PlayController />
-        {isOpenSettings && (<SettingModal onClose={closeSettings} />)}
+        {isOpenSettings && <SettingModal onClose={closeSettings} />}
       </div>
     </div>
   );

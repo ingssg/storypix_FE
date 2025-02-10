@@ -10,7 +10,6 @@ import userSpeakAnimation from "@/animation/userSpeak.json";
 import aiSpeakAnimation from "@/animation/AISpeak.json";
 import dynamic from "next/dynamic";
 import ProgressBar from "./progressbar";
-import { decreaseCommuiationCountAPI } from "@/app/services/aiService";
 
 const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
@@ -20,20 +19,19 @@ type Props = {
 
 const AIModal = ({ onClose }: Props) => {
   const questionParagraph = useRef<HTMLParagraphElement>(null);
-  const { connectRealtimeAPI, audioElement, dc, closeWebRTCSession } = useWebRTCStore();
-  const { prevSentence, currSentence, fullContent, titleEng, storyId } = usePlayerStore();
+  const { connectRealtimeAPI, audioElement, dc } = useWebRTCStore();
+  const { prevSentence, currSentence, fullContent, titleEng } = usePlayerStore();
   const {
-    sendInputSignal,
-    sendInputClear,
     setInstructions,
     updateInstructions,
     receiveServerEvent,
-    sendCreateResponse,
     setIsButtonVisible,
     setIsAISpeaking,
     sendCommuication,
     setCurrentAnswer,
     setCurrentQuestion,
+    startUserQuestion,
+    finishUserQuestion,
     currentAnswer,
     currentQuestion,
     questionCount,
@@ -41,8 +39,8 @@ const AIModal = ({ onClose }: Props) => {
     isSpeaking,
     isAISpeaking,
     instructions,
-    hasStarted,
     isButtonVisible,
+    reset,
   } = useRealtimeAPIStore();
 
   const questionCountRef = useRef(questionCount);
@@ -61,25 +59,11 @@ const AIModal = ({ onClose }: Props) => {
 
   const startSpeaking = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    try { 
-      const { remainedCount } = await decreaseCommuiationCountAPI(storyId);
-      if(remainedCount < 1) {
-        console.log("소통 기회 소진, 악의적인 사용자 발견");
-        return;
-      }
-      sendInputClear();
-      setInstructions(titleEng, fullContent, prevSentence, currSentence);
-      if (audioElement) audioElement.volume = 1;
-    }
-    catch {
-      console.log("소통 기회 소진");
-      closeWebRTCSession();
-    }
+    startUserQuestion();
   };
 
   const finishSpeaking = () => {
-    sendInputSignal();
-    sendCreateResponse();
+    finishUserQuestion();
     setIsButtonVisible(false);
     setIsAISpeaking(true);
   };
@@ -94,7 +78,6 @@ const AIModal = ({ onClose }: Props) => {
     if (typeof window !== "undefined" && questionCount === 0) {
       questionParagraph.current!.innerText = "모든 질문을 다 사용했어요.";
       setIsButtonVisible(false);
-      closeWebRTCSession();
     }
   }, [questionCount]);
 
@@ -105,11 +88,12 @@ const AIModal = ({ onClose }: Props) => {
     return () => {
       sendCommuication();
       resetCommuicationBubble();
+      reset();
     }
   }, []);
 
   useEffect(() => {
-    if (isSessionStarted && !hasStarted) {
+    if (isSessionStarted) {
       setInstructions(titleEng, fullContent, prevSentence, currSentence);
     }
   }, [isSessionStarted]);

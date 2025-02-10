@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { signout } from "@/app/services/userService";
 
 type Props = {
@@ -8,7 +7,6 @@ type Props = {
 };
 
 const LogOutModal = ({ onClose }: Props) => {
-  const router = useRouter();
 
   const modalClose = () => onClose();
 
@@ -19,8 +17,8 @@ const LogOutModal = ({ onClose }: Props) => {
     catch (error) {
       console.log(error, "로그아웃 에러");
     }
-    router.push("/list");
     modalClose();
+    window.location.href = "/list";
   };
   
   return (

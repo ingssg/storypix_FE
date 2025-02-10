@@ -1,6 +1,5 @@
 import { deleteUser } from "@/app/services/userService";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 type Props = {
@@ -8,7 +7,6 @@ type Props = {
 };
 
 const AccountDeletionModal = ({ onClose }: Props) => {
-  const router = useRouter();
 
   const modalClose = () => onClose();
   const [inputValue, setInputValue] = useState("");
@@ -19,7 +17,7 @@ const AccountDeletionModal = ({ onClose }: Props) => {
       console.log(error, "회원탈퇴 에러");
     }
     modalClose();
-    router.push("/");
+    window.location.href = "/list";
   };
 
   return (

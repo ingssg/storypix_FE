@@ -22,6 +22,9 @@ export const metadata: Metadata = {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
   },
+  icons: {
+    icon: "images/favicon_storypix.ico"
+  },
 };
 
 export default function RootLayout({

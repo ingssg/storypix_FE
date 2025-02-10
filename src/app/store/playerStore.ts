@@ -97,17 +97,17 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
-
+    if(!storyContents) return;
     const currentSentence =
-      storyContents![currentPageIdx]?.details[currentSentenceIdx];
+      storyContents[currentPageIdx]?.details[currentSentenceIdx];
     set({ currSentence: currentSentence.sentence });
     let prevSentence = "";
     if (currentSentenceIdx > 0) {
       prevSentence =
-        storyContents![currentPageIdx]?.details[currentSentenceIdx - 1]
+        storyContents[currentPageIdx]?.details[currentSentenceIdx - 1]
           ?.sentence || "";
     } else if (currentPageIdx > 0) {
-      const prevPageDetails = storyContents![currentPageIdx - 1]?.details;
+      const prevPageDetails = storyContents[currentPageIdx - 1]?.details;
       if (prevPageDetails && prevPageDetails.length > 0) {
         prevSentence =
           prevPageDetails[prevPageDetails.length - 1]?.sentence || "";
@@ -128,9 +128,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       storyContents,
       setCurrPrevSentence,
     } = get();
-
+    
+    if(!storyContents) return;
     const currentSentence =
-      storyContents![currentPageIdx]?.details[currentSentenceIdx];
+      storyContents[currentPageIdx]?.details[currentSentenceIdx];
     if (!currentSentence) return;
     setCurrPrevSentence();
 
@@ -166,8 +167,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       lastFetchedPage,
       fetchPage,
     } = get();
-
-    const currentPage = storyContents![currentPageIdx];
+    if(!storyContents) return;
+    const currentPage = storyContents[currentPageIdx];
     if (currentSentenceIdx < currentPage.details.length - 1) {
       setCurrentSentenceIdx(currentSentenceIdx + 1);
       setCurrPrevSentence();
@@ -197,6 +198,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       storyContents,
       setCurrPrevSentence,
     } = get();
+    if(!storyContents) return;
 
     if (currentSentenceIdx > 0) {
       setCurrentSentenceIdx(currentSentenceIdx - 1);
@@ -204,7 +206,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     } else if (currentPageIdx > 0) {
       setCurrentPageIdx(currentPageIdx - 1);
       setCurrentSentenceIdx(
-        storyContents![currentPageIdx - 1].details.length - 1
+        storyContents[currentPageIdx - 1].details.length - 1
       );
       setCurrPrevSentence();
     } else {

@@ -61,7 +61,8 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
         alt="fairyTale_Thumbnail"
         width={1920}
         height={230}
-        className="rounded-xl"
+        className="rounded-xl hover:cursor-pointer"
+        onClick={isSubscribedUser || taleInfo.isFree ? playTale : () => router.push("/subscribe")}
       />
       <div className="w-full flex flex-col gap-1 mt-3 mb-2">
         <h1 className="text-lg w-full font-semibold">{taleInfo.titleKor}</h1>

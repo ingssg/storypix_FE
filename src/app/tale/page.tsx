@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
 
-// const storyContents = dummy;
 
 const Tale = () => {
   const router = useRouter();
@@ -30,8 +29,8 @@ const Tale = () => {
     setFullContent,
   } = usePlayerStore();
 
-  const { setEphemeralKey, createPeerConnection } = useWebRTCStore();
-  const { questionCount, setQuestionCount } = useRealtimeAPIStore();
+  const { setEphemeralKey, createPeerConnection, closeWebRTCSession } = useWebRTCStore();
+  const { questionCount, setQuestionCount, startUserQuestion } = useRealtimeAPIStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
@@ -41,6 +40,7 @@ const Tale = () => {
   const openAIModal = () => {
     setIsOpenAIModal(true);
     stopHandler();
+    startUserQuestion();
   };
 
   const closeAIModal = () => {
@@ -49,6 +49,7 @@ const Tale = () => {
 
   const fetchToken = async () => {
     const token = await getTokenAPI(storyId);
+    if(token === null) return;
     const EPHEMERAL_KEY = token.session.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
     setFullContent(token.instruction);
@@ -67,6 +68,7 @@ const Tale = () => {
       router.push("/list");
       return () => {
         reset();
+        closeWebRTCSession();
       };
     }
     const fetchStoryContents = async () => {
@@ -78,9 +80,14 @@ const Tale = () => {
       }
     };
     fetchStoryContents();
-    fetchToken().then(() => {
-      createPeerConnection();
-    });
+    try {
+      fetchToken().then(() => {
+        createPeerConnection();
+      });
+    }
+    catch (error) {
+      console.log("토큰 요청 오류", error);
+    }
 
     return () => {
       reset();

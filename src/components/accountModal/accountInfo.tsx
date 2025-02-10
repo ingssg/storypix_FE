@@ -1,6 +1,6 @@
 import { fetchUser } from "@/app/services/userService";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SubscribeInfo from "../subscribeInfo";
 import { motion } from "framer-motion";
@@ -24,6 +24,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
     useState<SubscriptionInfo | null>(null);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogin = () => {
     const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
@@ -107,7 +108,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
             )}
             <div className="flex flex-col gap-3 pt-4">
               <button
-                className="flex gap-2 items-center text-lg font-medium"
+                className={`flex gap-2 items-center text-lg font-medium rounded-lg p-1 hover:bg-[#FAF4F1] ${pathname === "/list" ? "bg-[#FFE7DA]" : ""}`}
                 type="button"
                 onClick={redirectListPage}
               >
@@ -120,7 +121,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
                 작품 목록
               </button>
               <button
-                className="flex gap-2 items-center text-lg font-medium"
+                className="flex gap-2 items-center text-lg font-medium p-1 rounded-lg hover:bg-[#FAF4F1]"
                 type="button"
               >
                 <Image

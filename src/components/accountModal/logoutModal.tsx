@@ -19,8 +19,8 @@ const LogOutModal = ({ onClose }: Props) => {
     catch (error) {
       console.log(error, "로그아웃 에러");
     }
-    router.push("/list");
     modalClose();
+    window.location.href = "/list";
   };
   
   return (

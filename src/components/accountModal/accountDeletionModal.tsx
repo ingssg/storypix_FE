@@ -19,7 +19,7 @@ const AccountDeletionModal = ({ onClose }: Props) => {
       console.log(error, "회원탈퇴 에러");
     }
     modalClose();
-    router.push("/");
+    window.location.href = "/list";
   };
 
   return (

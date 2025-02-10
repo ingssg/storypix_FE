@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { signout } from "@/app/services/userService";
 
 type Props = {
@@ -8,7 +7,6 @@ type Props = {
 };
 
 const LogOutModal = ({ onClose }: Props) => {
-  const router = useRouter();
 
   const modalClose = () => onClose();
 

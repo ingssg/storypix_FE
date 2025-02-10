@@ -17,10 +17,16 @@ export type Record = {
 };
 
 export const getTokenAPI = async (storyId: number) => {
-  const { data } = await apiClient.post("/communications/session", {
-    storyId,
-  });
-  return data;
+  try {
+    const { data } = await apiClient.post("/communications/session", {
+      storyId,
+    });
+    return data;
+  }
+  catch( error ) {
+    console.log("토큰 요청 오류", error);
+    return null;
+  }
 };
 
 export const postCommuicationAPI = async (communication: Communication) => {

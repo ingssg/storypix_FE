@@ -6,6 +6,7 @@ interface WebRTCState {
   sdp: RTCSessionDescriptionInit | null;
   dc: RTCDataChannel | null;
   audioElement: HTMLAudioElement | null;
+  ms: MediaStream | null;
 
   setPeerConnection: (value: RTCPeerConnection | null) => void;
   setEphemeralKey: (value: string) => void;
@@ -26,6 +27,7 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
   sdp: null,
   dc: null,
   audioElement: null,
+  ms: null,
 
   setPeerConnection: (value) => set({ peerConnection: value }),
   setEphemeralKey: (value) => set({ ephemeralKey: value }),
@@ -48,16 +50,11 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       set({ audioElement: audioEl });
 
       peerConnection.ontrack = (e) => {
-        // console.log("Remote track received:", e.streams[0]);
         audioEl.srcObject = e.streams[0];
       };
     }
 
     set({ peerConnection });
-    // console.log(peerConnection);
-    peerConnection.addEventListener("connectionstatechange", () => {
-      // console.log("Connection State:", peerConnection.connectionState);
-    });
   },
 
   // Create offer and send it to the server
@@ -70,6 +67,7 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     }
 
     const ms = await navigator.mediaDevices.getUserMedia({ audio: true });
+    set({ ms });
     peerConnection.addTrack(ms.getTracks()[0]);
 
     // Create and set local offer
@@ -95,7 +93,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       return;
     }
 
-    // console.log("SDP 요청 성공", SDP);
 
     const sdpObject: RTCSessionDescriptionInit = {
       type: "answer",
@@ -106,7 +103,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
     try {
       await peerConnection.setRemoteDescription(sdpObject);
-      // console.log("Remote SDP 설정 완료");
     } 
     catch (error) {;
       console.error("Error setting remote description", error);
@@ -122,16 +118,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
     const dc = peerConnection.createDataChannel("dataChannel");
     set({ dc });
-    // console.log("DataChannel created", dc);
-
-    // dc.addEventListener("open", () => {
-    //   console.log("DataChannel opened");
-    // });
-
-    // dc.addEventListener("message", (event) => {
-    //   const serverEvent = JSON.parse(event.data);
-    //   console.log("DataChannel message:", serverEvent);
-    // });
   },
 
   connectRealtimeAPI: async () => {
@@ -141,35 +127,37 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
   },
 
   closeWebRTCSession: () => {
-    const { peerConnection, setPeerConnection, setSdp, setDc, audioElement } = get();
+    const { peerConnection, setPeerConnection, setSdp, setDc, audioElement, ms } = get();
 
     if (peerConnection) {
       console.log("WebRTC 세션 종료 중...");
 
-      // 1️⃣ 모든 미디어 트랙 중지
       peerConnection.getSenders().forEach((sender) => {
         if (sender.track) {
           sender.track.stop();
         }
       });
 
-      // 2️⃣ PeerConnection 종료
+      peerConnection.getReceivers().forEach((receiver) => {
+        if (receiver.track) {
+          receiver.track.stop();
+        }
+      });
+
       peerConnection.close();
 
-      // 3️⃣ 이벤트 핸들러 초기화
-      peerConnection.onicecandidate = null;
       peerConnection.ontrack = null;
-      peerConnection.oniceconnectionstatechange = null;
-      peerConnection.onsignalingstatechange = null;
-      peerConnection.onnegotiationneeded = null;
-      peerConnection.ondatachannel = null;
 
-      // 4️⃣ Zustand 상태 초기화
+      if(ms) {
+        ms.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+
       setPeerConnection(null);
       setSdp(null);
       setDc(null);
 
-      // 5️⃣ 오디오 스트림 제거
       if (audioElement) {
         audioElement.srcObject = null;
       }

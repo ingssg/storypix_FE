@@ -1,7 +1,7 @@
 "use client";
 
-import { subscribeAPI } from "@/app/services/purchaseService";
-import WithAuth from "@/components/HOC/withAuth";
+import { refreshClient } from "@/app/lib/apiClient";
+import { AxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
@@ -13,10 +13,19 @@ const Subscribe = () => {
 
   const getCheckoutURL = async () => {
     try {
-      const { checkoutUrl } = await subscribeAPI();
-      return checkoutUrl;
-    } catch (error) {
+      const { data } = await refreshClient.get("/payment");
+      return data.checkoutUrl;
+    } catch (error: unknown) {
       console.log(error);
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        alert("로그인이 필요합니다.");
+        const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
+        window.location.href = loginURL;
+      }
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        alert("이미 구독 중입니다.");
+        router.push("/list");
+      }
     }
   };
 
@@ -39,7 +48,7 @@ const Subscribe = () => {
           setIsLemonLoaded(true);
         }}
       />
-      
+
       <div className="pt-12 w-full h-screen">
         <button
           type="button"
@@ -146,9 +155,8 @@ const Subscribe = () => {
           </div>
         </div>
       </div>
-      
     </>
   );
 };
 
-export default WithAuth(Subscribe);
+export default Subscribe;

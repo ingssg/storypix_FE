@@ -19,7 +19,6 @@ interface RealtimeAPIState {
   isSpeaking: boolean;
   isAISpeaking: boolean;
   instructions: string;
-  hasStarted: boolean;
   isButtonVisible: boolean;
 
   // 소통 기록
@@ -49,6 +48,8 @@ interface RealtimeAPIState {
   updateInstructions: (value: string) => void;
   receiveServerEvent: () => void;
   sendCommuication: () => void;
+  startUserQuestion: () => void;
+  finishUserQuestion: () => void;
 
   reset: () => void;
 }
@@ -68,11 +69,10 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   {content}
   ##############
   Please answer in only {language}`,
-  questionCount: 5, //FIXME 기본값 0
+  questionCount: 0,
   isSpeaking: false,
   isAISpeaking: false,
   instructions: "",
-  hasStarted: false,
   isButtonVisible: true,
   sessionId: "",
   sessionCreatedAt: new Date(),
@@ -110,7 +110,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
 
     // 업데이트된 instructions 설정
     set({ instructions: updatedInstructions });
-    if (!get().hasStarted) set({ hasStarted: true });
   },
 
   setQuestionCount: (updateFn) =>
@@ -175,13 +174,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
 
   receiveServerEvent: () => {
     const { dc, closeWebRTCSession } = useWebRTCStore.getState();
-    const {
-      setQuestionCount,
-      answers,
-      questions,
-      sendInitSession,
-      sendInputClear,
-    } = get();
+    const { setQuestionCount, answers, questions, sendInitSession } = get();
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
@@ -211,29 +204,14 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           set((state) => ({ records: [...state.records, aiRecord] }));
         }
         if (serverEvent.type === "session.created") {
-          set({ isSessionStarted: true });
           set({ sessionCreatedAt: new Date() });
           set({ sessionId: serverEvent.session.id });
           console.log("Session ID:", serverEvent.session.id);
           usePlayerStore.getState().setCurrPrevSentence();
 
-          const serverCheck = async () => {
-            try {
-              const { remainedCount } = await decreaseCommuiationCountAPI(
-                usePlayerStore.getState().storyId
-              );
-              if (remainedCount < 1) {
-                console.log("소통 기회 소진, 악의적인 사용자 발견");
-                return;
-              }
-              sendInitSession();
-              sendInputClear();
-            } catch {
-              console.log("소통 기회 소진");
-              closeWebRTCSession();
-            }
-          }
-          serverCheck();
+          sendInitSession();
+          get().startUserQuestion();
+          set({ isSessionStarted: true });
         }
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
@@ -265,18 +243,40 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
     postCommuicationAPI(communication);
     set({ records: [] });
   },
+
+  startUserQuestion: async () => {
+    const { prevSentence, currSentence, titleEng, fullContent } =
+      usePlayerStore.getState();
+    const { sendInputClear, setInstructions } = get();
+    setInstructions(titleEng, fullContent, prevSentence, currSentence);
+    sendInputClear();
+  },
+
+  finishUserQuestion: async () => {
+    const { storyId } = usePlayerStore.getState();
+    const { sendInputSignal, sendCreateResponse } = get();
+    const { closeWebRTCSession, audioElement } = useWebRTCStore.getState();
+    try {
+      decreaseCommuiationCountAPI(storyId);
+      sendInputSignal();
+      sendCreateResponse();
+    } catch {
+      console.log("소통 기회 소진");
+      closeWebRTCSession();
+    } finally {
+      if (audioElement) audioElement.volume = 1;
+    }
+  },
+
   reset: () =>
     set({
       questions: [],
       answers: [],
       currentQuestion: "",
       currentAnswer: "",
-      isSessionStarted: false,
-      questionCount: 0,
       isSpeaking: false,
       isAISpeaking: false,
       instructions: "",
-      hasStarted: false,
       isButtonVisible: true,
       sessionId: "",
       sessionCreatedAt: new Date(),

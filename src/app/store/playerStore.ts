@@ -28,6 +28,7 @@ interface PlayerState {
   storyId: number;
   titleEng: string;
   fullContent: string;
+  isEnd: boolean
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -57,9 +58,11 @@ interface PlayerState {
   playPrevPage: () => void;
   playHandler: () => void;
   stopHandler: () => void;
+  setIsEnd: (value: boolean) => void;
 
   fetchPage: (page: number) => void;
 
+  goFirst: () => void;
   reset: () => void;
 }
 
@@ -80,6 +83,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   storyId: 0,
   titleEng: "",
   fullContent: "",
+  isEnd: false,
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -94,6 +98,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setStoryId: (value) => set({ storyId: value }),
   setTitleEng: (value) => set({ titleEng: value }),
   setFullContent: (value) => set({ fullContent: value }),
+  setIsEnd: (value) => set({ isEnd: value }),
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
@@ -174,7 +179,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrPrevSentence();
     } else if (currentPageIdx < totalPage - 1) {
       const nextPage = currentPageIdx + 2; // page는 1-based index
-      // console.log("페이지 넘기는중")
       if (nextPage === lastFetchedPage - 1) {
         fetchPage(lastFetchedPage + 1);
         set({ lastFetchedPage: lastFetchedPage + 1 });
@@ -184,8 +188,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
     } else {
-      alert("마지막 문장입니다!");
       setIsPlaying(false);
+      set({ isEnd: true });
     }
   },
 
@@ -322,6 +326,18 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
+  goFirst: () => {
+    set({
+      isPlaying: false,
+      hasStarted: false,
+      currentPageIdx: 0,
+      currentSentenceIdx: 0,
+      currSentence: "",
+      prevSentence: "",
+      isEnd: false,
+    });
+  },
+
   reset: () =>
     set({
       isPlaying: false,
@@ -338,5 +354,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       lastFetchedPage: 3,
       storyId: 0,
       titleEng: "",
+      fullContent: "",
+      isEnd: false,
     }),
 }));

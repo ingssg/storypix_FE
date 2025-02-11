@@ -102,8 +102,11 @@ const Tale = () => {
 
     window.addEventListener("resize", checkOrientation);
 
+    document.body.style.backgroundColor = "black";
+
     return () => {
       window.removeEventListener("resize", checkOrientation);
+      document.body.style.backgroundColor = "";
     };
 
   }, []);

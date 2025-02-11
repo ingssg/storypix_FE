@@ -7,11 +7,15 @@ import SettingModal from "./playerHover/settingModal";
 import { usePlayerStore } from "@/app/store/playerStore";
 import { useRouter } from "next/navigation";
 
-const PlayerHover = () => {
+type HoverProps = {
+  isHoverOpen: boolean;
+  setIsHoverOpen: (state: boolean) => void;
+};
+
+const PlayerHover = ({isHoverOpen, setIsHoverOpen}: HoverProps) => {
   const { titleEng } = usePlayerStore();
 
   const controller = useRef<HTMLDivElement>(null);
-  const [isOpenController, setIsOpenController] = useState(true);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const router = useRouter();
 
@@ -20,7 +24,7 @@ const PlayerHover = () => {
       setIsOpenSettings(false);
       return;
     }
-    setIsOpenController(!isOpenController);
+    setIsHoverOpen(!isHoverOpen);
     e.stopPropagation();
   };
 
@@ -40,7 +44,7 @@ const PlayerHover = () => {
     >
       <div
         className={`controller w-full h-full flex justify-center items-center absolute bg-black bg-opacity-70 ${
-          isOpenController ? "" : "hidden"
+          isHoverOpen ? "" : "hidden"
         }`}
         ref={controller}
       >

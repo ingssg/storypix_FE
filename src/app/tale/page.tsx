@@ -39,6 +39,7 @@ const Tale = () => {
   const AIModalRef = useRef<HTMLButtonElement>(null);
 
   const [isLandscape, setIsLandscape] = useState(false);
+  const [isHoverOpen, setIsHoverOpen] = useState(true);
 
   const openAIModal = () => {
     setIsOpenAIModal(true);
@@ -127,7 +128,7 @@ const Tale = () => {
               <TaleEndModal />
             </div>
           )}
-          <PlayerHover />
+          <PlayerHover isHoverOpen={isHoverOpen} setIsHoverOpen={setIsHoverOpen}/>
           <div
             className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"
             style={{
@@ -141,7 +142,7 @@ const Tale = () => {
               }
             </p>
           </div>
-          {questionCount > 0 && (
+          {(questionCount > 0 && !isHoverOpen) && (
             <button
               type="button"
               className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"

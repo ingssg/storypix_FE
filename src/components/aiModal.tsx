@@ -20,7 +20,8 @@ type Props = {
 const AIModal = ({ onClose }: Props) => {
   const questionParagraph = useRef<HTMLParagraphElement>(null);
   const { connectRealtimeAPI, audioElement, dc } = useWebRTCStore();
-  const { prevSentence, currSentence, fullContent, titleEng } = usePlayerStore();
+  const { prevSentence, currSentence, fullContent, titleEng } =
+    usePlayerStore();
   const {
     setInstructions,
     updateInstructions,
@@ -71,7 +72,7 @@ const AIModal = ({ onClose }: Props) => {
   const resetCommuicationBubble = () => {
     setCurrentQuestion("");
     setCurrentAnswer("");
-  }
+  };
 
   useEffect(() => {
     questionCountRef.current = questionCount;
@@ -89,7 +90,7 @@ const AIModal = ({ onClose }: Props) => {
       sendCommuication();
       resetCommuicationBubble();
       reset();
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -156,7 +157,7 @@ const AIModal = ({ onClose }: Props) => {
             <ProgressBar onComplete={finishSpeaking} />
           </div>
         ) : isAISpeaking ? (
-          <div className="flex flex-col justify-center items-center h-full w-[30vw]">
+          <div className="flex flex-col justify-center items-center h-full w-[30vw] relative">
             <div className="w-[3.75rem] h-[3.75rem]">
               <Lottie
                 loop
@@ -166,6 +167,11 @@ const AIModal = ({ onClose }: Props) => {
               />
             </div>
             <p className="text-black mt-3">잠시 생각중이에요.</p>
+            <p className="text-[#5A5C63] text-xs font-medium absolute bottom-1">
+              제공되는 답변은 AI가 생성한 결과로,
+              <br />
+              부정확한 정보가 포함될 수 있습니다.
+            </p>
           </div>
         ) : (
           <div className="overflow-y-auto h-full text-black">

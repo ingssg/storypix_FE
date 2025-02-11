@@ -66,7 +66,6 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
         initial={{ x: "-100%" }}
         animate={{ x: 0 }}
         exit={{ x: "-100%" }}
-        // transition={{ type: "tween", ease: "easeInOut", duration:0.3}}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
         className="absolute w-[50%] max-w-96 bg-[#FFF6EE] h-full px-3 max-[425px]:w-[57%] z-20"
         onClick={(e) => e.stopPropagation()}

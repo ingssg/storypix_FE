@@ -108,10 +108,10 @@ const AIModal = ({ onClose }: Props) => {
   }, [isSessionStarted]);
 
   useEffect(() => {
-    if (isSessionStarted) {
+    if (isSessionStarted && dc && dc.readyState === "open") {
       updateInstructions(instructions);
     }
-  }, [instructions]);
+  }, [instructions, dc]);
 
   useEffect(() => {
     if (currentAnswer === "") return;

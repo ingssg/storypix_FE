@@ -12,7 +12,7 @@ import { getTokenAPI } from "../services/aiService";
 import { useRouter } from "next/navigation";
 import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
-
+import TaleEndModal from "@/components/taleEndModal";
 
 const Tale = () => {
   const router = useRouter();
@@ -27,10 +27,13 @@ const Tale = () => {
     reset,
     storyId,
     setFullContent,
+    isEnd,
   } = usePlayerStore();
 
-  const { setEphemeralKey, createPeerConnection, closeWebRTCSession } = useWebRTCStore();
-  const { questionCount, setQuestionCount, startUserQuestion } = useRealtimeAPIStore();
+  const { setEphemeralKey, createPeerConnection, closeWebRTCSession } =
+    useWebRTCStore();
+  const { questionCount, setQuestionCount, startUserQuestion } =
+    useRealtimeAPIStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
@@ -49,7 +52,7 @@ const Tale = () => {
 
   const fetchToken = async () => {
     const token = await getTokenAPI(storyId);
-    if(token === null) return;
+    if (token === null) return;
     const EPHEMERAL_KEY = token.session.client_secret.value;
     setEphemeralKey(EPHEMERAL_KEY);
     setFullContent(token.instruction);
@@ -84,8 +87,7 @@ const Tale = () => {
       fetchToken().then(() => {
         createPeerConnection();
       });
-    }
-    catch (error) {
+    } catch (error) {
       console.log("토큰 요청 오류", error);
     }
 
@@ -102,10 +104,12 @@ const Tale = () => {
 
     window.addEventListener("resize", checkOrientation);
 
+    document.body.style.backgroundColor = "black";
+
     return () => {
       window.removeEventListener("resize", checkOrientation);
+      document.body.style.backgroundColor = "";
     };
-
   }, []);
 
   return (
@@ -115,6 +119,14 @@ const Tale = () => {
       ) : (
         <div className="bg-black h-screen text-white w-full">
           {!isLandscape && <ViewOptimizationModal />}
+          {isEnd && (
+            <div
+              className="fixed h-screen w-screen z-[49] bg-opacity-100"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <TaleEndModal />
+            </div>
+          )}
           <PlayerHover />
           <div
             className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"

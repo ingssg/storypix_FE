@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { FaCheck } from "react-icons/fa6";
 import { useWebRTCStore } from "@/app/store/webRTCStore";
 import { useRealtimeAPIStore } from "@/app/store/realtimeAPIStore";
 import { usePlayerStore } from "@/app/store/playerStore";
@@ -20,7 +19,8 @@ type Props = {
 const AIModal = ({ onClose }: Props) => {
   const questionParagraph = useRef<HTMLParagraphElement>(null);
   const { connectRealtimeAPI, audioElement, dc } = useWebRTCStore();
-  const { prevSentence, currSentence, fullContent, titleEng } = usePlayerStore();
+  const { prevSentence, currSentence, fullContent, titleEng } =
+    usePlayerStore();
   const {
     setInstructions,
     updateInstructions,
@@ -41,10 +41,12 @@ const AIModal = ({ onClose }: Props) => {
     instructions,
     isButtonVisible,
     reset,
+    setIsSpeaking,
   } = useRealtimeAPIStore();
 
   const questionCountRef = useRef(questionCount);
   const [isEnded, setIsEnded] = useState(false);
+  const [isCancelled, setIsCancelled] = useState(false);
 
   const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -60,6 +62,7 @@ const AIModal = ({ onClose }: Props) => {
   const startSpeaking = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     startUserQuestion();
+    setIsCancelled(false);
   };
 
   const finishSpeaking = () => {
@@ -71,7 +74,12 @@ const AIModal = ({ onClose }: Props) => {
   const resetCommuicationBubble = () => {
     setCurrentQuestion("");
     setCurrentAnswer("");
-  }
+  };
+
+  const cancelQuestion = () => {
+    setIsCancelled(true);
+    setIsSpeaking(false);
+  };
 
   useEffect(() => {
     questionCountRef.current = questionCount;
@@ -89,7 +97,7 @@ const AIModal = ({ onClose }: Props) => {
       sendCommuication();
       resetCommuicationBubble();
       reset();
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -109,7 +117,7 @@ const AIModal = ({ onClose }: Props) => {
       className="h-screen w-screen fixed top-0 left-0 z-20"
       onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
     >
-      <div className="flex flex-col items-center absolute top-2 z-50 right-4 bg-white bg-opacity-60 backdrop-blur-lg h-[95%] rounded-xl p-4 w-68">
+      <div className="flex flex-col items-center absolute top-2 z-50 right-4 bg-white bg-opacity-60 backdrop-blur-lg h-[95%] rounded-xl p-4 w-56">
         <div className="flex justify-between items-center w-full mb-3">
           <p
             className="text-xs font-medium text-[#5A5C63]"
@@ -130,8 +138,24 @@ const AIModal = ({ onClose }: Props) => {
             />
           </button>
         </div>
+        {!isSessionStarted && (
+          <div className="flex flex-col justify-center items-center h-full w-full">
+            <div className="w-[3.75rem] h-[3.75rem]">
+              <Lottie
+                loop
+                animationData={aiSpeakAnimation}
+                play
+                className="w-[3.75rem] h-[3.75rem]"
+              />
+            </div>
+            <p className="text-[#46474C] mt-3 font-semibold text-sm text-center">
+              픽시가 대화를 준비하고 있어요. <br />
+              잠시만 기다려주세요.
+            </p>
+          </div>
+        )}
         {isEnded ? (
-          <div className="flex flex-col justify-center items-center h-full w-[30vw] gap-3">
+          <div className="flex flex-col justify-center items-center h-full w-full gap-3">
             <Image
               src={"/images/circle_icon.svg"}
               width={45}
@@ -143,7 +167,7 @@ const AIModal = ({ onClose }: Props) => {
             </p>
           </div>
         ) : isSpeaking ? (
-          <div className="flex flex-col justify-center items-center h-full w-[30vw]">
+          <div className="flex flex-col justify-center items-center h-full w-full">
             <div className="w-[3.75rem] h-[3.75rem]">
               <Lottie
                 loop
@@ -156,7 +180,7 @@ const AIModal = ({ onClose }: Props) => {
             <ProgressBar onComplete={finishSpeaking} />
           </div>
         ) : isAISpeaking ? (
-          <div className="flex flex-col justify-center items-center h-full w-[30vw]">
+          <div className="flex flex-col justify-center items-center h-full w-full relative">
             <div className="w-[3.75rem] h-[3.75rem]">
               <Lottie
                 loop
@@ -166,27 +190,43 @@ const AIModal = ({ onClose }: Props) => {
               />
             </div>
             <p className="text-black mt-3">잠시 생각중이에요.</p>
+            <p className="text-[#5A5C63] text-xs font-medium absolute bottom-1">
+              제공되는 답변은 AI가 생성한 결과로,
+              <br />
+              부정확한 정보가 포함될 수 있습니다.
+            </p>
           </div>
         ) : (
-          <div className="overflow-y-auto h-full text-black">
-            <div className="flex flex-col w-[30vw] text-xs">
-              <div className="mb-2 text-[#292A2D] font-semibold text-sm">
-                {currentQuestion}
-              </div>
-              <div className="mb-2 text-[#46474C] font-semibold text-sm">
-                {currentAnswer}
+          isSessionStarted &&
+          (isCancelled ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <p className="text-[#46474C] font-semibold text-sm text-center">
+                버튼을 눌러 동화 내용이나
+                <br />
+                영어 표현에 대해 질문해보세요.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-y-auto h-full text-black">
+              <div className="flex flex-col w-full text-xs">
+                <div className="mb-2 text-[#292A2D] font-semibold text-sm">
+                  {currentQuestion}
+                </div>
+                <div className="mb-2 text-[#46474C] font-semibold text-sm">
+                  {currentAnswer}
+                </div>
               </div>
             </div>
-          </div>
+          ))
         )}
         <div
           className={`${
             isSessionStarted ? `${isButtonVisible ? "" : "hidden"}` : "hidden"
           } w-full flex justify-center items-center mt-2 h-28`}
         >
-          <div className={`w-full h-full`}>
+          <div className={`w-full h-full flex items-end`}>
             <button
-              className={`w-full h-full speakButton flex flex-col gap-1 justify-center items-center bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-xl text-sm font-semibold ${
+              className={`w-full h-16 flex flex-col gap-1 justify-center items-center bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-xl text-sm font-semibold ${
                 isSpeaking ? "hidden" : ""
               }`}
               onClick={startSpeaking}
@@ -199,15 +239,39 @@ const AIModal = ({ onClose }: Props) => {
               />
               질문하기
             </button>
-            <button
-              className={`w-full h-full finishButton flex flex-col gap-1 justify-center items-center bg-[#FF7134] rounded-xl text-sm font-semibold ${
+            <div
+              className={`${
                 isSpeaking ? "" : "hidden"
-              }`}
-              onClick={finishSpeaking}
+              } w-full h-full text-sm font-semibold flex gap-2 justify-center items-center`}
             >
-              <FaCheck className="text-white text-lg" />
-              질문완료
-            </button>
+              <button
+                type="button"
+                className="w-16 h-16 flex flex-col gap-1 justify-center items-center bg-[#F3F3F4] rounded-xl text-[#989BA2] p-1"
+                onClick={cancelQuestion}
+              >
+                <Image
+                  src={"images/cancel_icon.svg"}
+                  width={24}
+                  height={24}
+                  alt="cancel_icon"
+                />
+                질문 취소
+              </button>
+              <button
+                className={`w-32 h-16 flex flex-col gap-1 justify-center items-center bg-[#FF7134] rounded-xl`}
+                onClick={finishSpeaking}
+              >
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <Image
+                    src={"images/check_icon.svg"}
+                    width={20}
+                    height={20}
+                    alt="check_icon"
+                  />
+                </div>
+                질문완료
+              </button>
+            </div>
           </div>
         </div>
       </div>

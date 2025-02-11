@@ -13,7 +13,7 @@ const Subscribe = () => {
 
   const getCheckoutURL = async () => {
     try {
-      const { data } = await refreshClient.get("/payment");
+      const { data } = await refreshClient.post("/payment");
       return data.checkoutUrl;
     } catch (error: unknown) {
       console.log(error);

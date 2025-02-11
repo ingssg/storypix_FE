@@ -28,7 +28,6 @@ const AIModal = ({ onClose }: Props) => {
     setIsButtonVisible,
     setIsAISpeaking,
     sendCommuication,
-    setCurrentAnswer,
     setCurrentQuestion,
     startUserQuestion,
     finishUserQuestion,

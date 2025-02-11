@@ -15,7 +15,7 @@ const PlayController = () => {
   } = usePlayerStore();
 
   return (
-    <div className="flex items-center justify-center gap-6 relative">
+    <div className="flex items-center justify-center gap-6 relative" onClick={(e) => e.stopPropagation()}>
       <PageController className="-bottom-24" />
       <button
         className="mt-5 flex flex-col items-center"

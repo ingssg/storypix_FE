@@ -7,11 +7,15 @@ import SettingModal from "./playerHover/settingModal";
 import { usePlayerStore } from "@/app/store/playerStore";
 import { useRouter } from "next/navigation";
 
-const PlayerHover = () => {
+type HoverProps = {
+  isHoverOpen: boolean;
+  setIsHoverOpen: (state: boolean) => void;
+};
+
+const PlayerHover = ({isHoverOpen, setIsHoverOpen}: HoverProps) => {
   const { titleEng } = usePlayerStore();
 
   const controller = useRef<HTMLDivElement>(null);
-  const [isOpenController, setIsOpenController] = useState(false);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const router = useRouter();
 
@@ -20,7 +24,7 @@ const PlayerHover = () => {
       setIsOpenSettings(false);
       return;
     }
-    setIsOpenController(!isOpenController);
+    setIsHoverOpen(!isHoverOpen);
     e.stopPropagation();
   };
 
@@ -40,11 +44,11 @@ const PlayerHover = () => {
     >
       <div
         className={`controller w-full h-full flex justify-center items-center absolute bg-black bg-opacity-70 ${
-          isOpenController ? "" : "hidden"
+          isHoverOpen ? "" : "hidden"
         }`}
         ref={controller}
       >
-        <p className="text-white absolute top-8 left-8 w-80 truncate font-semibold text-sm flex items-center gap-2">
+        <p className="absolute top-8 left-8 flex items-center gap-2">
           <button className="p-1" onClick={() => router.push("/list")}>
             <Image
               src={"/images/playerHover/nextPageIcon.svg"}
@@ -54,7 +58,9 @@ const PlayerHover = () => {
               className="rotate-180"
             />
           </button>
+          <span className="text-white truncate font-semibold text-sm w-80">
           {titleEng}
+          </span>
         </p>
         <div className="absolute top-2 right-5">
           <button className="p-1" onClick={openSettings}>

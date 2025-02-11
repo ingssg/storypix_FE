@@ -40,6 +40,7 @@ interface RealtimeAPIState {
   setQuestionCount: (updateFn: (count: number) => number) => void;
   setIsButtonVisible: (value: boolean) => void;
   setIsAISpeaking: (value: boolean) => void;
+  setIsSpeaking: (value: boolean) => void;
 
   sendInputSignal: () => void;
   sendInputClear: () => void;
@@ -85,6 +86,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   setIsSessionStarted: (value) => set({ isSessionStarted: value }),
   setIsButtonVisible: (value: boolean) => set({ isButtonVisible: value }),
   setIsAISpeaking: (value: boolean) => set({ isAISpeaking: value }),
+  setIsSpeaking: (value: boolean) => set({ isSpeaking: value }),
   setInstructions: (title, content, prevSentence, currSentence) => {
     const { language } = usePlayerStore.getState();
     const template = get().template;

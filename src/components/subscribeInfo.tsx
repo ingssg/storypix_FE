@@ -49,24 +49,24 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
     <div className="flex flex-col gap-1 pb-4 font-semibold text-[0.6rem] border-b-[1px] border-[#D4DADF]">
       <button
         type="button"
-        className={`${"bg-[#FF7134]"} rounded-lg w-24 text-white p-1 ${
-          subscribeInfo.status === "paused" &&
-          "bg-inherit border-[1px] border-[#5A5C6338] text-[#5A5C6338]"
+        className={`rounded-lg w-24 p-1 ${
+          subscribeInfo.status === "cancelled"
+            ? "bg-inherit border-[2px] border-[#5A5C6338] text-[#989BA2]"
+            : "text-white bg-[#FF7134]"
         }`}
         disabled={
-          subscribeInfo.status === "active" || subscribeInfo.status === "paused"
+          subscribeInfo.status === "active" ||
+          subscribeInfo.status === "cancelled"
         }
       >
         {subscribeInfo.status === "active" && "스토리패스 구독중"}
-        {subscribeInfo.status === "paused" && "구독 종료 예정"}
+        {subscribeInfo.status === "cancelled" && "구독 종료 예정"}
       </button>
       {subscribeInfo.status === "active" && (
         <div className="text-[#5A5C63] font-medium">
           <div className="flex items-center">
             <span className="w-16 mb-1">구독 기간</span>
-            <span className="text-[#46474C]">
-              {createdAt + "~" + renewsAt}
-            </span>
+            <span className="text-[#46474C]">{createdAt + "~" + renewsAt}</span>
           </div>
           <div className="flex items-center">
             <span className="w-16">다음 결제일</span>
@@ -74,13 +74,11 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
           </div>
         </div>
       )}
-      {subscribeInfo.status === "paused" && (
+      {subscribeInfo.status === "cancelled" && (
         <div className="text-[#5A5C63] font-medium">
           <div className="flex items-center">
             <span className="w-16 mb-1">구독 기간</span>
-            <span className="text-[#46474C]">
-              {createdAt + "~" + renewsAt}
-            </span>
+            <span className="text-[#46474C]">{createdAt + "~" + renewsAt}</span>
           </div>
           <button type="button" className="underline" onClick={startSubscribe}>
             다시 구독하기

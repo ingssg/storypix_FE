@@ -47,6 +47,7 @@ const AIModal = ({ onClose }: Props) => {
   const questionCountRef = useRef(questionCount);
   const [isEnded, setIsEnded] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
+  const [displayText, setDisplayText] = useState("");
 
   const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -61,6 +62,7 @@ const AIModal = ({ onClose }: Props) => {
 
   const startSpeaking = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    resetCommuicationBubble();
     startUserQuestion();
     setIsCancelled(false);
   };
@@ -73,7 +75,7 @@ const AIModal = ({ onClose }: Props) => {
 
   const resetCommuicationBubble = () => {
     setCurrentQuestion("");
-    setCurrentAnswer("");
+    setDisplayText("");
   };
 
   const cancelQuestion = () => {
@@ -111,6 +113,18 @@ const AIModal = ({ onClose }: Props) => {
       updateInstructions(instructions);
     }
   }, [instructions]);
+
+  useEffect(() => {
+    if (currentAnswer === "") return;
+    let i = 0;
+    setDisplayText(currentAnswer[0]);
+    const interval = setInterval(() => {
+      setDisplayText((prev) => prev + currentAnswer[i]);
+      i++;
+      if (i >= currentAnswer.length - 1) clearInterval(interval);
+    }, 50);
+    return () => clearInterval(interval);
+  }, [currentAnswer]);
 
   return (
     <div
@@ -207,13 +221,13 @@ const AIModal = ({ onClose }: Props) => {
               </p>
             </div>
           ) : (
-            <div className="overflow-y-auto h-full text-black">
+            <div className="overflow-y-auto h-full text-black w-full">
               <div className="flex flex-col w-full text-xs">
                 <div className="mb-2 text-[#292A2D] font-semibold text-sm">
                   {currentQuestion}
                 </div>
                 <div className="mb-2 text-[#46474C] font-semibold text-sm">
-                  {currentAnswer}
+                  {displayText}
                 </div>
               </div>
             </div>

@@ -11,7 +11,7 @@ const PlayerHover = () => {
   const { titleEng } = usePlayerStore();
 
   const controller = useRef<HTMLDivElement>(null);
-  const [isOpenController, setIsOpenController] = useState(false);
+  const [isOpenController, setIsOpenController] = useState(true);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const router = useRouter();
 
@@ -44,7 +44,7 @@ const PlayerHover = () => {
         }`}
         ref={controller}
       >
-        <p className="text-white absolute top-8 left-8 w-80 truncate font-semibold text-sm flex items-center gap-2">
+        <p className="absolute top-8 left-8 flex items-center gap-2">
           <button className="p-1" onClick={() => router.push("/list")}>
             <Image
               src={"/images/playerHover/nextPageIcon.svg"}
@@ -54,7 +54,9 @@ const PlayerHover = () => {
               className="rotate-180"
             />
           </button>
+          <span className="text-white truncate font-semibold text-sm w-80">
           {titleEng}
+          </span>
         </p>
         <div className="absolute top-2 right-5">
           <button className="p-1" onClick={openSettings}>

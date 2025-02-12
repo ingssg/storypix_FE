@@ -28,7 +28,8 @@ interface PlayerState {
   storyId: number;
   titleEng: string;
   fullContent: string;
-  isEnd: boolean
+  isEnd: boolean;
+  isPageMoveTriggered: boolean;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -59,6 +60,7 @@ interface PlayerState {
   playHandler: () => void;
   stopHandler: () => void;
   setIsEnd: (value: boolean) => void;
+  setIsPageMoveTriggered: (value: boolean) => void;
 
   fetchPage: (page: number) => void;
 
@@ -84,6 +86,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   titleEng: "",
   fullContent: "",
   isEnd: false,
+  isPageMoveTriggered: false,
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -99,10 +102,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setTitleEng: (value) => set({ titleEng: value }),
   setFullContent: (value) => set({ fullContent: value }),
   setIsEnd: (value) => set({ isEnd: value }),
+  setIsPageMoveTriggered: (value) => set({ isPageMoveTriggered: value }),
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
-    if(!storyContents) return;
+    if (!storyContents) return;
     const currentSentence =
       storyContents[currentPageIdx]?.details[currentSentenceIdx];
     set({ currSentence: currentSentence.sentence });
@@ -122,7 +126,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ prevSentence });
   },
 
-  playSentence: () => {
+  playSentence: async () => {
     const {
       setIsPlaying,
       setAudioPlayer,
@@ -131,10 +135,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentPageIdx,
       currentSentenceIdx,
       storyContents,
+      hasStarted,
       setCurrPrevSentence,
     } = get();
-    
-    if(!storyContents) return;
+
+    if (!storyContents) return;
     const currentSentence =
       storyContents[currentPageIdx]?.details[currentSentenceIdx];
     if (!currentSentence) return;
@@ -142,7 +147,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
     if (audioPlayer) {
       audioPlayer.pause();
-      audioPlayer.currentTime = 0;
     }
 
     const player = new Audio(currentSentence.narration);
@@ -151,9 +155,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     player.playbackRate = speed;
     player.preservesPitch = true;
 
-    player.play();
+    await player.play();
     setIsPlaying(true);
-
+    if (!hasStarted) set({ hasStarted: true });
     player.onended = () => {
       get().playNextSentence();
     };
@@ -171,8 +175,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       totalPage,
       lastFetchedPage,
       fetchPage,
+      hasStarted,
+      playHandler,
+      audioPlayer,
     } = get();
-    if(!storyContents) return;
+    if (!storyContents) return;
+    if (!hasStarted) playHandler();
+    set({ isPageMoveTriggered: false });
     const currentPage = storyContents[currentPageIdx];
     if (currentSentenceIdx < currentPage.details.length - 1) {
       setCurrentSentenceIdx(currentSentenceIdx + 1);
@@ -190,6 +199,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     } else {
       setIsPlaying(false);
       set({ isEnd: true });
+      if (audioPlayer) audioPlayer.pause();
     }
   },
 
@@ -202,8 +212,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       storyContents,
       setCurrPrevSentence,
     } = get();
-    if(!storyContents) return;
-
+    if (!storyContents) return;
+    set({ isPageMoveTriggered: false });
     if (currentSentenceIdx > 0) {
       setCurrentSentenceIdx(currentSentenceIdx - 1);
       setCurrPrevSentence();
@@ -233,13 +243,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (currentPageIdx < totalPage - 1) {
       setCurrentPageIdx(currentPageIdx + 1);
       const nextPage = currentPageIdx + 2; // page는 1-based index
-      // console.log("페이지 넘기는중")
       if (nextPage === lastFetchedPage - 1) {
         fetchPage(lastFetchedPage + 1);
         set({ lastFetchedPage: lastFetchedPage + 1 });
       }
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
+      set({ isPageMoveTriggered: true });
     } else {
       alert("마지막 페이지입니다!");
       setIsPlaying(false);
@@ -258,20 +268,19 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentPageIdx(currentPageIdx - 1);
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
+      set({ isPageMoveTriggered: true });
     } else {
       alert("첫번째 페이지입니다!");
     }
   },
 
   playHandler: () => {
-    const { setHasStarted, playSentence } = get();
-    setHasStarted(true);
+    const { playSentence } = get();
     playSentence();
   },
 
   stopHandler: () => {
     const { setIsPlaying, audioPlayer } = get();
-    console.log("정지버튼 누름");
     setIsPlaying(false);
     if (audioPlayer) {
       audioPlayer.pause();
@@ -315,12 +324,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   fetchPage: async (page: number) => {
     if (page > get().totalPage) return;
-    console.log(page, "페이지 추가로 가져오는중");
     const { storyId, storyContents, setStoryContents } = get();
     try {
       const data = await fetchTaleById(storyId, 1, page);
       setStoryContents([...storyContents!, ...data]);
-      console.log("페이지 추가로 가져옴", ...data);
     } catch (error) {
       console.log("페이지 로드 오류", error);
     }
@@ -335,6 +342,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currSentence: "",
       prevSentence: "",
       isEnd: false,
+      isPageMoveTriggered: false,
     });
   },
 
@@ -356,5 +364,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       titleEng: "",
       fullContent: "",
       isEnd: false,
+      isPageMoveTriggered: false,
     }),
 }));

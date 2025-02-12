@@ -149,7 +149,7 @@ const AIModal = ({ onClose }: Props) => {
             />
           </button>
         </div>
-        {!isSessionStarted && (
+        {!isSessionStarted ? (
           <div className="flex flex-col justify-center items-center h-full w-full">
             <div className="w-[3.75rem] h-[3.75rem]">
               <Lottie
@@ -164,71 +164,74 @@ const AIModal = ({ onClose }: Props) => {
               잠시만 기다려주세요.
             </p>
           </div>
-        )}
-        {isEnded ? (
-          <div className="flex flex-col justify-center items-center h-full w-full gap-3">
-            <Image
-              src={"/images/circle_icon.svg"}
-              width={45}
-              height={45}
-              alt="caution_icon"
-            />
-            <p className="text-[#46474C] font-semibold text-sm">
-              질문 기회를 모두 사용했어요.
-            </p>
-          </div>
-        ) : isSpeaking ? (
-          <div className="flex flex-col justify-center items-center h-full w-full">
-            <div className="w-[3.75rem] h-[3.75rem]">
-              <Lottie
-                loop
-                animationData={userSpeakAnimation}
-                play
-                className="w-[3.75rem] h-[3.75rem]"
-              />
-            </div>
-            <p className="text-black mt-3">듣고 있어요.</p>
-            <ProgressBar onComplete={finishSpeaking} />
-          </div>
-        ) : isAISpeaking ? (
-          <div className="flex flex-col justify-center items-center h-full w-full relative">
-            <div className="w-[3.75rem] h-[3.75rem]">
-              <Lottie
-                loop
-                animationData={aiSpeakAnimation}
-                play
-                className="w-[3.75rem] h-[3.75rem]"
-              />
-            </div>
-            <p className="text-black mt-3">잠시 생각중이에요.</p>
-            <p className="text-[#5A5C63] text-xs font-medium absolute bottom-1">
-              제공되는 답변은 AI가 생성한 결과로,
-              <br />
-              부정확한 정보가 포함될 수 있습니다.
-            </p>
-          </div>
         ) : (
-          isSessionStarted &&
-          (isCancelled ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <p className="text-[#46474C] font-semibold text-sm text-center">
-                버튼을 눌러 동화 내용이나
-                <br />
-                영어 표현에 대해 질문해보세요.
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-y-auto h-full text-black w-full">
-              <div className="flex flex-col w-full text-xs">
-                <div className="mb-2 text-[#292A2D] font-semibold text-sm">
-                  {currentQuestion}
-                </div>
-                <div className="mb-2 text-[#46474C] font-semibold text-sm">
-                  {displayText}
-                </div>
+          <>
+            {isEnded ? (
+              <div className="flex flex-col justify-center items-center h-full w-full gap-3">
+                <Image
+                  src={"/images/circle_icon.svg"}
+                  width={45}
+                  height={45}
+                  alt="caution_icon"
+                />
+                <p className="text-[#46474C] font-semibold text-sm">
+                  질문 기회를 모두 사용했어요.
+                </p>
               </div>
-            </div>
-          ))
+            ) : isSpeaking ? (
+              <div className="flex flex-col justify-center items-center h-full w-full">
+                <div className="w-[3.75rem] h-[3.75rem]">
+                  <Lottie
+                    loop
+                    animationData={userSpeakAnimation}
+                    play
+                    className="w-[3.75rem] h-[3.75rem]"
+                  />
+                </div>
+                <p className="text-black mt-3">듣고 있어요.</p>
+                <ProgressBar onComplete={finishSpeaking} />
+              </div>
+            ) : isAISpeaking ? (
+              <div className="flex flex-col justify-center items-center h-full w-full relative">
+                <div className="w-[3.75rem] h-[3.75rem]">
+                  <Lottie
+                    loop
+                    animationData={aiSpeakAnimation}
+                    play
+                    className="w-[3.75rem] h-[3.75rem]"
+                  />
+                </div>
+                <p className="text-black mt-3">잠시 생각중이에요.</p>
+                <p className="text-[#5A5C63] text-xs font-medium absolute bottom-1">
+                  제공되는 답변은 AI가 생성한 결과로,
+                  <br />
+                  부정확한 정보가 포함될 수 있습니다.
+                </p>
+              </div>
+            ) : (
+              isSessionStarted &&
+              (isCancelled ? (
+                <div className="w-full h-full flex justify-center items-center">
+                  <p className="text-[#46474C] font-semibold text-sm text-center">
+                    버튼을 눌러 동화 내용이나
+                    <br />
+                    영어 표현에 대해 질문해보세요.
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-y-auto h-full text-black w-full">
+                  <div className="flex flex-col w-full text-xs">
+                    <div className="mb-2 text-[#292A2D] font-semibold text-sm">
+                      {currentQuestion}
+                    </div>
+                    <div className="mb-2 text-[#46474C] font-semibold text-sm">
+                      {displayText}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </>
         )}
         <div
           className={`${

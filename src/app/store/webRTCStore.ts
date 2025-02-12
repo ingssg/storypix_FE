@@ -44,10 +44,10 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       ],
     });
 
-    // Handle ontrack event for remote audio
     if (typeof document !== "undefined") {
       const audioEl = document.createElement("audio");
       audioEl.autoplay = true;
+      // audioEl.setAttribute("playsinline", "true");
       set({ audioElement: audioEl });
 
       peerConnection.ontrack = (e) => {
@@ -67,7 +67,15 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       return;
     }
 
-    const ms = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const constraints = {
+      audio: {
+        echoCancellation: false,  
+        noiseSuppression: false,  
+        autoGainControl: false,   
+      }
+    };
+
+    const ms = await navigator.mediaDevices.getUserMedia(constraints);
     set({ ms });
     peerConnection.addTrack(ms.getTracks()[0]);
 

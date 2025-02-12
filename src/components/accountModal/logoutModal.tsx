@@ -13,13 +13,12 @@ const LogOutModal = ({ onClose }: Props) => {
   const handleLogout = async () => {
     try {
       await signout();
+      modalClose();
+      window.location.href = "/list";
     }
     catch (error) {
       console.log(error, "로그아웃 에러");
     }
-    modalClose();
-    // window.location.href = "/list";
-
   };
   
   return (

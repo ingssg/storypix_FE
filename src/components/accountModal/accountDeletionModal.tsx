@@ -10,14 +10,14 @@ const AccountDeletionModal = ({ onClose }: Props) => {
 
   const modalClose = () => onClose();
   const [inputValue, setInputValue] = useState("");
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     try {
-      deleteUser();
+      await deleteUser();
+      modalClose();
+      window.location.href = "/list";
     } catch (error) {
       console.log(error, "회원탈퇴 에러");
     }
-    modalClose();
-    window.location.href = "/list";
   };
 
   return (

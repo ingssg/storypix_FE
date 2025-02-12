@@ -99,6 +99,7 @@ const Tale = () => {
     try {
       fetchToken().then(() => {
         createPeerConnection();
+        isDisconnectedRef.current = false;
       });
     } catch (error) {
       console.log("토큰 요청 오류", error);
@@ -120,6 +121,7 @@ const Tale = () => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
         disconnectTimer.current = setTimeout(() => {
+          useRealtimeAPIStore.getState().reset();
           closeWebRTCSession();
           isDisconnectedRef.current = true;
           setIsOpenAIModal(false);
@@ -132,6 +134,7 @@ const Tale = () => {
         }
         if(isDisconnectedRef.current) {
           createPeerConnection();
+          isDisconnectedRef.current = false;
           console.log("재접속 시도");
         }
       }

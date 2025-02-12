@@ -47,7 +47,7 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     if (typeof document !== "undefined") {
       const audioEl = document.createElement("audio");
       audioEl.autoplay = true;
-      // audioEl.setAttribute("playsinline", "true");
+      audioEl.setAttribute("playsinline", "true");
       set({ audioElement: audioEl });
 
       peerConnection.ontrack = (e) => {

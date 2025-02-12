@@ -10,15 +10,16 @@ const LogOutModal = ({ onClose }: Props) => {
 
   const modalClose = () => onClose();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      signout();
+      await signout();
     }
     catch (error) {
       console.log(error, "로그아웃 에러");
     }
     modalClose();
-    window.location.href = "/list";
+    // window.location.href = "/list";
+
   };
   
   return (

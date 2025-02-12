@@ -39,7 +39,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const redirectListPage = () => {
     onClose(false);
     router.push("/list");
-  }
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -76,14 +76,16 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
               <div>
                 <div className="text-lg font-bold">
                   <p className="flex items-center gap-2">
-                    <span className="truncate">
-                      {nickname}
-                    </span>
+                    <span className="truncate">{nickname}</span>
                     <span className="text-[#989BA2]">님</span>
                   </p>
                   안녕하세요.
                 </div>
-                <p className="mt-3 mb-2 text-[#989BA2] truncate">{email}</p>
+                <p className="mt-3 mb-2 text-[#989BA2] truncate">
+                  {email.split("@")[0]}
+                  <span>@</span>
+                  {email.split("@")[1]}
+                </p>
                 <SubscribeInfo
                   subscribeInfo={subscriptionInfo}
                   onClose={onClose}
@@ -107,7 +109,9 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
             )}
             <div className="flex flex-col gap-3 pt-4">
               <button
-                className={`flex gap-2 items-center text-lg font-medium rounded-lg p-1 hover:bg-[#FAF4F1] ${pathname === "/list" ? "bg-[#FFE7DA]" : ""}`}
+                className={`flex gap-2 items-center text-lg font-medium rounded-lg p-1 hover:bg-[#FAF4F1] ${
+                  pathname === "/list" ? "bg-[#FFE7DA]" : ""
+                }`}
                 type="button"
                 onClick={redirectListPage}
               >
@@ -140,7 +144,10 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
                 서비스 이용 관련 문의는 아래 이메일로 주시면 2영업일 이내로
                 회신드리겠습니다.
               </p>
-              <a href="mailto:productcamp@teamsparta.co" className="text-[#989BA2] underline text-xs">
+              <a
+                href="mailto:productcamp@teamsparta.co"
+                className="text-[#989BA2] underline text-xs"
+              >
                 productcamp@teamsparta.co
               </a>
             </div>

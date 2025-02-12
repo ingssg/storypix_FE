@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useRealtimeAPIStore } from "./realtimeAPIStore";
 
 interface WebRTCState {
   peerConnection: RTCPeerConnection | null;
@@ -93,7 +94,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       return;
     }
 
-
     const sdpObject: RTCSessionDescriptionInit = {
       type: "answer",
       sdp: SDP,
@@ -103,8 +103,7 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
     try {
       await peerConnection.setRemoteDescription(sdpObject);
-    } 
-    catch (error) {;
+    } catch (error) {
       console.error("Error setting remote description", error);
     }
   },
@@ -127,7 +126,14 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
   },
 
   closeWebRTCSession: () => {
-    const { peerConnection, setPeerConnection, setSdp, setDc, audioElement, ms } = get();
+    const {
+      peerConnection,
+      setPeerConnection,
+      setSdp,
+      setDc,
+      audioElement,
+      ms,
+    } = get();
 
     if (peerConnection) {
       console.log("WebRTC 세션 종료 중...");
@@ -148,7 +154,7 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
       peerConnection.ontrack = null;
 
-      if(ms) {
+      if (ms) {
         ms.getTracks().forEach((track) => {
           track.stop();
         });
@@ -161,10 +167,10 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       if (audioElement) {
         audioElement.srcObject = null;
       }
-
       console.log("WebRTC 세션 종료 완료");
     } else {
       console.log("종료할 WebRTC 세션이 없습니다.");
     }
+    useRealtimeAPIStore.getState().setIsSessionStarted(false);
   },
 }));

@@ -23,7 +23,9 @@ export const metadata: Metadata = {
     'apple-mobile-web-app-capable': 'yes',
   },
   icons: {
-    icon: "images/favicon_storypix.ico"
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
+    shortcut: "/favicon.ico",
   },
 };
 

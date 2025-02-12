@@ -39,7 +39,6 @@ const AIModal = ({ onClose }: Props) => {
     isAISpeaking,
     instructions,
     isButtonVisible,
-    reset,
     setIsSpeaking,
   } = useRealtimeAPIStore();
 
@@ -97,7 +96,6 @@ const AIModal = ({ onClose }: Props) => {
     return () => {
       sendCommuication();
       resetCommuicationBubble();
-      reset();
     };
   }, []);
 
@@ -111,7 +109,7 @@ const AIModal = ({ onClose }: Props) => {
     if (isSessionStarted && dc && dc.readyState === "open") {
       updateInstructions(instructions);
     }
-  }, [instructions, dc]);
+  }, [instructions, dc, isSessionStarted]);
 
   useEffect(() => {
     if (currentAnswer === "") return;

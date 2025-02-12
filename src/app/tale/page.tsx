@@ -35,7 +35,7 @@ const Tale = () => {
 
   const { setEphemeralKey, createPeerConnection, closeWebRTCSession } =
     useWebRTCStore();
-  const { questionCount, setQuestionCount, startUserQuestion } =
+  const { questionCount, setQuestionCount, startUserQuestion, sendCommuication } =
     useRealtimeAPIStore();
 
   const [isOpenAIModal, setIsOpenAIModal] = useState(false);
@@ -43,6 +43,8 @@ const Tale = () => {
 
   const [isLandscape, setIsLandscape] = useState(false);
   const [isHoverOpen, setIsHoverOpen] = useState(true);
+  const disconnectTimer = useRef<NodeJS.Timeout | null>(null);
+  const isDisconnectedRef = useRef(false);
 
   const openAIModal = () => {
     setIsOpenAIModal(true);
@@ -61,6 +63,8 @@ const Tale = () => {
     setEphemeralKey(EPHEMERAL_KEY);
     setFullContent(token.instruction);
     setQuestionCount(() => token.remainedCount);
+
+    return token;
   };
 
   useEffect(() => {
@@ -80,6 +84,7 @@ const Tale = () => {
       return () => {
         reset();
         closeWebRTCSession();
+        isDisconnectedRef.current = true;
       };
     }
     const fetchStoryContents = async () => {
@@ -100,7 +105,11 @@ const Tale = () => {
     }
 
     return () => {
+      sendCommuication();
+      useRealtimeAPIStore.getState().reset();
       reset();
+      closeWebRTCSession();
+      isDisconnectedRef.current = true;
     };
   }, []);
 
@@ -108,6 +117,27 @@ const Tale = () => {
     const checkOrientation = () => {
       setIsLandscape(window.innerWidth > window.innerHeight);
     };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        disconnectTimer.current = setTimeout(() => {
+          closeWebRTCSession();
+          isDisconnectedRef.current = true;
+          setIsOpenAIModal(false);
+        }, 5000);
+      }
+      else {
+        if (disconnectTimer.current) {
+          clearTimeout(disconnectTimer.current);
+          disconnectTimer.current = null;
+        }
+        if(isDisconnectedRef.current) {
+          createPeerConnection();
+          console.log("재접속 시도");
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     checkOrientation();
 
     window.addEventListener("resize", checkOrientation);
@@ -117,6 +147,7 @@ const Tale = () => {
     return () => {
       window.removeEventListener("resize", checkOrientation);
       document.body.style.backgroundColor = "";
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 

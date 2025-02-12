@@ -5,10 +5,10 @@ export const fetchUser = async () => {
   return data;
 };
 
-export const signout = () => {
-  apiClient.delete("/auth/signout");
+export const signout = async () => {
+  await apiClient.delete("/auth/signout");
 };
 
-export const deleteUser = () => {
-  apiClient.delete("/auth/leave");
+export const deleteUser = async () => {
+  await apiClient.delete("/auth/leave");
 };

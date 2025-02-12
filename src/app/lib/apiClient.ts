@@ -94,6 +94,6 @@ apiClient.interceptors.response.use(
     } else {
       console.log("요청 생성 전 에러 발생", error.message);
     }
-    return null;
+    return Promise.reject(error);
   }
 );

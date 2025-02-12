@@ -228,7 +228,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
       });
     }
   },
-  sendCommuication: () => {
+  sendCommuication: async () => {
     if (get().records.length === 0) return;
     const { storyId, currentPageIdx, prevSentence, currSentence } =
       usePlayerStore.getState();
@@ -242,7 +242,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
       createdAt: get().sessionCreatedAt,
     };
     console.log(communication);
-    postCommuicationAPI(communication);
+    await postCommuicationAPI(communication);
     set({ records: [] });
   },
 

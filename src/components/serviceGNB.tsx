@@ -17,8 +17,8 @@ const ServiceGNB = () => {
     setIsOpenModal(!isOpenModal);
   };
 
-  const goHome = () => {
-    router.push("/");
+  const goList = () => {
+    router.push("/list");
   };
 
   useBodyScrollLock(isOpenModal);
@@ -37,7 +37,7 @@ const ServiceGNB = () => {
         alt="storypix_logo"
         width={130}
         height={50}
-        onClick={goHome}
+        onClick={goList}
         className="cursor-pointer"
       />
       <AnimatePresence>

@@ -64,8 +64,8 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
       </button>
       {subscribeInfo.status === "active" && (
         <div className="text-[#5A5C63] font-medium">
-          <div className="flex items-center">
-            <span className="w-16 mb-1">구독 기간</span>
+          <div className="flex items-center mb-1">
+            <span className="w-16">구독 기간</span>
             <span className="text-[#46474C]">{createdAt + "~" + renewsAt}</span>
           </div>
           <div className="flex items-center">
@@ -77,7 +77,7 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
       {subscribeInfo.status === "cancelled" && (
         <div className="text-[#5A5C63] font-medium">
           <div className="flex items-center">
-            <span className="w-16 mb-1">구독 기간</span>
+            <span className="w-16">구독 기간</span>
             <span className="text-[#46474C]">{createdAt + "~" + renewsAt}</span>
           </div>
           <button type="button" className="underline" onClick={startSubscribe}>

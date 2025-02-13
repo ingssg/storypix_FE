@@ -222,10 +222,10 @@ const AIModal = ({ onClose }: Props) => {
               ) : (
                 <div className="overflow-y-auto h-full text-black w-full">
                   <div className="flex flex-col w-full text-xs">
-                    <div className="mb-2 text-[#292A2D] font-semibold text-sm">
+                    {/* <div className="mb-2 text-[#292A2D] font-semibold text-sm">
                       {currentQuestion}
-                    </div>
-                    <div className="mb-2 text-[#46474C] font-semibold text-sm">
+                    </div> */}
+                    <div className="mb-4 text-[#46474C] font-semibold text-sm">
                       {displayText}
                     </div>
                   </div>

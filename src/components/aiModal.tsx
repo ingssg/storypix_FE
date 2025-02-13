@@ -182,6 +182,7 @@ const AIModal = ({ onClose }: Props) => {
               <div className="flex flex-col justify-center items-center h-full w-full">
                 <div className="w-[3.75rem] h-[3.75rem]">
                   <Lottie
+                    key={String(isSpeaking)}
                     loop
                     animationData={userSpeakAnimation}
                     play

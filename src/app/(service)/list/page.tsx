@@ -66,6 +66,11 @@ const List = () => {
     };
   }, [hasMore, isLoading]);
 
+  useEffect(() => {
+    return () => setTales([]);
+  }, []);
+  
+
   return (
     <div className={`max-w-[1000px] mx-auto pt-12 flex flex-col items-center px-[6%]`}>
       <p className="w-full mt-6 text-2xl font-semibold">작품 목록</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { refreshClient } from "@/app/lib/apiClient";
+import withAuth from "@/components/HOC/withAuth";
 import { AxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -159,4 +160,4 @@ const Subscribe = () => {
   );
 };
 
-export default Subscribe;
+export default withAuth(Subscribe);

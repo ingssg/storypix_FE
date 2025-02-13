@@ -346,7 +346,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     });
   },
 
-  reset: () =>
+  reset: () => {
+    get().audioPlayer?.pause();
     set({
       isPlaying: false,
       hasStarted: false,
@@ -365,5 +366,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       fullContent: "",
       isEnd: false,
       isPageMoveTriggered: false,
-    }),
+    });
+  },
 }));

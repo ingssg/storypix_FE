@@ -66,7 +66,7 @@ const Subscribe = () => {
         </button>
         <div className="flex flex-col items-center mx-5 h-full">
           <Image
-            src="/images/storypixie.svg"
+            src="/images/storypixie.png"
             alt="storypixie"
             width={105}
             height={150}

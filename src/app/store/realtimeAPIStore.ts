@@ -9,8 +9,6 @@ import {
 } from "../services/aiService";
 
 interface RealtimeAPIState {
-  questions: string[];
-  answers: string[];
   currentQuestion: string;
   currentAnswer: string;
   isSessionStarted: boolean;
@@ -26,8 +24,6 @@ interface RealtimeAPIState {
   sessionCreatedAt: Date;
   records: Record[];
 
-  setQuestions: (value: string[]) => void;
-  setAnswers: (value: string[]) => void;
   setCurrentQuestion: (value: string) => void;
   setCurrentAnswer: (value: string) => void;
   setIsSessionStarted: (value: boolean) => void;
@@ -79,8 +75,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   sessionCreatedAt: new Date(),
   records: [],
 
-  setQuestions: (value) => set({ questions: value }),
-  setAnswers: (value) => set({ answers: value }),
   setCurrentQuestion: (value) => set({ currentQuestion: value }),
   setCurrentAnswer: (value) => set({ currentAnswer: value }),
   setIsSessionStarted: (value) => set({ isSessionStarted: value }),
@@ -176,7 +170,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
 
   receiveServerEvent: () => {
     const { dc, closeWebRTCSession } = useWebRTCStore.getState();
-    const { setQuestionCount, answers, questions, sendInitSession } = get();
+    const { setQuestionCount, sendInitSession } = get();
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
@@ -186,7 +180,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
           "conversation.item.input_audio_transcription.completed"
         ) {
           set({ currentQuestion: serverEvent.transcript });
-          set({ questions: [...questions, serverEvent.transcript] });
           const userRecord: Record = {
             text: serverEvent.transcript,
             isUser: true,
@@ -196,7 +189,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
         }
         if (serverEvent.type === "response.audio_transcript.done") {
           set({ currentAnswer: serverEvent.transcript });
-          set({ answers: [...answers, serverEvent.transcript] });
           setQuestionCount((prevCount) => prevCount - 1);
           const aiRecord: Record = {
             text: serverEvent.transcript,
@@ -272,8 +264,6 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
 
   reset: () =>
     set({
-      questions: [],
-      answers: [],
       currentQuestion: "",
       currentAnswer: "",
       isSpeaking: false,

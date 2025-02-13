@@ -32,7 +32,6 @@ const AIModal = ({ onClose }: Props) => {
     startUserQuestion,
     finishUserQuestion,
     currentAnswer,
-    currentQuestion,
     questionCount,
     isSessionStarted,
     isSpeaking,

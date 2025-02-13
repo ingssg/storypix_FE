@@ -71,8 +71,8 @@ const Subscribe = () => {
             width={105}
             height={150}
             unoptimized={true}
-            // priority
-            // className="object-contain"
+            priority
+            className="object-contain"
           />
           <div
             className="w-screen bg-contain h-full max-w-[1400px]"

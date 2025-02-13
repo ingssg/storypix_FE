@@ -16,7 +16,7 @@ const ViewOptimizationModal = () => {
 
   return (
     <div
-    className={`fixed top-10 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-gray-500 text-white rounded-lg transition-opacity duration-1000 w-56 text-center ${
+    className={`fixed top-10 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-gray-500 text-white rounded-lg transition-opacity duration-1000 w-56 text-center z-[9999] ${
       isVisible ? "opacity-100" : "opacity-0"
     }`}
   >

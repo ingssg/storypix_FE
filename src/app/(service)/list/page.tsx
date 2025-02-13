@@ -74,7 +74,7 @@ const List = () => {
   return (
     <div className={`max-w-[1000px] mx-auto pt-12 flex flex-col items-center px-[6%]`}>
       <p className="w-full mt-6 text-2xl font-semibold">작품 목록</p>
-      <ul className="mt-5">
+      <ul className="mt-5 w-full">
         {tales.map((tale) => (
           <Tale key={tale.id} taleInfo={tale} isSubscribedUser={isSubscribedUser}/>
         ))}

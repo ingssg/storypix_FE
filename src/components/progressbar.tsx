@@ -34,7 +34,7 @@ const ProgressBar = ({ onComplete }: Props) => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [onComplete]);
+  }, []);
 
   return (
     <div className="flex items-center w-full mx-auto gap-3 justify-center mt-5">

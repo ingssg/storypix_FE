@@ -125,10 +125,10 @@ const AIModal = ({ onClose }: Props) => {
 
   return (
     <div
-      className="h-screen w-screen fixed top-0 left-0 z-20"
+      className="h-full w-screen fixed top-0 left-0 z-20"
       onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
     >
-      <div className="flex flex-col items-center absolute top-2 z-50 right-4 bg-white bg-opacity-60 backdrop-blur-lg h-[95%] rounded-xl p-4 w-56">
+      <div className="flex flex-col items-center absolute top-1/2 -translate-y-1/2 z-50 right-4 bg-white bg-opacity-60 backdrop-blur-lg h-[95%] max-h-[40rem] rounded-xl p-4 w-56">
         <div className="flex justify-between items-center w-full mb-3">
           <p
             className="text-xs font-medium text-[#5A5C63]"
@@ -149,7 +149,7 @@ const AIModal = ({ onClose }: Props) => {
             />
           </button>
         </div>
-        {!isSessionStarted ? (
+        {!isSessionStarted && questionCount > 0 ? (
           <div className="flex flex-col justify-center items-center h-full w-full">
             <div className="w-[3.75rem] h-[3.75rem]">
               <Lottie

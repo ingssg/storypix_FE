@@ -81,9 +81,9 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
                   </p>
                   안녕하세요.
                 </div>
-                <p className="mt-3 mb-2 text-[#989BA2] truncate">
+                <p className="mt-3 mb-2 text-[#989BA2] truncate" style={{ direction: "ltr"}}>
                   {email.split("@")[0]}
-                  <span>@</span>
+                  <span className="select-none">@</span>
                   {email.split("@")[1]}
                 </p>
                 <SubscribeInfo

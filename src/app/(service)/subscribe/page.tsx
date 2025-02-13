@@ -72,7 +72,7 @@ const Subscribe = () => {
             height={150}
             unoptimized={true}
             priority
-            className="object-contain"
+            className="object-contain backface-hidden"
           />
           <div
             className="w-screen bg-contain h-full max-w-[1400px]"

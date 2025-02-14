@@ -4,6 +4,7 @@ import { usePlayerStore } from "./playerStore";
 import {
   Communication,
   decreaseCommuiationCountAPI,
+  getTokenAPI,
   postCommuicationAPI,
   Record,
 } from "../services/aiService";
@@ -23,6 +24,7 @@ interface RealtimeAPIState {
   sessionId: string;
   sessionCreatedAt: Date;
   records: Record[];
+  isOpenAIModal: boolean;
 
   setCurrentQuestion: (value: string) => void;
   setCurrentAnswer: (value: string) => void;
@@ -37,6 +39,7 @@ interface RealtimeAPIState {
   setIsButtonVisible: (value: boolean) => void;
   setIsAISpeaking: (value: boolean) => void;
   setIsSpeaking: (value: boolean) => void;
+  setIsOpenAIModal: (value: boolean) => void;
 
   sendInputSignal: () => void;
   sendInputClear: () => void;
@@ -47,6 +50,7 @@ interface RealtimeAPIState {
   sendCommuication: () => void;
   startUserQuestion: () => void;
   finishUserQuestion: () => void;
+  fetchToken: () => Promise<string>;
 
   reset: () => void;
 }
@@ -77,6 +81,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   sessionId: "",
   sessionCreatedAt: new Date(),
   records: [],
+  isOpenAIModal: false,
 
   setCurrentQuestion: (value) => set({ currentQuestion: value }),
   setCurrentAnswer: (value) => set({ currentAnswer: value }),
@@ -84,6 +89,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   setIsButtonVisible: (value: boolean) => set({ isButtonVisible: value }),
   setIsAISpeaking: (value: boolean) => set({ isAISpeaking: value }),
   setIsSpeaking: (value: boolean) => set({ isSpeaking: value }),
+  setIsOpenAIModal: (value: boolean) => set({ isOpenAIModal: value }),
   setInstructions: (title, content, prevSentence, currSentence) => {
     const { language } = usePlayerStore.getState();
     const template = get().template;
@@ -105,7 +111,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       } as Params;
       if (params.language === "korean") {
         params.language = "한국어";
-      } 
+      }
       if (params.language === "english") {
         params.language = "ENGLISH";
       }
@@ -226,6 +232,22 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           }
           closeWebRTCSession();
         }
+
+        if (serverEvent.type === "error") {
+          console.log(serverEvent.type.code)
+          if (serverEvent.type.code === "session_expired") {
+            console.log("세션 만료, 세션 재 연결 시도", serverEvent);
+            get().setIsOpenAIModal(false);
+            closeWebRTCSession();
+            try {
+              get().fetchToken().then(() => {
+                useWebRTCStore.getState().createPeerConnection();
+              });
+            } catch (error) {
+              console.log("토큰 요청 오류", error);
+            }
+          }
+        }
       });
     }
   },
@@ -242,7 +264,6 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       records: get().records,
       createdAt: get().sessionCreatedAt,
     };
-    console.log(communication);
     await postCommuicationAPI(communication);
     set({ records: [] });
   },
@@ -269,6 +290,21 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     } finally {
       if (audioElement) audioElement.volume = 1;
     }
+  },
+
+  fetchToken: async () => {
+    const { storyId, setFullContent } = usePlayerStore.getState();
+    const { setQuestionCount } = get();
+    const { setEphemeralKey } = useWebRTCStore.getState();
+
+    const token = await getTokenAPI(storyId);
+    if (token === null) return;
+    const EPHEMERAL_KEY = token.session.client_secret.value;
+    setEphemeralKey(EPHEMERAL_KEY);
+    setFullContent(token.instruction);
+    setQuestionCount(() => token.remainedCount);
+
+    return token;
   },
 
   reset: () =>

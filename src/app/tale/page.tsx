@@ -8,7 +8,6 @@ import AIModal from "@/components/aiModal";
 import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { useWebRTCStore } from "../store/webRTCStore";
 import { fetchTaleById } from "@/app/services/taleService";
-import { getTokenAPI } from "../services/aiService";
 import { useRouter } from "next/navigation";
 import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
@@ -26,19 +25,17 @@ const Tale = () => {
     stopHandler,
     reset,
     storyId,
-    setFullContent,
     isEnd,
     isPlaying,
     isPageMoveTriggered,
     setIsPageMoveTriggered,
   } = usePlayerStore();
 
-  const { setEphemeralKey, createPeerConnection, closeWebRTCSession } =
+  const { createPeerConnection, closeWebRTCSession } =
     useWebRTCStore();
-  const { questionCount, setQuestionCount, startUserQuestion, sendCommuication } =
+  const { questionCount, startUserQuestion, sendCommuication, isOpenAIModal, setIsOpenAIModal, fetchToken } =
     useRealtimeAPIStore();
 
-  const [isOpenAIModal, setIsOpenAIModal] = useState(false);
   const AIModalRef = useRef<HTMLButtonElement>(null);
 
   const [isLandscape, setIsLandscape] = useState(false);
@@ -54,17 +51,6 @@ const Tale = () => {
 
   const closeAIModal = () => {
     setIsOpenAIModal(false);
-  };
-
-  const fetchToken = async () => {
-    const token = await getTokenAPI(storyId);
-    if (token === null) return;
-    const EPHEMERAL_KEY = token.session.client_secret.value;
-    setEphemeralKey(EPHEMERAL_KEY);
-    setFullContent(token.instruction);
-    setQuestionCount(() => token.remainedCount);
-
-    return token;
   };
 
   useEffect(() => {
@@ -133,9 +119,14 @@ const Tale = () => {
           disconnectTimer.current = null;
         }
         if(isDisconnectedRef.current) {
-          createPeerConnection();
-          isDisconnectedRef.current = false;
-          console.log("재접속 시도");
+          try {
+            fetchToken().then(() => {
+              createPeerConnection();
+              isDisconnectedRef.current = false;
+            });
+          } catch (error) {
+            console.log("토큰 요청 오류", error);
+          }
         }
       }
     };

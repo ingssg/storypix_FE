@@ -18,7 +18,6 @@ const WithAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
           window.location.href = loginURL;
         }
       };
-      console.log("인증 시작");
       authenticate();
     }, []);
 

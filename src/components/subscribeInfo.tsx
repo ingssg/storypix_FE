@@ -50,17 +50,18 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
       <button
         type="button"
         className={`rounded-lg w-24 p-1 ${
-          subscribeInfo.status === "cancelled"
+          (subscribeInfo.status === "cancelled" || subscribeInfo.status === "paused")
             ? "bg-inherit border-[2px] border-[#5A5C6338] text-[#989BA2]"
             : "text-white bg-[#FF7134]"
         }`}
         disabled={
           subscribeInfo.status === "active" ||
-          subscribeInfo.status === "cancelled"
+          subscribeInfo.status === "cancelled" ||
+          subscribeInfo.status === "paused"
         }
       >
         {subscribeInfo.status === "active" && "스토리패스 구독중"}
-        {subscribeInfo.status === "cancelled" && "구독 종료 예정"}
+        {(subscribeInfo.status === "cancelled" || subscribeInfo.status === "paused") && "구독 종료 예정"}
       </button>
       {subscribeInfo.status === "active" && (
         <div className="text-[#5A5C63] font-medium">

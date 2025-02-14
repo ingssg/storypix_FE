@@ -81,7 +81,7 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
             <span className="text-[#46474C]">{createdAt + "~" + renewsAt}</span>
           </div>
           <button type="button" className="underline" onClick={startSubscribe}>
-            다시 구독하기
+            구독 재개하기
           </button>
         </div>
       )}

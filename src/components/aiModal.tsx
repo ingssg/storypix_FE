@@ -9,6 +9,7 @@ import userSpeakAnimation from "@/animation/userSpeak.json";
 import aiSpeakAnimation from "@/animation/AISpeak.json";
 import dynamic from "next/dynamic";
 import ProgressBar from "./progressbar";
+import StreamingText from "./streamingText";
 
 const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
@@ -31,7 +32,6 @@ const AIModal = ({ onClose }: Props) => {
     setCurrentQuestion,
     startUserQuestion,
     finishUserQuestion,
-    currentAnswer,
     questionCount,
     isSessionStarted,
     isSpeaking,
@@ -44,7 +44,6 @@ const AIModal = ({ onClose }: Props) => {
   const questionCountRef = useRef(questionCount);
   const [isEnded, setIsEnded] = useState(false);
   const [isCancelled, setIsCancelled] = useState(false);
-  const [displayText, setDisplayText] = useState("");
 
   const closeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -72,7 +71,6 @@ const AIModal = ({ onClose }: Props) => {
 
   const resetCommuicationBubble = () => {
     setCurrentQuestion("");
-    setDisplayText("");
   };
 
   const cancelQuestion = () => {
@@ -109,18 +107,6 @@ const AIModal = ({ onClose }: Props) => {
       updateInstructions(instructions);
     }
   }, [instructions, dc, isSessionStarted]);
-
-  useEffect(() => {
-    if (currentAnswer === "") return;
-    let i = 0;
-    setDisplayText(currentAnswer[0]);
-    const interval = setInterval(() => {
-      setDisplayText((prev) => prev + currentAnswer[i]);
-      i++;
-      if (i >= currentAnswer.length - 1) clearInterval(interval);
-    }, 50);
-    return () => clearInterval(interval);
-  }, [currentAnswer]);
 
   return (
     <div
@@ -208,28 +194,23 @@ const AIModal = ({ onClose }: Props) => {
                   부정확한 정보가 포함될 수 있습니다.
                 </p>
               </div>
+            ) : isCancelled ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <p className="text-[#46474C] font-semibold text-sm text-center">
+                  버튼을 눌러 동화 내용이나
+                  <br />
+                  영어 표현에 대해 질문해보세요.
+                </p>
+              </div>
             ) : (
-              isSessionStarted &&
-              (isCancelled ? (
-                <div className="w-full h-full flex justify-center items-center">
-                  <p className="text-[#46474C] font-semibold text-sm text-center">
-                    버튼을 눌러 동화 내용이나
-                    <br />
-                    영어 표현에 대해 질문해보세요.
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-y-auto h-full text-black w-full">
-                  <div className="flex flex-col w-full text-xs">
-                    {/* <div className="mb-2 text-[#292A2D] font-semibold text-sm">
+              <div className="overflow-y-auto h-full text-black w-full">
+                <div className="flex flex-col w-full text-xs">
+                  {/* <div className="mb-2 text-[#292A2D] font-semibold text-sm">
                       {currentQuestion}
                     </div> */}
-                    <div className="mb-4 text-[#46474C] font-semibold text-sm">
-                      {displayText}
-                    </div>
-                  </div>
+                  <StreamingText />
                 </div>
-              ))
+              </div>
             )}
           </>
         )}

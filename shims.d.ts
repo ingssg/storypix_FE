@@ -1,4 +1,5 @@
 interface Window {
+  gtag: (...args: any[]) => void;
   createLemonSqueezy: () => void;
   LemonSqueezy: {
     /**

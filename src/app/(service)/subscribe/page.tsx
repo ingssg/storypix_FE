@@ -38,6 +38,7 @@ const Subscribe = () => {
       window.LemonSqueezy.Url.Open(checkouturl);
     } else {
       console.log("LemonSqueezy 실행 실패", window.LemonSqueezy);
+      router.refresh();
     }
   };
 

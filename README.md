@@ -10,23 +10,23 @@
 
 ### 서비스 화면
 
-#### 리스트 페이지
+#### <리스트 페이지>
 <img src="https://github.com/user-attachments/assets/2c8f60e1-1386-411c-9824-90491e94aab8" width="400" height="800"/>
 
-#### 동화 구연 페이지
+#### <동화 구연 페이지>
 https://github.com/user-attachments/assets/9bb5b289-be50-4c64-b598-8305052c9d4b
 
-#### AI 질문
+#### <AI 질문>
 https://github.com/user-attachments/assets/c1ca5bd1-8060-4db3-942b-eb7fac40d63e
 
 
 
 
-#### 동화 구연
+### 동화 구연
 
 유저가 플레이어 화면을 터치하여 재생 컨트롤러 버튼을 열어, 재생/일시정지, 문장/페이지 이동, 재생 속도, ai 응답 언어 설정을 할 수 있습니다.
 
-#### AI 질문하기
+### AI 질문하기
 
 유저가 질문하기 버튼을 클릭하여 일정 횟수 ai에게 동화 관련 질문 및 영어 질문을 할 수 있습니다.
 

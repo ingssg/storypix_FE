@@ -1,14 +1,17 @@
-## 🍳 스토리픽스 (AI와 함께하는 영어 동화 학습)
-
-<div align="center"><b>우리 아이에게 다채로운 목소리로 동화를 구연하고 <br /> 질문에 답해주는 AI 동화 서비스를 선물하세요</b></div>
+### [스토리픽스 바로가기](https://storypix.spartastudio.app/list)
 <br/>
+
+## 🍳 스토리픽스
+### AI와 함께하는 영어 동화 학습
+<div>우리 아이에게 다채로운 목소리로 동화를 구연하고 <br /> 질문에 답해주는 AI 동화 서비스를 선물하세요</div>
+
 
 ## 💻 서비스 소개
 
 ### 서비스 화면
 
 #### 리스트 페이지
-![Image](https://github.com/user-attachments/assets/2c8f60e1-1386-411c-9824-90491e94aab8)
+<img src="https://github.com/user-attachments/assets/2c8f60e1-1386-411c-9824-90491e94aab8" width="400" height="800"/>
 
 #### 동화 구연 페이지
 https://github.com/user-attachments/assets/9bb5b289-be50-4c64-b598-8305052c9d4b
@@ -58,4 +61,4 @@ lemon.js를 임베드 하여 구독 결제 시스템을 구현했습니다. 유�
 
 ## 서비스 도메인
 
-[스토리픽스 바로가기](https://storypix.spartastudio.app/list)
+### [스토리픽스 바로가기](https://storypix.spartastudio.app/list)

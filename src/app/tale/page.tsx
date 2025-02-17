@@ -13,6 +13,8 @@ import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
 import TaleEndModal from "@/components/taleEndModal";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
+import AiGuide from "@/components/aiGuide";
+import { AnimatePresence } from "framer-motion";
 
 const Tale = () => {
   const router = useRouter();
@@ -47,6 +49,7 @@ const Tale = () => {
 
   const [isLandscape, setIsLandscape] = useState(false);
   const [isHoverOpen, setIsHoverOpen] = useState(true);
+  const [isGuideOpen, setIsGuideOpen] = useState(true);
   const disconnectTimer = useRef<NodeJS.Timeout | null>(null);
   const isDisconnectedRef = useRef(false);
 
@@ -149,10 +152,15 @@ const Tale = () => {
 
     document.body.style.backgroundColor = "black";
 
+    const timer = setTimeout(() => {
+      setIsGuideOpen(false);
+    }, 4000);
+
     return () => {
       window.removeEventListener("resize", checkOrientation);
       document.body.style.backgroundColor = "";
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      clearTimeout(timer);
     };
   }, []);
 
@@ -189,23 +197,26 @@ const Tale = () => {
             </p>
           </div>
           {questionCount > 0 && !isHoverOpen && (
-            <button
-              type="button"
-              className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"
-              onClick={() => {
-                openAIModal();
-                trackingPlayerEvent("story_ai_ask_start");
-              }}
-              ref={AIModalRef}
-            >
-              <Image
-                src={"/images/mike_icon.svg"}
-                width={16}
-                height={18}
-                alt="question_icon"
-              />
-              질문하기
-            </button>
+            <>
+              <AnimatePresence>{isGuideOpen && <AiGuide />}</AnimatePresence>
+              <button
+                type="button"
+                className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"
+                onClick={() => {
+                  openAIModal();
+                  trackingPlayerEvent("story_ai_ask_start");
+                }}
+                ref={AIModalRef}
+              >
+                <Image
+                  src={"/images/mike_icon.svg"}
+                  width={16}
+                  height={18}
+                  alt="question_icon"
+                />
+                질문하기
+              </button>
+            </>
           )}
           {isOpenAIModal && <AIModal onClose={closeAIModal} />}
         </div>

@@ -185,7 +185,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       audioPlayer,
     } = get();
     if (!storyContents) return;
-    if (!hasStarted) playHandler();
     set({ isPageMoveTriggered: false });
     const currentPage = storyContents[currentPageIdx];
     if (currentSentenceIdx < currentPage.details.length - 1) {
@@ -197,7 +196,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         fetchPage(lastFetchedPage + 1);
         set({ lastFetchedPage: lastFetchedPage + 1 });
       }
-
+      
       setCurrentPageIdx(currentPageIdx + 1);
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
@@ -206,6 +205,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       set({ isEnd: true });
       if (audioPlayer) audioPlayer.pause();
     }
+    if (!hasStarted) playHandler();
   },
 
   playPrevSentence: () => {

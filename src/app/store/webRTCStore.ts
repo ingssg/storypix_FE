@@ -144,7 +144,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     } = get();
 
     if (peerConnection) {
-      console.log("WebRTC 세션 종료 중...");
 
       peerConnection.getSenders().forEach((sender) => {
         if (sender.track) {
@@ -175,9 +174,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       if (audioElement) {
         audioElement.srcObject = null;
       }
-      console.log("WebRTC 세션 종료 완료");
-    } else {
-      console.log("종료할 WebRTC 세션이 없습니다.");
     }
     useRealtimeAPIStore.getState().setIsSessionStarted(false);
   },

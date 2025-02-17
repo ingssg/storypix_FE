@@ -1,3 +1,5 @@
+import { useModalStore } from "@/app/store/animateStore";
+import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
@@ -13,6 +15,7 @@ type SubscribeInfoProps = {
 const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
   const [renewsAt, setRenewsAt] = useState("");
   const [createdAt, setCreatedAt] = useState("");
+  const { setIsRenewModalOpen, setIsSidebarOpen } = useModalStore();
 
   const router = useRouter();
   const startSubscribe = () => {
@@ -20,12 +23,9 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
     onClose(false);
   };
 
-  const formatDate = (isoDate: string) => {
-    const date = new Date(isoDate);
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}.${String(date.getDate()).padStart(2, "0")}`;
+  const renewSubscribe = () => {
+    setIsRenewModalOpen(true);
+    setIsSidebarOpen(false);
   };
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
             <span className="w-16">구독 기간</span>
             <span className="text-[#46474C]">{createdAt + "~" + renewsAt}</span>
           </div>
-          <button type="button" className="underline" onClick={startSubscribe}>
+          <button type="button" className="underline" onClick={renewSubscribe}>
             구독 재개하기
           </button>
         </div>

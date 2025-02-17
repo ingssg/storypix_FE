@@ -216,7 +216,6 @@ REMEMBER: answer in {language}, even if I speak another language.`,
         if (serverEvent.type === "session.created") {
           set({ sessionCreatedAt: new Date() });
           set({ sessionId: serverEvent.session.id });
-          console.log("Session ID:", serverEvent.session.id);
           usePlayerStore.getState().setCurrPrevSentence();
 
           sendInitSession();

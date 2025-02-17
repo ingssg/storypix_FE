@@ -8,6 +8,7 @@ import {
   postCommuicationAPI,
   Record,
 } from "../services/aiService";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 interface RealtimeAPIState {
   currentQuestion: string;
@@ -189,7 +190,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
-        console.log(serverEvent);
+        // console.log(serverEvent);
         if (
           serverEvent.type ===
           "conversation.item.input_audio_transcription.completed"
@@ -226,6 +227,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           set({ isAISpeaking: false });
         }
         if (serverEvent.type === "output_audio_buffer.stopped") {
+          trackingPlayerEvent("story_ai_answer");
           if (get().questionCount > 0) {
             set({ isButtonVisible: true });
             return;
@@ -234,8 +236,8 @@ REMEMBER: answer in {language}, even if I speak another language.`,
         }
 
         if (serverEvent.type === "error") {
-          console.log(serverEvent.type.code)
-          if (serverEvent.type.code === "session_expired") {
+          console.log(serverEvent.error.code)
+          if (serverEvent.error.code === "session_expired") {
             console.log("세션 만료, 세션 재 연결 시도", serverEvent);
             get().setIsOpenAIModal(false);
             closeWebRTCSession();

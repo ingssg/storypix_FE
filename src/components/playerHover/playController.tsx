@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
 import React from "react";
 import Image from "next/image";
 import PageController from "./pageController";
 import { usePlayerStore } from "@/app/store/playerStore";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 const PlayController = () => {
   const {
@@ -15,11 +16,17 @@ const PlayController = () => {
   } = usePlayerStore();
 
   return (
-    <div className="flex items-center justify-center gap-6 relative" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="flex items-center justify-center gap-6 relative"
+      onClick={(e) => e.stopPropagation()}
+    >
       <PageController className="-bottom-24" />
       <button
         className="mt-5 flex flex-col items-center"
-        onClick={playPrevSentence}
+        onClick={() => {
+          playPrevSentence();
+          trackingPlayerEvent("story_sentence_turn");
+        }}
       >
         <Image
           src="/images/playerHover/leftArrow.svg"
@@ -30,7 +37,14 @@ const PlayController = () => {
         이전 문장
       </button>
       {!isPlaying ? (
-        <button className="" onClick={playHandler}>
+        <button
+          className=""
+          onClick={() => {
+            playHandler();
+            trackingPlayerEvent("story_play_click");
+          }}
+        >
+          ;
           <Image
             src="/images/playerHover/playIcon.svg"
             alt="play"
@@ -39,7 +53,13 @@ const PlayController = () => {
           />
         </button>
       ) : (
-        <button className="" onClick={stopHandler}>
+        <button
+          className=""
+          onClick={() => {
+            stopHandler();
+            trackingPlayerEvent("story_stop_click");
+          }}
+        >
           <Image
             src="/images/playerHover/pauseIcon.svg"
             alt="stop"
@@ -50,7 +70,10 @@ const PlayController = () => {
       )}
       <button
         className="mt-5 flex flex-col items-center"
-        onClick={playNextSentence}
+        onClick={() => {
+          playNextSentence();
+          trackingPlayerEvent("story_sentence_turn");
+        }}
       >
         <Image
           src="/images/playerHover/leftArrow.svg"

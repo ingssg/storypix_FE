@@ -1,8 +1,15 @@
 import { apiClient } from "../lib/apiClient";
 
 export const fetchUser = async () => {
-  const { data } = await apiClient.get("/users/me");
-  return data;
+  try {
+    const { data } = await apiClient.get("/users/me");
+    localStorage.setItem("nickname", data.userInfo.nickname);
+    return data;
+  } catch (error) {
+    console.log("비로그인 유저", error);
+    localStorage.removeItem("nickname");
+    return null;
+  }
 };
 
 export const signout = async () => {

@@ -6,13 +6,14 @@ import PlayController from "./playerHover/playController";
 import SettingModal from "./playerHover/settingModal";
 import { usePlayerStore } from "@/app/store/playerStore";
 import { useRouter } from "next/navigation";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 type HoverProps = {
   isHoverOpen: boolean;
   setIsHoverOpen: (state: boolean) => void;
 };
 
-const PlayerHover = ({isHoverOpen, setIsHoverOpen}: HoverProps) => {
+const PlayerHover = ({ isHoverOpen, setIsHoverOpen }: HoverProps) => {
   const { titleEng } = usePlayerStore();
 
   const controller = useRef<HTMLDivElement>(null);
@@ -49,7 +50,13 @@ const PlayerHover = ({isHoverOpen, setIsHoverOpen}: HoverProps) => {
         ref={controller}
       >
         <p className="absolute top-8 left-8 flex items-center gap-2">
-          <button className="p-1" onClick={() => router.push("/list")}>
+          <button
+            className="p-1"
+            onClick={() => {
+              router.push("/list");
+              trackingPlayerEvent("story_back_click");
+            }}
+          >
             <Image
               src={"/images/playerHover/nextPageIcon.svg"}
               alt="prevPage"
@@ -59,7 +66,7 @@ const PlayerHover = ({isHoverOpen, setIsHoverOpen}: HoverProps) => {
             />
           </button>
           <span className="text-white truncate font-semibold text-sm w-80">
-          {titleEng}
+            {titleEng}
           </span>
         </p>
         <div className="absolute top-2 right-5">

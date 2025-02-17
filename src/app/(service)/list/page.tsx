@@ -1,6 +1,7 @@
 "use client";
 
 import { fetchTales } from "@/app/services/taleService";
+import { fetchUser } from "@/app/services/userService";
 import Tale from "@/components/tale";
 import { useEffect, useRef, useState } from "react";
 
@@ -67,6 +68,7 @@ const List = () => {
   }, [hasMore, isLoading]);
 
   useEffect(() => {
+    fetchUser();
     return () => setTales([]);
   }, []);
   

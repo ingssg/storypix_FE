@@ -1,28 +1,33 @@
 import React from "react";
 import Image from "next/image";
 import { signout } from "@/app/services/userService";
+import { trackingEvent } from "@/utils/gtagFunc";
+import { getNickName } from "@/utils/stores";
 
 type Props = {
   onClose: () => void;
 };
 
 const LogOutModal = ({ onClose }: Props) => {
-
   const modalClose = () => onClose();
 
   const handleLogout = async () => {
     try {
       await signout();
       modalClose();
+      trackingEvent("sign_out", {"user_id": getNickName()});
+      localStorage.removeItem("nickname");
       window.location.href = "/list";
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error, "로그아웃 에러");
     }
   };
-  
+
   return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="w-64 bg-[#F6F6F6] flex flex-col shadow-custom justify-center items-center p-5 gap-3 rounded-lg relative">
         <button className="absolute top-5 right-4" onClick={modalClose}>
           <Image src="/images/x_icon.svg" alt="close" width={12} height={20} />

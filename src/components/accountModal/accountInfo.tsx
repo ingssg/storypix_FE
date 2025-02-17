@@ -4,6 +4,8 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SubscribeInfo from "../subscribeInfo";
 import { motion } from "framer-motion";
+import { trackingEvent } from "@/utils/gtagFunc";
+import { getNickName } from "@/utils/stores";
 
 interface AccountInfoProps {
   hasLogin: boolean;
@@ -29,6 +31,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const handleLogin = () => {
     const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
     window.location.href = loginURL;
+    trackingEvent("login_btn_click");
   };
 
   const manageAccount = () => {
@@ -41,6 +44,10 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
     router.push("/list");
   };
 
+  const openUseGuide = () => {
+    trackingEvent("guide_btn_click", {"user_id": getNickName()});
+  };
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -51,7 +58,11 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
         setSubscriptionInfo(subscriptionInfo);
         setHasLogin(true);
       } catch (error) {
-        console.log("로그인 안되어 있음", error);
+        console.log(error);
+        setSubscriptionInfo(null);
+        setHasLogin(false);
+        setEmail("");
+        setNickname("");
       }
     };
     fetchUserInfo();
@@ -126,6 +137,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
               <button
                 className="flex gap-2 items-center text-lg font-medium p-1 rounded-lg hover:bg-[#FAF4F1]"
                 type="button"
+                onClick={openUseGuide}
               >
                 <Image
                   src={"/images/guide-img.svg"}

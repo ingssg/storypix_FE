@@ -1,4 +1,22 @@
+type Cart = {
+  discount: {
+    code: string;
+  };
+}
+
+type Order = {
+  data: {
+    id: string;
+  }
+}
+
+type Data = {
+  cart: Cart;
+  order: Order;
+}
+
 interface Window {
+  gtag: (...args: any[]) => void;
   createLemonSqueezy: () => void;
   LemonSqueezy: {
     /**
@@ -6,7 +24,7 @@ interface Window {
      * @param options - 이벤트 핸들러를 포함한 옵션 객체입니다.
      */
     Setup: (options: {
-      eventHandler: (event: { event: string }) => void;
+      eventHandler: (event: { event: string, data: Data }) => void;
     }) => void;
     /**
      * 페이지의 `lemonsqueezy-button` 리스너를 새로고침합니다.

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
 import TaleEndModal from "@/components/taleEndModal";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 const Tale = () => {
   const router = useRouter();
@@ -28,13 +29,19 @@ const Tale = () => {
     isEnd,
     isPlaying,
     isPageMoveTriggered,
+    setEnterTime,
     setIsPageMoveTriggered,
   } = usePlayerStore();
 
-  const { createPeerConnection, closeWebRTCSession } =
-    useWebRTCStore();
-  const { questionCount, startUserQuestion, sendCommuication, isOpenAIModal, setIsOpenAIModal, fetchToken } =
-    useRealtimeAPIStore();
+  const { createPeerConnection, closeWebRTCSession } = useWebRTCStore();
+  const {
+    questionCount,
+    startUserQuestion,
+    sendCommuication,
+    isOpenAIModal,
+    setIsOpenAIModal,
+    fetchToken,
+  } = useRealtimeAPIStore();
 
   const AIModalRef = useRef<HTMLButtonElement>(null);
 
@@ -76,11 +83,16 @@ const Tale = () => {
     const fetchStoryContents = async () => {
       try {
         const data = await fetchTaleById(storyId, 3, 1);
+        trackingPlayerEvent("story_page_view", { page_number: 1 });
+        trackingPlayerEvent("story_page_view", { page_number: 2 });
+        trackingPlayerEvent("story_page_view", { page_number: 3 });
         setStoryContents(data);
       } catch (error) {
         console.log("데이터 로딩 오류", error);
       }
     };
+    trackingPlayerEvent("story_open");
+    setEnterTime(Date.now());
     fetchStoryContents();
     try {
       fetchToken().then(() => {
@@ -112,13 +124,12 @@ const Tale = () => {
           isDisconnectedRef.current = true;
           setIsOpenAIModal(false);
         }, 5000);
-      }
-      else {
+      } else {
         if (disconnectTimer.current) {
           clearTimeout(disconnectTimer.current);
           disconnectTimer.current = null;
         }
-        if(isDisconnectedRef.current) {
+        if (isDisconnectedRef.current) {
           try {
             fetchToken().then(() => {
               createPeerConnection();
@@ -181,7 +192,10 @@ const Tale = () => {
             <button
               type="button"
               className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"
-              onClick={openAIModal}
+              onClick={() => {
+                openAIModal();
+                trackingPlayerEvent("story_ai_ask_start");
+              }}
               ref={AIModalRef}
             >
               <Image

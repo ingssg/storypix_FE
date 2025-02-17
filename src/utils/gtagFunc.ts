@@ -4,7 +4,6 @@ import { getNickName } from "./stores";
 export const trackingEvent = (event: string, params: Record<string, unknown> = {}) => {
   if (window.gtag) {
     window.gtag("event", event, params);
-    // console.log("trackingEvent", event, params);
   }
 };
 

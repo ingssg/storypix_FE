@@ -190,7 +190,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
-        console.log(serverEvent);
+        // console.log(serverEvent);
         if (
           serverEvent.type ===
           "conversation.item.input_audio_transcription.completed"

@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { usePlayerStore } from "@/app/store/playerStore";
 import Image from "next/image";
 import { useRef } from "react";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 type Props = {
   onClose: () => void;
@@ -118,21 +119,39 @@ const SettingModal = ({ onClose }: Props) => {
             <div className="flex gap-2">
               <button
                 className="px-3 py-2 bg-white text-[#5A5C63] rounded-lg font-semibold"
-                onClick={decreaseSpeedBtn}
+                onClick={(e) => {
+                  decreaseSpeedBtn(e);
+                  trackingPlayerEvent("story_speed_change", {
+                    from_speed: speed,
+                    to_speed: 0.8,
+                  });
+                }}
                 ref={slowButton}
               >
                 천천히
               </button>
               <button
                 className="px-3 py-2 bg-white text-[#5A5C63] rounded-lg font-semibold"
-                onClick={resetSpeedBtn}
+                onClick={(e) => {
+                  resetSpeedBtn(e);
+                  trackingPlayerEvent("story_speed_change", {
+                    from_speed: speed,
+                    to_speed: 1,
+                  });
+                }}
                 ref={normalButton}
               >
                 보통
               </button>
               <button
                 className="px-3 py-2 bg-white text-[#5A5C63] rounded-lg font-semibold"
-                onClick={increaseSpeedBtn}
+                onClick={(e) => {
+                  increaseSpeedBtn(e);
+                  trackingPlayerEvent("story_speed_change", {
+                    from_speed: speed,
+                    to_speed: 1.4,
+                  });
+                }}
                 ref={fastButton}
               >
                 빠르게
@@ -145,14 +164,26 @@ const SettingModal = ({ onClose }: Props) => {
               <button
                 className="px-3 py-2 bg-white text-[#5A5C63] rounded-lg font-semibold"
                 ref={koreanButton}
-                onClick={setKoreanBtn}
+                onClick={(e) => {
+                  setKoreanBtn(e);
+                  trackingPlayerEvent("story_language_change", {
+                    from_language: "english",
+                    to_language: "korean",
+                  });
+                }}
               >
                 한국어
               </button>
               <button
                 className="px-3 py-2 bg-white text-[#5A5C63] rounded-lg font-semibold"
                 ref={englishButton}
-                onClick={setEnglishBtn}
+                onClick={(e) => {
+                  setEnglishBtn(e);
+                  trackingPlayerEvent("story_language_change", {
+                    from_language: "korean",
+                    to_language: "english",
+                  });
+                }}
               >
                 영어
               </button>

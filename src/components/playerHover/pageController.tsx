@@ -1,22 +1,34 @@
-'use client';
+"use client";
 
 import React from "react";
 import Image from "next/image";
 import { usePlayerStore } from "@/app/store/playerStore";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 type Props = {
   className?: string;
 };
 
 const PageController = ({ className }: Props) => {
-  const { storyContents, currentPageIdx, playNextPage, playPrevPage, totalPage } =
-    usePlayerStore();
+  const {
+    storyContents,
+    currentPageIdx,
+    playNextPage,
+    playPrevPage,
+    totalPage,
+  } = usePlayerStore();
 
   return (
     <div
       className={`flex items-center justify-between bg-[#46474C99] bg-opacity-60 rounded-full w-44 h-10 absolute ${className}`}
     >
-      <button className="p-4" onClick={playPrevPage}>
+      <button
+        className="p-4"
+        onClick={() => {
+          playPrevPage();
+          trackingPlayerEvent("story_page_turn");
+        }}
+      >
         <Image
           src={"/images/playerHover/nextPageIcon.svg"}
           alt="prevPage"
@@ -33,7 +45,13 @@ const PageController = ({ className }: Props) => {
           / {totalPage}
         </p>
       )}
-      <button className="p-4" onClick={playNextPage}>
+      <button
+        className="p-4"
+        onClick={() => {
+          playNextPage();
+          trackingPlayerEvent("story_page_turn");
+        }}
+      >
         <Image
           src={"/images/playerHover/nextPageIcon.svg"}
           alt="nextPage"

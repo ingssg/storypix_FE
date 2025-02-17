@@ -1,6 +1,8 @@
 "use client";
 
 import { usePlayerStore } from "@/app/store/playerStore";
+import { trackingEvent } from "@/utils/gtagFunc";
+import { getNickName } from "@/utils/stores";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -43,6 +45,10 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
     setTotalPage(taleInfo.totalPage);
     setStoryId(taleInfo.id);
     setTitleEng(taleInfo.titleEng);
+    trackingEvent("list_story_click", {
+      user_id: getNickName(),
+      story_id: taleInfo.id,
+    });
   };
 
   useEffect(() => {
@@ -65,7 +71,10 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
         onClick={
           isSubscribedUser || taleInfo.isFree
             ? playTale
-            : () => router.push("/subscribe")
+            : () => {
+                router.push("/subscribe");
+                trackingEvent("list_story_click", { story_id: taleInfo.id });
+              }
         }
       />
       <div className="w-full flex flex-col gap-1 mt-3 mb-2">
@@ -74,7 +83,10 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
           onClick={
             isSubscribedUser || taleInfo.isFree
               ? playTale
-              : () => router.push("/subscribe")
+              : () => {
+                  router.push("/subscribe");
+                  trackingEvent("list_story_click", { story_id: taleInfo.id });
+                }
           }
         >
           <h1 className="text-lg w-full font-semibold">{taleInfo.titleKor}</h1>
@@ -127,7 +139,12 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
           type="button"
           className="bg-[#FF7134] text-white rounded-lg w-full h-12 flex justify-center items-center"
           onClick={
-            isSubscribedUser ? playTale : () => router.push("/subscribe")
+            isSubscribedUser
+              ? playTale
+              : () => {
+                  router.push("/subscribe");
+                  trackingEvent("list_story_click", { story_id: taleInfo.id });
+                }
           }
         >
           <FaPlay className="text-white mr-2 text-xl font-bold" />

@@ -8,6 +8,7 @@ import {
   postCommuicationAPI,
   Record,
 } from "../services/aiService";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 interface RealtimeAPIState {
   currentQuestion: string;
@@ -226,6 +227,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           set({ isAISpeaking: false });
         }
         if (serverEvent.type === "output_audio_buffer.stopped") {
+          trackingPlayerEvent("story_ai_answer");
           if (get().questionCount > 0) {
             set({ isButtonVisible: true });
             return;

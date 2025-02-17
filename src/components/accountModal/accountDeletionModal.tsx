@@ -1,4 +1,6 @@
 import { deleteUser } from "@/app/services/userService";
+import { trackingEvent } from "@/utils/gtagFunc";
+import { getNickName } from "@/utils/stores";
 import Image from "next/image";
 import React, { useState } from "react";
 
@@ -14,6 +16,8 @@ const AccountDeletionModal = ({ onClose }: Props) => {
     try {
       await deleteUser();
       modalClose();
+      trackingEvent("account_deactivate", {"user_id": getNickName()});
+      localStorage.removeItem("nickname");
       window.location.href = "/list";
     } catch (error) {
       console.log(error, "회원탈퇴 에러");

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { fetchTaleById } from "../services/taleService";
+import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
 interface StoryContent {
   page: number;
@@ -30,6 +31,7 @@ interface PlayerState {
   fullContent: string;
   isEnd: boolean;
   isPageMoveTriggered: boolean;
+  enterTime: number;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -44,6 +46,7 @@ interface PlayerState {
   setStoryId: (value: number) => void;
   setTitleEng: (value: string) => void;
   setFullContent: (value: string) => void;
+  setEnterTime: (value: number) => void;
 
   // 속도 및 언어 설정 함수
   decreaseSpeed: () => void;
@@ -87,6 +90,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   fullContent: "",
   isEnd: false,
   isPageMoveTriggered: false,
+  enterTime: 0,
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -103,6 +107,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setFullContent: (value) => set({ fullContent: value }),
   setIsEnd: (value) => set({ isEnd: value }),
   setIsPageMoveTriggered: (value) => set({ isPageMoveTriggered: value }),
+  setEnterTime: (value) => set({ enterTime: value }),
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
@@ -327,6 +332,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const { storyId, storyContents, setStoryContents } = get();
     try {
       const data = await fetchTaleById(storyId, 1, page);
+      trackingPlayerEvent("story_page_view", { page_number: page });
       setStoryContents([...storyContents!, ...data]);
     } catch (error) {
       console.log("페이지 로드 오류", error);
@@ -366,6 +372,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       fullContent: "",
       isEnd: false,
       isPageMoveTriggered: false,
+      enterTime: 0,
     });
   },
 }));

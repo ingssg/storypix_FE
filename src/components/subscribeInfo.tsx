@@ -75,7 +75,7 @@ const SubscribeInfo = ({ subscribeInfo, onClose }: SubscribeInfoProps) => {
           </div>
         </div>
       )}
-      {subscribeInfo.status === "cancelled" || subscribeInfo.status === "paused" && (
+      {(subscribeInfo.status === "cancelled" || subscribeInfo.status === "paused") && (
         <div className="text-[#5A5C63] font-medium">
           <div className="flex items-center">
             <span className="w-16">구독 기간</span>

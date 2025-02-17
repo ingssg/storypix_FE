@@ -2,15 +2,19 @@
 
 import { refreshClient } from "@/app/lib/apiClient";
 import withAuth from "@/components/HOC/withAuth";
+import { trackingEvent } from "@/utils/gtagFunc";
+import { getNickName } from "@/utils/stores";
 import { AxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 const Subscribe = () => {
   const router = useRouter();
-  const [isLemonLoaded, setIsLemonLoaded] = useState(false);
+  const isLemonLoaded = useRef<boolean>(false);
+  const promotionCodeRef = useRef<string>("");
+  const isEventHandlerSetted = useRef<boolean>(false);
 
   const getCheckoutURL = async () => {
     try {
@@ -31,23 +35,61 @@ const Subscribe = () => {
   };
 
   const startSubscribe = async () => {
+    trackingEvent("subscribe_btn_click", { user_id: getNickName() });
     const checkouturl = await getCheckoutURL();
     window.createLemonSqueezy();
-    if (isLemonLoaded && window.LemonSqueezy) {
-      console.log("LemonSqueezy 실행", window.LemonSqueezy);
+    if (isLemonLoaded.current && window.LemonSqueezy) {
       window.LemonSqueezy.Url.Open(checkouturl);
+      clearHandler();
+      window.LemonSqueezy.Setup({
+        eventHandler: (event) => {
+          isEventHandlerSetted.current = true;
+          console.log(event.data);
+          if (event.event === "Checkout.ApplyDiscount") {
+            if (event.data.cart.discount) {
+              promotionCodeRef.current = event.data.cart.discount.code;
+            }
+            else {
+              promotionCodeRef.current = "";
+            }
+          }
+          if (event.event === "Checkout.Success") {
+            const paymentId = event.data.order.data.id;
+            trackingEvent("subscribe_payment_success", {
+              user_id: getNickName(),
+              promotion_code: promotionCodeRef.current,
+              transaction_id: paymentId,
+            });
+          }
+        },
+      });
     } else {
-      console.log("LemonSqueezy 실행 실패", window.LemonSqueezy);
-      router.refresh();
+      alert("다시 시도해주세요");
+      window.location.reload();
     }
   };
+
+  const clearHandler = () => {
+    if (isEventHandlerSetted.current) {
+      window.LemonSqueezy.Setup({
+        eventHandler: () => {},
+      });
+      isEventHandlerSetted.current = false;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearHandler();
+    };
+  }, []);
 
   return (
     <>
       <Script
         src="https://app.lemonsqueezy.com/js/lemon.js"
         onLoad={() => {
-          setIsLemonLoaded(true);
+          isLemonLoaded.current = true;
         }}
       />
 

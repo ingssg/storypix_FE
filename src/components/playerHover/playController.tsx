@@ -44,7 +44,6 @@ const PlayController = () => {
             trackingPlayerEvent("story_play_click");
           }}
         >
-          ;
           <Image
             src="/images/playerHover/playIcon.svg"
             alt="play"

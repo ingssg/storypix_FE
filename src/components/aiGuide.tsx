@@ -1,7 +1,20 @@
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 
-const AiGuide = () => {
+type AiGuideProps = {
+  onClose: () => void;
+};
+
+const AiGuide = ({ onClose }: AiGuideProps) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <motion.div

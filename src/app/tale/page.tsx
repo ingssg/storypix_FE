@@ -152,15 +152,10 @@ const Tale = () => {
 
     document.body.style.backgroundColor = "black";
 
-    const timer = setTimeout(() => {
-      setIsGuideOpen(false);
-    }, 4000);
-
     return () => {
       window.removeEventListener("resize", checkOrientation);
       document.body.style.backgroundColor = "";
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      clearTimeout(timer);
     };
   }, []);
 
@@ -198,7 +193,7 @@ const Tale = () => {
           </div>
           {questionCount > 0 && !isHoverOpen && (
             <>
-              <AnimatePresence>{isGuideOpen && <AiGuide />}</AnimatePresence>
+              <AnimatePresence>{isGuideOpen && <AiGuide onClose={() => setIsGuideOpen(false)}/>}</AnimatePresence>
               <button
                 type="button"
                 className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"

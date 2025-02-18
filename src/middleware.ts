@@ -43,7 +43,7 @@ export async function middleware(req: NextRequest) {
 const refreshAccessToken = async (refreshToken: string) => {
   console.log("🔄 refreshAccessToken() 실행됨");
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const refreshAccessToken = async (refreshToken: string) => {
 const checkAccessTokenValidity = async (accessToken: string) => {
   console.log("🔍 checkAccessTokenValidity() 실행됨");
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

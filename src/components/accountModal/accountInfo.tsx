@@ -50,7 +50,12 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   };
 
   const openUseGuide = () => {
-    trackingEvent("guide_btn_click", { "user_id": getNickName() });
+    trackingEvent("guide_btn_click", { user_id: getNickName() });
+    window.open(
+      "https://teamsparta.notion.site/19e2dc3ef51480ebaf05ce6977ae92ce",
+      "_blank",
+      "noopener, noreferrer"
+    );
   };
 
   const closeModal = () => {

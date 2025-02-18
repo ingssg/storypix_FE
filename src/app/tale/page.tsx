@@ -9,7 +9,7 @@ import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { useWebRTCStore } from "../store/webRTCStore";
 import { fetchTaleById } from "@/app/services/taleService";
 import { useRouter } from "next/navigation";
-import WithAuth from "@/components/HOC/withAuth";
+// import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
 import TaleEndModal from "@/components/taleEndModal";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
@@ -227,4 +227,5 @@ const Tale = () => {
   );
 };
 
-export default WithAuth(Tale);
+// export default WithAuth(Tale);
+export default Tale;

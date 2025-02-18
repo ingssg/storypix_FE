@@ -1,7 +1,7 @@
 "use client";
 
 import { refreshClient } from "@/app/lib/apiClient";
-import withAuth from "@/components/HOC/withAuth";
+// import withAuth from "@/components/HOC/withAuth";
 import { trackingEvent } from "@/utils/gtagFunc";
 import { getNickName } from "@/utils/stores";
 import { AxiosError } from "axios";
@@ -205,4 +205,5 @@ const Subscribe = () => {
   );
 };
 
-export default withAuth(Subscribe);
+// export default withAuth(Subscribe);
+export default Subscribe;

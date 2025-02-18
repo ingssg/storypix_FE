@@ -70,23 +70,23 @@ apiClient.interceptors.response.use(
               await refreshAccessToken();
               return apiClient(originalRequest);
             } catch (refreshError) {
-              console.log("리프레쉬 토큰 없음", refreshError);
+              console.log(refreshError);
             } finally {
               isRefreshing = false;
             }
           }
           break;
         case 403:
-          console.log("403 Forbidden");
+          console.error("403 Forbidden");
           break;
         case 404:
-          console.log("404 Not Found");
+          console.error("404 Not Found");
           break;
         case 500:
-          console.log("500 Internal Server Error");
+          console.error("500 Internal Server Error");
           break;
         default:
-          console.log("API 요청 오류", error.response.status);
+          console.error("API 요청 오류", error.response.status);
       }
     } else if (error.request) {
       console.log("API 요청 실패");

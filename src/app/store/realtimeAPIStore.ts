@@ -111,7 +111,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       if (params.language === "english") {
         params.language = "ENGLISH";
       }
-
+      console.log(params);
       return params[key as keyof Params] || `{${key}}`; // 키가 없으면 원래 템플릿 유지
     });
 
@@ -297,7 +297,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     const { storyId, setFullContent } = usePlayerStore.getState();
     const { setQuestionCount } = get();
     const { setEphemeralKey } = useWebRTCStore.getState();
-
+    setQuestionCount(() => 0);
     const token = await getTokenAPI(storyId);
     if (token === null) return;
     const EPHEMERAL_KEY = token.session.client_secret.value;
@@ -318,6 +318,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       isButtonVisible: true,
       sessionId: "",
       sessionCreatedAt: new Date(),
+      questionCount: 0,
       records: [],
     }),
 }));

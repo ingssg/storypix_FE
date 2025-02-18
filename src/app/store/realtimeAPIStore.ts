@@ -111,7 +111,6 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       if (params.language === "english") {
         params.language = "ENGLISH";
       }
-      console.log(params);
       return params[key as keyof Params] || `{${key}}`; // 키가 없으면 원래 템플릿 유지
     });
 
@@ -187,10 +186,6 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     if (dc) {
       dc.addEventListener("message", (e) => {
         const serverEvent = JSON.parse(e.data);
-        // console.log(serverEvent);
-        if( serverEvent.type === "session.updated" ) {
-          console.log(serverEvent);
-        }
         if (
           serverEvent.type ===
           "conversation.item.input_audio_transcription.completed"

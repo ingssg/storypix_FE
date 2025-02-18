@@ -11,7 +11,8 @@ export async function middleware(req: NextRequest) {
   console.log("🔹 현재 리프레시 토큰:", refreshToken ? "있음" : "없음");
 
 
-  const protectedPaths = ["/account", "/subscribe", "/tale"];
+  // const protectedPaths = ["/account", "/subscribe", "/tale"];
+  const protectedPaths = ["/localTest"];
 
 
   if (url.pathname === "/") {

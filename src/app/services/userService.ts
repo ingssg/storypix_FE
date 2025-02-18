@@ -8,7 +8,7 @@ export const fetchUser = async () => {
   } catch (error) {
     console.log("비로그인 유저", error);
     localStorage.removeItem("nickname");
-    return null;
+    throw new Error("비로그인 유저");
   }
 };
 

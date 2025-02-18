@@ -111,7 +111,7 @@ const AIModal = ({ onClose }: Props) => {
 
   return (
     <div
-      className="h-full w-screen fixed top-0 left-0 z-20"
+      className="h-full w-screen fixed top-0 left-0 z-[10001]"
       onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
     >
       <div className="flex flex-col items-center absolute top-1/2 -translate-y-1/2 z-50 right-4 bg-white bg-opacity-60 backdrop-blur-lg h-[95%] max-h-[40rem] rounded-xl p-4 w-56">

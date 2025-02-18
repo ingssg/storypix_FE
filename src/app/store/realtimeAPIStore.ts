@@ -161,6 +161,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
         input_audio_transcription: {
           model: "whisper-1",
         },
+        temperature: 0.6,
       },
     };
     if (dc && dc.readyState === "open") {
@@ -174,6 +175,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       type: "session.update",
       session: {
         instructions: value,
+        temperature: 0.6,
       },
     };
     if (dc && dc.readyState === "open") dc.send(JSON.stringify(responseEvent));

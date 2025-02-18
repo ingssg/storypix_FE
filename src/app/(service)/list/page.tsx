@@ -40,6 +40,7 @@ const List = () => {
         setHasMore(false);
       }
     } catch (error) {
+      alert("데이터 로딩 오류");
       console.log("데이터 로딩 오류", error);
     } finally {
       setIsLoading(false);

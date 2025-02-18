@@ -18,6 +18,7 @@ const ServiceGNB = () => {
   };
 
   const goList = () => {
+    setIsOpenModal(false);
     router.push("/list");
   };
 

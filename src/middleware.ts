@@ -32,9 +32,8 @@ export async function middleware(req: NextRequest) {
         }
       }
       console.log("🚫 리프레시 토큰 없음 또는 리프레시 실패 → 로그인 페이지로 리디렉트");
-      const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
-      url.pathname = loginURL;
-      return NextResponse.redirect(url);
+      const loginURL = new URL("/auth/kakao", process.env.NEXT_PUBLIC_API_BASE_URL);
+      return NextResponse.redirect(loginURL);
     }
     console.log("✅ 액세스 토큰이 유효함 → 정상적으로 페이지 접근 허용");
   }

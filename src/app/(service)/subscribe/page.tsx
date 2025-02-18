@@ -44,7 +44,6 @@ const Subscribe = () => {
       window.LemonSqueezy.Setup({
         eventHandler: (event) => {
           isEventHandlerSetted.current = true;
-          console.log(event.data);
           if (event.event === "Checkout.ApplyDiscount") {
             if (event.data.cart.discount) {
               promotionCodeRef.current = event.data.cart.discount.code;

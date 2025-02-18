@@ -61,7 +61,6 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const closeModal = () => {
     onClose(false);
     setIsRenewModalOpen(false);
-    console.log("closeModal");
   };
 
   useEffect(() => {

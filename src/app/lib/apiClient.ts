@@ -89,9 +89,9 @@ apiClient.interceptors.response.use(
           console.error("API 요청 오류", error.response.status);
       }
     } else if (error.request) {
-      console.log("API 요청 실패");
+      console.error("API 요청 실패");
     } else {
-      console.log("요청 생성 전 에러 발생", error.message);
+      console.error("요청 생성 전 에러 발생", error.message);
     }
     return Promise.reject(error);
   }

@@ -367,7 +367,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       trackingPlayerEvent("story_page_view", { page_number: page });
       setStoryContents([...storyContents!, ...data]);
     } catch (error) {
-      console.log("데이터 로딩 오류", error);
+      console.error("데이터 로딩 오류", error);
       alert("다시 로그인해주세요");
       window.location.href =
         process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";

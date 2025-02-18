@@ -32,6 +32,7 @@ interface PlayerState {
   isEnd: boolean;
   isPageMoveTriggered: boolean;
   enterTime: number;
+  timer: NodeJS.Timeout | null;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -91,6 +92,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   isEnd: false,
   isPageMoveTriggered: false,
   enterTime: 0,
+  timer: null,
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -142,6 +144,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       storyContents,
       hasStarted,
       setCurrPrevSentence,
+      timer,
     } = get();
 
     if (!storyContents) return;
@@ -154,18 +157,27 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       audioPlayer.pause();
     }
 
+    if (timer) {
+      clearTimeout(timer);
+      set({ timer: null });
+    }
+
     const player = new Audio(currentSentence.narration);
     setAudioPlayer(player);
 
     player.playbackRate = speed;
     player.preservesPitch = true;
 
-    await player.play();
     setIsPlaying(true);
-    if (!hasStarted) set({ hasStarted: true });
-    player.onended = () => {
-      get().playNextSentence();
-    };
+    const newTimer = setTimeout(async () => {
+      await player.play();
+      if (!hasStarted) set({ hasStarted: true });
+      player.onended = () => {
+        get().playNextSentence();
+      };
+    }, 1500);
+
+    set({ timer: newTimer });
   },
 
   playNextSentence: () => {
@@ -196,7 +208,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         fetchPage(lastFetchedPage + 1);
         set({ lastFetchedPage: lastFetchedPage + 1 });
       }
-      
+
       setCurrentPageIdx(currentPageIdx + 1);
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
@@ -285,8 +297,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   stopHandler: () => {
-    const { setIsPlaying, audioPlayer } = get();
+    const { setIsPlaying, audioPlayer, timer } = get();
     setIsPlaying(false);
+
+    if (timer) {
+      clearTimeout(timer);
+      set({ timer: null });
+    }
     if (audioPlayer) {
       audioPlayer.pause();
     }

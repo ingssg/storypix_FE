@@ -92,6 +92,9 @@ const Tale = () => {
         setStoryContents(data);
       } catch (error) {
         console.log("데이터 로딩 오류", error);
+        alert("다시 로그인해주세요");
+        window.location.href =
+          process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
       }
     };
     trackingPlayerEvent("story_open");
@@ -193,7 +196,11 @@ const Tale = () => {
           </div>
           {questionCount > 0 && !isHoverOpen && (
             <>
-              <AnimatePresence>{isGuideOpen && <AiGuide onClose={() => setIsGuideOpen(false)}/>}</AnimatePresence>
+              <AnimatePresence>
+                {isGuideOpen && (
+                  <AiGuide onClose={() => setIsGuideOpen(false)} />
+                )}
+              </AnimatePresence>
               <button
                 type="button"
                 className="fixed bottom-6 right-6 bg-gradient-to-br from-[#FFB648] to-[#FF7134] rounded-lg flex flex-col justify-center items-center p-2 text-xs font-light gap-1 w-16 h-16 z-[11]"

@@ -26,7 +26,7 @@ const ReSubscribeModal = ({ renewsAt, onClose }: Props) => {
       await apiClient.patch("/payment");
       setIsSuccess(true);
     } catch (error) {
-      console.log(error, "구독 재개 에러");
+      console.error(error);
       setIsSuccess(false);
     } finally {
       setIsLoading(false);

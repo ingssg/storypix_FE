@@ -20,7 +20,7 @@ const AccountDeletionModal = ({ onClose }: Props) => {
       localStorage.removeItem("nickname");
       window.location.href = "/list";
     } catch (error) {
-      console.log(error, "회원탈퇴 에러");
+      console.error(error);
     }
   };
 

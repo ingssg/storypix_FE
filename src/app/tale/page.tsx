@@ -91,7 +91,7 @@ const Tale = () => {
         trackingPlayerEvent("story_page_view", { page_number: 3 });
         setStoryContents(data);
       } catch (error) {
-        console.log("데이터 로딩 오류", error);
+        console.error(error);
         alert("다시 로그인해주세요");
         window.location.href =
           process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
@@ -106,7 +106,7 @@ const Tale = () => {
         isDisconnectedRef.current = false;
       });
     } catch (error) {
-      console.log("토큰 요청 오류", error);
+      console.error(error);
     }
 
     return () => {
@@ -142,7 +142,7 @@ const Tale = () => {
               isDisconnectedRef.current = false;
             });
           } catch (error) {
-            console.log("토큰 요청 오류", error);
+            console.error(error);
           }
         }
       }

@@ -12,7 +12,7 @@ const WithAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
           await fetchUser();
           setIsLoading(false);
         } catch (error) {
-          console.log(error);
+          console.error(error);
           alert("로그인이 필요합니다.");
           const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
           window.location.href = loginURL;

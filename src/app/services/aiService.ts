@@ -24,7 +24,7 @@ export const getTokenAPI = async (storyId: number) => {
     return data;
   }
   catch( error ) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };

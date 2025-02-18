@@ -31,7 +31,7 @@ const refreshAccessToken = async () => {
     await refreshClient.post("/auth/refresh");
     onRefreshed();
   } catch (error) {
-    console.log("리프레쉬 토큰 없음", error);
+    console.error(error);
     return null;
   }
 };
@@ -70,7 +70,7 @@ apiClient.interceptors.response.use(
               await refreshAccessToken();
               return apiClient(originalRequest);
             } catch (refreshError) {
-              console.log(refreshError);
+              console.error(refreshError);
             } finally {
               isRefreshing = false;
             }

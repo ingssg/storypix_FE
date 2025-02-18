@@ -19,7 +19,7 @@ const LogOutModal = ({ onClose }: Props) => {
       localStorage.removeItem("nickname");
       window.location.href = "/list";
     } catch (error) {
-      console.log(error, "로그아웃 에러");
+      console.error(error);
     }
   };
 

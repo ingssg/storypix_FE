@@ -6,7 +6,7 @@ export const fetchUser = async () => {
     localStorage.setItem("nickname", data.userInfo.nickname);
     return data;
   } catch (error) {
-    console.log("비로그인 유저", error);
+    console.error(error);
     localStorage.removeItem("nickname");
     throw new Error("비로그인 유저");
   }

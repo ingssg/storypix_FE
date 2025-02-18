@@ -41,7 +41,7 @@ const List = () => {
       }
     } catch (error) {
       alert("데이터 로딩 오류");
-      console.log("데이터 로딩 오류", error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

@@ -21,7 +21,7 @@ const Subscribe = () => {
       const { data } = await refreshClient.post("/payment");
       return data.checkoutUrl;
     } catch (error: unknown) {
-      console.log(error);
+      console.error(error);
       if (error instanceof AxiosError && error.response?.status === 401) {
         alert("로그인이 필요합니다.");
         const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";

@@ -230,20 +230,21 @@ REMEMBER: answer in {language}, even if I speak another language.`,
         }
 
         if (serverEvent.type === "error") {
-          console.log(serverEvent.error.code);
           if (serverEvent.error.code === "session_expired") {
-            console.log("세션 만료, 세션 재 연결 시도", serverEvent);
-            get().setIsOpenAIModal(false);
-            closeWebRTCSession();
-            try {
-              get()
-                .fetchToken()
-                .then(() => {
-                  useWebRTCStore.getState().createPeerConnection();
-                });
-            } catch (error) {
-              console.error("토큰 요청 오류", error);
-            }
+            const disconnectAndReconnect = async () => {
+              get().setIsOpenAIModal(false);
+              await closeWebRTCSession();
+              try {
+                get()
+                  .fetchToken()
+                  .then(() => {
+                    useWebRTCStore.getState().createPeerConnection();
+                  });
+              } catch (error) {
+                console.error("토큰 요청 오류", error);
+              }
+            };
+            disconnectAndReconnect();
           }
         }
       });

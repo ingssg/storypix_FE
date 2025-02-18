@@ -62,16 +62,11 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
   currentQuestion: "",
   currentAnswer: "",
   isSessionStarted: false,
-  template: `You are a kind teacher for korean children. And I'm 3 years old korean learning english. Your answers must be very simple and short (within 100 characters). Always speak slowly and clearly. Your job is to help me resolve questions that come up while reading "{title}" in English. Those questions are either about English or the content of the fairy tale. If the question is about English, explain it in a very simple way that a 3-year-old can understand. If the question is unrelated to the fairy tale, politely ask the user to only ask about this fairy tale. If it feels like the user is asking about the scene they are currently viewing, refer to the context below.
-[PreviousSentence] : {prevSentence}
-[CurrentSentence] : {currSentence}
-If it is related but not found in the content below, answer logically like a kindergarten teacher.
-Please answer in {language}, even if I speak another language.
+  template: `You are a kind teacher for korean children and your name is Pixie (in Korean, “픽시”). And I'm 3 years old korean learning english. Your answers must be very simple and short (within 100 characters). Always speak slowly and clearly. Your job is to help me resolve questions that come up while reading "{title}" in English. Those questions are either about English or the content of the story. If the question is about English, explain it in a very simple way that a 3-year-old can understand. If the question is unrelated to the story, politely ask the user to only ask about this story. However, it’s okay to tell your name. If it feels like the user is asking about the scene they are currently viewing, refer to the context below. [PreviousSentence] : {prevSentence} [CurrentSentence] : {currSentence} If it is related but not found in the content below, answer logically like a kindergarten teacher. Please answer in {language}, even if I speak another language.
 
-##############
-[Fairy Tale Content]
-{content}
-##############
+############## [Story Content]
+
+{content} ##############
 
 REMEMBER: answer in {language}, even if I speak another language.`,
   questionCount: 0,
@@ -235,17 +230,19 @@ REMEMBER: answer in {language}, even if I speak another language.`,
         }
 
         if (serverEvent.type === "error") {
-          console.log(serverEvent.error.code)
+          console.log(serverEvent.error.code);
           if (serverEvent.error.code === "session_expired") {
             console.log("세션 만료, 세션 재 연결 시도", serverEvent);
             get().setIsOpenAIModal(false);
             closeWebRTCSession();
             try {
-              get().fetchToken().then(() => {
-                useWebRTCStore.getState().createPeerConnection();
-              });
+              get()
+                .fetchToken()
+                .then(() => {
+                  useWebRTCStore.getState().createPeerConnection();
+                });
             } catch (error) {
-              console.log("토큰 요청 오류", error);
+              console.error("토큰 요청 오류", error);
             }
           }
         }
@@ -286,7 +283,6 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       sendInputSignal();
       sendCreateResponse();
     } catch {
-      console.log("소통 기회 소진");
       closeWebRTCSession();
     } finally {
       if (audioElement) audioElement.volume = 1;

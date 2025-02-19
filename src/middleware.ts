@@ -18,7 +18,6 @@ export async function middleware(req: NextRequest) {
     if (!accessToken || !(await checkAccessTokenValidity(accessToken))) {
       if (refreshToken) {
         if (await refreshAccessToken(refreshToken)) {
-          const endTime = performance.now();
           return NextResponse.next();
         }
       }

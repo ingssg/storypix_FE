@@ -12,21 +12,19 @@
 
 ### 서비스 화면
 
-
-<div style="display: flex; justify-content: center; gap: 20px;">
-<div style="text-align: center; flex-direction: column;">
-<img src="https://github.com/user-attachments/assets/eb132f9f-2f91-48f6-bc85-634b9356cff5" width="200" height="400"/>
-<span>[랜딩 페이지]</span>
-</div>
-<div style="text-align: center; flex-direction: column;">
-<img src="https://github.com/user-attachments/assets/2c8f60e1-1386-411c-9824-90491e94aab8" width="200" height="400"/>
-<span>[리스트 페이지]</span>
-</div>
-<div style="text-align: center; flex-direction: column;">
-<img src="https://github.com/user-attachments/assets/72a0ec93-7be7-4110-b706-656172f9b227" width="200" height="400"/>
-<span>[구독 페이지]</span>
-</div>
-
+<div style="display: flex; items-align: center; gap: 20px;">
+  <div style="text-align: center; display:flex; flex-direction: column;">
+    <img src="https://github.com/user-attachments/assets/eb132f9f-2f91-48f6-bc85-634b9356cff5" width="200" height="400"/>
+    <span>[랜딩 페이지]</span>
+  </div>
+  <div style="text-align: center; display:flex; flex-direction: column;">
+    <img src="https://github.com/user-attachments/assets/2c8f60e1-1386-411c-9824-90491e94aab8" width="200" height="400"/>
+    <span>[리스트 페이지]</span>
+  </div>
+  <div style="text-align: center; display:flex; flex-direction: column;">
+    <img src="https://github.com/user-attachments/assets/72a0ec93-7be7-4110-b706-656172f9b227" width="200" height="400"/>
+    <span>[구독 페이지]</span>
+  </div>
 </div>
 
 <br/><br/>

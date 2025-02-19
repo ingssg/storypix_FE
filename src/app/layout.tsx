@@ -59,7 +59,7 @@ export default function RootLayout({
       <body
         className={`${pretendard.className} ${hammersmith.className} font-pretendard`}
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<></>}>
           <GtagWrapper />
         </Suspense>
         {children}

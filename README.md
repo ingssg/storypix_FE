@@ -1,4 +1,4 @@
-### [스토리픽스 바로가기](https://storypix.spartastudio.app/list)
+### [스토리픽스 바로가기](https://storypix.spartastudio.app)
 <br/>
 
 ## 🍳 스토리픽스

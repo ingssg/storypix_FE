@@ -51,7 +51,6 @@ const Tale = () => {
   const [isLandscape, setIsLandscape] = useState(false);
   const [isHoverOpen, setIsHoverOpen] = useState(true);
   const [isGuideOpen, setIsGuideOpen] = useState(true);
-  const [cashedImg, setCashedImg] = useState<Record<number, string>>({});
   const disconnectTimer = useRef<NodeJS.Timeout | null>(null);
   const isDisconnectedRef = useRef(false);
 
@@ -166,27 +165,15 @@ const Tale = () => {
 
   useEffect(() => {
     if (!storyContents) return;
-    if (Object.keys(cashedImg).length === 0) {
-      const initialCache: Record<number, string> = {};
-      storyContents.forEach((content, idx) => {
-        const img = new window.Image();
-        img.src = content.image;
-        img.onload = () => {
-          initialCache[idx] = content.image;
-          setCashedImg((prev) => ({ ...prev, ...initialCache }));
-        };
+    if (storyContents.length === 3) {
+      storyContents.forEach((content) => {
+        new window.Image().src = content.image;
       });
       return;
     }
+    
+    new window.Image().src = storyContents[lastFetchedPage - 1].image;
 
-    const img = new window.Image();
-    img.src = storyContents[lastFetchedPage - 1].image;
-    img.onload = () => {
-      setCashedImg((prev) => ({
-        ...prev,
-        [lastFetchedPage - 1]: storyContents[lastFetchedPage - 1].image,
-      }));
-    };
   }, [storyContents]);
 
   const lodaderClass =
@@ -216,7 +203,7 @@ const Tale = () => {
           <div
             className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"
             style={{
-              backgroundImage: cashedImg[currentPageIdx] ? `url(${cashedImg[currentPageIdx]})` : "none",
+              backgroundImage: `url(${storyContents[currentPageIdx].image})`,
             }}
           >
             <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith text-center">

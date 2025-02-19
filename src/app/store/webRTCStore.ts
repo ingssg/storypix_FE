@@ -1,16 +1,16 @@
 import { create } from "zustand";
 import { useRealtimeAPIStore } from "./realtimeAPIStore";
+import { getTokenAPI } from "../services/aiService";
+import { usePlayerStore } from "./playerStore";
 
 interface WebRTCState {
   peerConnection: RTCPeerConnection | null;
-  ephemeralKey: string;
   sdp: RTCSessionDescriptionInit | null;
   dc: RTCDataChannel | null;
   audioElement: HTMLAudioElement | null;
   ms: MediaStream | null;
 
   setPeerConnection: (value: RTCPeerConnection | null) => void;
-  setEphemeralKey: (value: string) => void;
   setSdp: (value: RTCSessionDescriptionInit | null) => void;
   setDc: (value: RTCDataChannel | null) => void;
 
@@ -24,14 +24,12 @@ interface WebRTCState {
 
 export const useWebRTCStore = create<WebRTCState>((set, get) => ({
   peerConnection: null,
-  ephemeralKey: "",
   sdp: null,
   dc: null,
   audioElement: null,
   ms: null,
 
   setPeerConnection: (value) => set({ peerConnection: value }),
-  setEphemeralKey: (value) => set({ ephemeralKey: value }),
   setSdp: (value) => set({ sdp: value }),
   setDc: (value) => set({ dc: value }),
 
@@ -60,19 +58,22 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
 
   // Create offer and send it to the server
   createAndSendOffer: async () => {
-    const { peerConnection, ephemeralKey, setSdp } = get();
-
-    if (!peerConnection || !ephemeralKey) {
-      console.error("PeerConnection or EphemeralKey is not initialized");
+    const { peerConnection, setSdp } = get();
+    if (!peerConnection) {
+      console.error("PeerConnection is not initialized");
       return;
     }
 
+    const token = await getTokenAPI(usePlayerStore.getState().storyId);
+    if (token === null) return;
+    const ephemeralKey = token.session.client_secret.value;
+
     const constraints = {
       audio: {
-        echoCancellation: false,  
-        noiseSuppression: false,  
-        autoGainControl: false,   
-      }
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+      },
     };
 
     const ms = await navigator.mediaDevices.getUserMedia(constraints);
@@ -144,7 +145,6 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     } = get();
 
     if (peerConnection) {
-
       peerConnection.getSenders().forEach((sender) => {
         if (sender.track) {
           sender.track.stop();

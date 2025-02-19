@@ -293,12 +293,9 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   fetchToken: async () => {
     const { storyId, setFullContent } = usePlayerStore.getState();
     const { setQuestionCount } = get();
-    const { setEphemeralKey } = useWebRTCStore.getState();
     setQuestionCount(() => 0);
     const token = await getTokenAPI(storyId);
     if (token === null) return;
-    const EPHEMERAL_KEY = token.session.client_secret.value;
-    setEphemeralKey(EPHEMERAL_KEY);
     setFullContent(token.instruction);
     setQuestionCount(() => token.remainedCount);
 

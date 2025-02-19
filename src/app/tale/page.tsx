@@ -33,6 +33,7 @@ const Tale = () => {
     isPageMoveTriggered,
     setEnterTime,
     setIsPageMoveTriggered,
+    lastFetchedPage,
   } = usePlayerStore();
 
   const { createPeerConnection, closeWebRTCSession } = useWebRTCStore();
@@ -50,6 +51,7 @@ const Tale = () => {
   const [isLandscape, setIsLandscape] = useState(false);
   const [isHoverOpen, setIsHoverOpen] = useState(true);
   const [isGuideOpen, setIsGuideOpen] = useState(true);
+  const [cashedImg, setCashedImg] = useState<Record<number, string>>({});
   const disconnectTimer = useRef<NodeJS.Timeout | null>(null);
   const isDisconnectedRef = useRef(false);
 
@@ -162,6 +164,31 @@ const Tale = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!storyContents) return;
+    if (Object.keys(cashedImg).length === 0) {
+      const initialCache: Record<number, string> = {};
+      storyContents.forEach((content, idx) => {
+        const img = new window.Image();
+        img.src = content.image;
+        img.onload = () => {
+          initialCache[idx] = content.image;
+          setCashedImg((prev) => ({ ...prev, ...initialCache }));
+        };
+      });
+      return;
+    }
+
+    const img = new window.Image();
+    img.src = storyContents[lastFetchedPage - 1].image;
+    img.onload = () => {
+      setCashedImg((prev) => ({
+        ...prev,
+        [lastFetchedPage - 1]: storyContents[lastFetchedPage - 1].image,
+      }));
+    };
+  }, [storyContents]);
+
   const lodaderClass =
     "w-12 h-12 rounded-full border-t-4 border-t-white border-r-4 border-r-transparent animate-spin block";
 
@@ -189,7 +216,7 @@ const Tale = () => {
           <div
             className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"
             style={{
-              backgroundImage: `url(${storyContents[currentPageIdx].image})`,
+              backgroundImage: cashedImg[currentPageIdx] ? `url(${cashedImg[currentPageIdx]})` : "none",
             }}
           >
             <p className="mt-auto py-10 text-xl px-[20%] bg-gradient-to-t from-[rgba(28,28,28,1)] via-[rgba(28,28,28,1)] to-[rgba(28,28,28,0)] font-hammersmith text-center">

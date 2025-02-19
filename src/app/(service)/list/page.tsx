@@ -72,17 +72,29 @@ const List = () => {
     fetchUser();
     return () => setTales([]);
   }, []);
-  
+
+  const lodaderClass =
+    "w-12 h-12 rounded-full border-t-4 border-t-[#FF7134] border-r-4 border-r-transparent animate-spin block";
 
   return (
-    <div className={`max-w-[1000px] mx-auto pt-12 flex flex-col items-center px-[6%]`}>
+    <div
+      className={`max-w-[1000px] mx-auto pt-12 flex flex-col items-center px-[6%]`}
+    >
       <p className="w-full mt-6 text-2xl font-semibold">작품 목록</p>
       <div className="mt-5 w-full">
         {tales.map((tale) => (
-          <Tale key={tale.id} taleInfo={tale} isSubscribedUser={isSubscribedUser}/>
+          <Tale
+            key={tale.id}
+            taleInfo={tale}
+            isSubscribedUser={isSubscribedUser}
+          />
         ))}
       </div>
-      {isLoading && <p className="mt-10 w-full text-center">로딩중...</p>}
+      {isLoading && (
+        <div className="mt-10 w-full flex justify-center">
+          <span className={lodaderClass}></span>
+        </div>
+      )}
       <div ref={observerRef} className="h-10" />
     </div>
   );

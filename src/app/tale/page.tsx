@@ -162,10 +162,15 @@ const Tale = () => {
     };
   }, []);
 
+  const lodaderClass =
+    "w-12 h-12 rounded-full border-t-4 border-t-white border-r-4 border-r-transparent animate-spin block";
+
   return (
     <>
       {!storyContents ? (
-        <>로딩중</>
+        <div className="w-screen h-screen flex justify-center items-center">
+          <span className={lodaderClass}></span>
+        </div>
       ) : (
         <div className="bg-black h-screen text-white w-full">
           {!isLandscape && <ViewOptimizationModal />}

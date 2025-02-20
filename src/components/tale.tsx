@@ -79,6 +79,7 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
         }
         priority={true}
         fetchPriority="high"
+        sizes="(max-width: 1200px) 88vw, 1000px"
       />
       <div className="w-full flex flex-col gap-1 mt-3 mb-2">
         <div

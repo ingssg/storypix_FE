@@ -76,7 +76,7 @@ const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
         setSubscriptionInfo(subscriptionInfo);
         setHasLogin(true);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setSubscriptionInfo(null);
         setHasLogin(false);
         setEmail("");

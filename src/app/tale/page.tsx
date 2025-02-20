@@ -34,6 +34,7 @@ const Tale = () => {
     setEnterTime,
     setIsPageMoveTriggered,
     lastFetchedPage,
+    isHoverOpen,
   } = usePlayerStore();
 
   const { createPeerConnection, closeWebRTCSession } = useWebRTCStore();
@@ -49,7 +50,6 @@ const Tale = () => {
   const AIModalRef = useRef<HTMLButtonElement>(null);
 
   const [isLandscape, setIsLandscape] = useState(false);
-  const [isHoverOpen, setIsHoverOpen] = useState(true);
   const [isGuideOpen, setIsGuideOpen] = useState(true);
   const disconnectTimer = useRef<NodeJS.Timeout | null>(null);
   const isDisconnectedRef = useRef(false);
@@ -197,8 +197,6 @@ const Tale = () => {
             </div>
           )}
           <PlayerHover
-            isHoverOpen={isHoverOpen}
-            setIsHoverOpen={setIsHoverOpen}
           />
           <div
             className="bg-contain bg-center bg-no-repeat h-dvh max-mx-[12%] overflow-hidden flex flex-col justify-between"

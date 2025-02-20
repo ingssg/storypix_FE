@@ -34,6 +34,8 @@ interface PlayerState {
   enterTime: number;
   prevTimer: NodeJS.Timeout | null;
   nextTimer: NodeJS.Timeout | null;
+  isHoverOpen: boolean;
+  hoverTimer: NodeJS.Timeout | null;
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -49,6 +51,10 @@ interface PlayerState {
   setTitleEng: (value: string) => void;
   setFullContent: (value: string) => void;
   setEnterTime: (value: number) => void;
+  setIsHoverOpen: (value: boolean) => void;
+  setHoverTimer: (value: NodeJS.Timeout | null) => void;
+  
+  resetHoverTimer: () => void;
 
   // 속도 및 언어 설정 함수
   decreaseSpeed: () => void;
@@ -58,7 +64,7 @@ interface PlayerState {
   setEnglish: () => void;
 
   playSentence: () => void;
-  playNextSentence: () => void;
+  playNextSentence: (value?: number) => void;
   playPrevSentence: () => void;
   playNextPage: () => void;
   playPrevPage: () => void;
@@ -95,6 +101,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   enterTime: 0,
   prevTimer: null,
   nextTimer: null,
+  isHoverOpen: true,
+  hoverTimer: null,
 
   // 상태 변경 함수
   setIsPlaying: (value) => set({ isPlaying: value }),
@@ -112,6 +120,17 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setIsEnd: (value) => set({ isEnd: value }),
   setIsPageMoveTriggered: (value) => set({ isPageMoveTriggered: value }),
   setEnterTime: (value) => set({ enterTime: value }),
+  setIsHoverOpen: (value) => set({ isHoverOpen: value }),
+  setHoverTimer: (value) => set({ hoverTimer: value }),
+  resetHoverTimer: () => {
+    const { hoverTimer } = get();
+    if (hoverTimer) clearTimeout(hoverTimer);
+    const timer = setTimeout(() => {
+      set({ isHoverOpen: false });
+      set({ hoverTimer: null });
+    }, 2500);
+    set({ hoverTimer: timer });
+  },
 
   setCurrPrevSentence: () => {
     const { storyContents, currentPageIdx, currentSentenceIdx } = get();
@@ -175,14 +194,14 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       await player.play();
       if (!hasStarted) set({ hasStarted: true });
       player.onended = () => {
-        get().playNextSentence();
+        get().playNextSentence(1000);
       };
     }, 1000);
 
     set({ prevTimer: newTimer });
   },
 
-  playNextSentence: () => {
+  playNextSentence: (value:number = 0) => {
     const {
       setCurrentSentenceIdx,
       setCurrentPageIdx,
@@ -198,6 +217,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       playHandler,
       audioPlayer,
       isEnd,
+      hoverTimer,
+      resetHoverTimer,
     } = get();
     if (!storyContents) return;
     set({ isPageMoveTriggered: false });
@@ -212,7 +233,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
           fetchPage(lastFetchedPage + 1);
           set({ lastFetchedPage: lastFetchedPage + 1 });
         }
-  
+
         setCurrentPageIdx(currentPageIdx + 1);
         setCurrentSentenceIdx(0);
         setCurrPrevSentence();
@@ -222,8 +243,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         if (audioPlayer) audioPlayer.pause();
       }
       if (!hasStarted) playHandler();
-    }, 1000);
-    if(!isEnd) {
+    }, value);
+    if (hoverTimer) resetHoverTimer();
+    if (!isEnd) {
       set({ isPlaying: true });
     }
     set({ nextTimer: newTimer });
@@ -237,18 +259,26 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentPageIdx,
       storyContents,
       setCurrPrevSentence,
+      hoverTimer,
+      resetHoverTimer,
+      hasStarted,
+      playHandler,
     } = get();
     if (!storyContents) return;
     set({ isPageMoveTriggered: false });
     if (currentSentenceIdx > 0) {
       setCurrentSentenceIdx(currentSentenceIdx - 1);
       setCurrPrevSentence();
+      if (!hasStarted) playHandler();
+      if (hoverTimer) resetHoverTimer();
     } else if (currentPageIdx > 0) {
       setCurrentPageIdx(currentPageIdx - 1);
       setCurrentSentenceIdx(
         storyContents[currentPageIdx - 1].details.length - 1
       );
       setCurrPrevSentence();
+      if (!hasStarted) playHandler();
+      if (hoverTimer) resetHoverTimer();
     } else {
       alert("첫번째 문장입니다!");
     }
@@ -258,12 +288,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const {
       setCurrentPageIdx,
       setCurrentSentenceIdx,
-      setIsPlaying,
       currentPageIdx,
       setCurrPrevSentence,
       totalPage,
       lastFetchedPage,
       fetchPage,
+      hoverTimer,
+      resetHoverTimer,
     } = get();
 
     if (currentPageIdx < totalPage - 1) {
@@ -276,9 +307,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
       set({ isPageMoveTriggered: true });
+      if (hoverTimer) {
+        resetHoverTimer();
+      }
     } else {
       alert("마지막 페이지입니다!");
-      setIsPlaying(false);
     }
   },
 
@@ -288,6 +321,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentSentenceIdx,
       currentPageIdx,
       setCurrPrevSentence,
+      hoverTimer,
+      resetHoverTimer
     } = get();
 
     if (currentPageIdx > 0) {
@@ -295,6 +330,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
       set({ isPageMoveTriggered: true });
+      if (hoverTimer) resetHoverTimer();
     } else {
       alert("첫번째 페이지입니다!");
     }

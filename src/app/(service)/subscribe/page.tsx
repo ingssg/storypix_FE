@@ -34,39 +34,44 @@ const Subscribe = () => {
     }
   };
 
-  const startSubscribe = async () => {
-    trackingEvent("subscribe_btn_click", { user_id: getNickName() });
-    const checkouturl = await getCheckoutURL();
-    window.createLemonSqueezy();
-    if (isLemonLoaded.current && window.LemonSqueezy) {
-      window.LemonSqueezy.Url.Open(checkouturl);
-      clearHandler();
-      window.LemonSqueezy.Setup({
-        eventHandler: (event) => {
-          isEventHandlerSetted.current = true;
-          if (event.event === "Checkout.ApplyDiscount") {
-            if (event.data.cart.discount) {
-              promotionCodeRef.current = event.data.cart.discount.code;
-            }
-            else {
-              promotionCodeRef.current = "";
-            }
-          }
-          if (event.event === "Checkout.Success") {
-            const paymentId = event.data.order.data.id;
-            trackingEvent("subscribe_payment_success", {
-              user_id: getNickName(),
-              promotion_code: promotionCodeRef.current,
-              transaction_id: paymentId,
-            });
-          }
-        },
-      });
-    } else {
-      alert("다시 시도해주세요");
-      window.location.reload();
-    }
-  };
+  const blockSubscribe = async () => {  //FIXME 구독 점검 핸들러
+    trackingEvent("unavailable_subscribe_btn_click", { user_id: getNickName() });
+    alert("잠시 구독 점검 중입니다.");
+  }
+
+  // const startSubscribe = async () => { //FIXME 구독 점검 끝나고 이거로
+  //   trackingEvent("subscribe_btn_click", { user_id: getNickName() });
+  //   const checkouturl = await getCheckoutURL();
+  //   window.createLemonSqueezy();
+  //   if (isLemonLoaded.current && window.LemonSqueezy) {
+  //     window.LemonSqueezy.Url.Open(checkouturl);
+  //     clearHandler();
+  //     window.LemonSqueezy.Setup({
+  //       eventHandler: (event) => {
+  //         isEventHandlerSetted.current = true;
+  //         if (event.event === "Checkout.ApplyDiscount") {
+  //           if (event.data.cart.discount) {
+  //             promotionCodeRef.current = event.data.cart.discount.code;
+  //           }
+  //           else {
+  //             promotionCodeRef.current = "";
+  //           }
+  //         }
+  //         if (event.event === "Checkout.Success") {
+  //           const paymentId = event.data.order.data.id;
+  //           trackingEvent("subscribe_payment_success", {
+  //             user_id: getNickName(),
+  //             promotion_code: promotionCodeRef.current,
+  //             transaction_id: paymentId,
+  //           });
+  //         }
+  //       },
+  //     });
+  //   } else {
+  //     alert("다시 시도해주세요");
+  //     window.location.reload();
+  //   }
+  // };
 
   const clearHandler = () => {
     if (isEventHandlerSetted.current) {
@@ -190,7 +195,8 @@ const Subscribe = () => {
               <button
                 className="w-full bg-[#FF7134] text-white rounded-lg h-11 mt-5 mb-2 py-3 font-bold text-sm"
                 type="button"
-                onClick={startSubscribe}
+                // onClick={startSubscribe} //FIXME 구독 점검 끝나고 이거로
+                onClick={blockSubscribe}
               >
                 스토리패스 구독 시작하기
               </button>

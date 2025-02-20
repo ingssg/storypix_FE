@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-
+// 가로모드 사용 권장 모달
 const ViewOptimizationModal = () => {
   const [isVisible, setIsVisible] = useState(false);
 

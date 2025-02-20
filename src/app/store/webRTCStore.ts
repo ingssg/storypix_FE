@@ -63,11 +63,12 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       console.error("PeerConnection is not initialized");
       return;
     }
-
+    // 임시 토큰 유출되지 않도록 바로 받아서 사용(open ai docs에서는 1분 지나면 만료시킨다고했는데 확인해보니 현재 2시간동안 유효함)
     const token = await getTokenAPI(usePlayerStore.getState().storyId);
     if (token === null) return;
     const ephemeralKey = token.session.client_secret.value;
 
+    // 해당 constraints로 통화모드 못가도록 제한
     const constraints = {
       audio: {
         echoCancellation: false,
@@ -117,6 +118,7 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
     }
   },
 
+  // RTC연결 이후 데이터를 주고받을 수 있는 통로 datachannel 생성
   createDataChannel: () => {
     const { peerConnection } = get();
     if (!peerConnection) {

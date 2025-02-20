@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+// 재구독 모달 관련 전역상태
 type ModalState = {
   isRenewModalOpen: boolean;
   isSidebarOpen: boolean;

@@ -9,6 +9,7 @@ type Props = {
   className?: string;
 };
 
+// 페이키 이동 컨트롤러
 const PageController = ({ className }: Props) => {
   const {
     storyContents,

@@ -8,6 +8,7 @@ type Props = {
   onClose: () => void;
 };
 
+// 회원탈퇴 모달
 const AccountDeletionModal = ({ onClose }: Props) => {
 
   const modalClose = () => onClose();

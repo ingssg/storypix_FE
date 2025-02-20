@@ -10,6 +10,7 @@ type Props = {
   onClose: () => void;
 };
 
+// 세팅 모달
 const SettingModal = ({ onClose }: Props) => {
   const {
     decreaseSpeed,

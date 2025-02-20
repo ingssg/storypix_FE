@@ -24,6 +24,7 @@ type TaleProps = {
   isSubscribedUser: boolean;
 };
 
+// 리스트 페이지에서 한 편의 동화 섹션 컴포넌트
 const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);

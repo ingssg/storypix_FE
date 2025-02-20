@@ -1,5 +1,7 @@
 import { apiClient } from "../lib/apiClient";
 
+// openai 관련한 api 집합
+
 export interface Communication {
   storyId: number;
   openaiSessionId: string;
@@ -22,8 +24,7 @@ export const getTokenAPI = async (storyId: number) => {
       storyId,
     });
     return data;
-  }
-  catch( error ) {
+  } catch (error) {
     console.error(error);
     return null;
   }

@@ -12,6 +12,7 @@ type Props = {
 
 const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
+// 구독 종료 예정 유저가 구독 재개하기 버튼 클릭 시 나오는 재구독 모달
 const ReSubscribeModal = ({ renewsAt, onClose }: Props) => {
   const [isRenewStart, setIsRenewStart] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

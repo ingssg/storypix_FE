@@ -6,6 +6,7 @@ import PageController from "./pageController";
 import { usePlayerStore } from "@/app/store/playerStore";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
+// 재생, 정지, 문장이동 컨트롤러
 const PlayController = () => {
   const {
     playPrevSentence,

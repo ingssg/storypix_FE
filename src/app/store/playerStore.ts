@@ -13,6 +13,7 @@ interface StoryContent {
 
 export type StoryContents = StoryContent[];
 
+// 플레이어 관련 전역 상태
 interface PlayerState {
   isPlaying: boolean;
   hasStarted: boolean;
@@ -32,10 +33,10 @@ interface PlayerState {
   isEnd: boolean;
   isPageMoveTriggered: boolean;
   enterTime: number;
-  prevTimer: NodeJS.Timeout | null;
-  nextTimer: NodeJS.Timeout | null;
+  prevTimer: NodeJS.Timeout | null;     // 문장 전 1초 텀 
+  nextTimer: NodeJS.Timeout | null;     // 문장 후 1초 텀
   isHoverOpen: boolean;
-  hoverTimer: NodeJS.Timeout | null;
+  hoverTimer: NodeJS.Timeout | null;    // 호버 닫히는 타이머
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -95,7 +96,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   lastFetchedPage: 3,
   storyId: 0,
   titleEng: "",
-  fullContent: "",
+  fullContent: "", //인스트럭션 설정을 위함
   isEnd: false,
   isPageMoveTriggered: false,
   enterTime: 0,

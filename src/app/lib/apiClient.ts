@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// 기본 apiClient
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
@@ -8,6 +9,7 @@ export const apiClient = axios.create({
   withCredentials: true,
 });
 
+// 리프레쉬 api는 401로 가도 리프레쉬 하면 안되니까 인터셉터 거치지 않도록 따로 구현
 export const refreshClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
@@ -36,6 +38,7 @@ const refreshAccessToken = async () => {
   }
 };
 
+// 인터셉터를 통한 전역 에러 핸들링
 apiClient.interceptors.request.use(
   (config) => {
     return config;

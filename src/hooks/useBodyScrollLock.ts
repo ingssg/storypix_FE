@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+// 모달이 열렸을 때 body 스크롤을 막는다.
 export const useBodyScrollLock = (isOpenModal: boolean) => {
   useEffect(() => {
     if (typeof document !== "undefined") {

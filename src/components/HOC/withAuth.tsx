@@ -3,13 +3,16 @@
 import { fetchUser } from "@/app/services/userService";
 import React, { ComponentType, useEffect, useState } from "react";
 
+// HOC 패턴으로 로그인 안한 유저 막기
+// middleware 사용으로 현재는 사용하지 않는 코드
+
 const WithAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
   const AuthComponent = (props: P) => {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
       const authenticate = async () => {
         try {
-          await fetchUser();
+          await fetchUser(); // users/me 에 유저정보  조회를 요청하면서 로그인 여부 확인
           setIsLoading(false);
         } catch (error) {
           console.error(error);

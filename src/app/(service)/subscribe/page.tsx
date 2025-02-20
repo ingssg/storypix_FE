@@ -33,7 +33,8 @@ const Subscribe = () => {
       }
     }
   };
-
+  
+  // 레몬스퀴지 관련 이벤트 처리
   const startSubscribe = async () => {
     trackingEvent("subscribe_btn_click", { user_id: getNickName() });
     const checkouturl = await getCheckoutURL();

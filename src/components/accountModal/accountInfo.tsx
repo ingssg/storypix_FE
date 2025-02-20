@@ -6,9 +6,11 @@ import SubscribeInfo from "../subscribeInfo";
 import { motion } from "framer-motion";
 import { trackingEvent } from "@/utils/gtagFunc";
 import { getNickName } from "@/utils/stores";
-import ReSubscribeModal from "./reSubscribeModal";
 import { useModalStore } from "@/app/store/modalStore";
 import { formatDate } from "@/utils/formatDate";
+import dynamic from "next/dynamic";
+
+const ReSubscribeModal = dynamic(() => import("./reSubscribeModal"));
 
 interface AccountInfoProps {
   hasLogin: boolean;
@@ -22,6 +24,7 @@ type SubscriptionInfo = {
   createdAt: string;
 };
 
+// 사이드바 컴포넌트
 const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");

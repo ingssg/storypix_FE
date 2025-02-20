@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 
 const SettingModal = dynamic(() => import("./playerHover/settingModal"));
 
+// 플레이어 호버 창
 const PlayerHover = () => {
   const {
     titleEng,

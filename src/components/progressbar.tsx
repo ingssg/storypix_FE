@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 
+// ai모달 유저 말할 때 프로그레스 바
+
 type Props = {
   onComplete: () => void;
 };

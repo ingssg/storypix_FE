@@ -5,6 +5,8 @@ import Script from "next/script";
 import GtagWrapper from "@/components/gtagWrapper";
 import { Suspense } from "react";
 
+// 글로벌 폰트 적용
+
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
   display: "swap",
@@ -26,12 +28,12 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-capable": "yes",
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    icon: "/favicon.ico", // 파비콘
+    apple: "/apple-icon.png", // 애플 작은 아이콘
     shortcut: "/favicon.ico",
   },
   formatDetection: {
-    email: false,
+    email: false, // 브라우저 이메일 자동 인식 차단
   },
 };
 

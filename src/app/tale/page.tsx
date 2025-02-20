@@ -70,6 +70,7 @@ const Tale = () => {
   };
 
   useEffect(() => {
+    // 페이지 이동 버튼 클릭시 이동안하게 하려고 추가
     if (isPageMoveTriggered && !isPlaying) {
       setIsPageMoveTriggered(false);
       return;

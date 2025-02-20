@@ -1,3 +1,5 @@
+// 레몬스퀴지 타입 정의
+
 type Cart = {
   discount: {
     code: string;

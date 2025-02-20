@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { usePlayerStore } from "@/app/store/playerStore";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
+// tale페이지 동화 끝나고 나오는 모달
 const TaleEndModal = () => {
   const { setIsEnd, goFirst, setCurrPrevSentence, enterTime } =
     usePlayerStore();

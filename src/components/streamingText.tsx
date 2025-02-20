@@ -1,6 +1,8 @@
 import { useRealtimeAPIStore } from "@/app/store/realtimeAPIStore";
 import React, { useEffect, useRef, useState } from "react";
 
+// 단어 스트리밍 형식으로 쭉 뽑아주기
+
 const StreamingText = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -30,7 +32,7 @@ const StreamingText = () => {
 
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    setDisplayText("");
+    setDisplayText(""); // 마운트 시 이전 찌꺼기 제거
   }, []);
 
   return (

@@ -10,11 +10,14 @@ import {
 } from "../services/aiService";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
+
+// OPENAI 관련 전역 상태 
+
 interface RealtimeAPIState {
   currentQuestion: string;
   currentAnswer: string;
   isSessionStarted: boolean;
-  template: string;
+  template: string; // 모든 동화 기본 인스트럭션
   questionCount: number;
   isSpeaking: boolean;
   isAISpeaking: boolean;
@@ -121,6 +124,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   setQuestionCount: (updateFn) =>
     set((state) => ({ questionCount: updateFn(state.questionCount) })),
 
+  // 유저 말 종료 알림
   sendInputSignal: () => {
     const { dc } = useWebRTCStore.getState();
     const responseEvent = {
@@ -131,7 +135,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       dc.send(JSON.stringify(responseEvent));
     }
   },
-
+  // 유저 인풋 초기화
   sendInputClear: () => {
     const { dc } = useWebRTCStore.getState();
     const responseEvent = {
@@ -142,7 +146,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       dc.send(JSON.stringify(responseEvent));
     }
   },
-
+  // AI 응답 생성 요청
   sendCreateResponse: () => {
     const { dc } = useWebRTCStore.getState();
     const responseEvent = {
@@ -150,7 +154,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     };
     if (dc && dc.readyState === "open") dc.send(JSON.stringify(responseEvent));
   },
-
+  // 최초에 세션 초기화
   sendInitSession: () => {
     const { dc } = useWebRTCStore.getState();
     const responseEvent = {
@@ -168,6 +172,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     }
   },
 
+  // 인스트럭션 업데이트
   updateInstructions: (value) => {
     const { dc } = useWebRTCStore.getState();
     const responseEvent = {
@@ -180,6 +185,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     if (dc && dc.readyState === "open") dc.send(JSON.stringify(responseEvent));
   },
 
+  // openai 서버 이벤트 수신
   receiveServerEvent: () => {
     const { dc, closeWebRTCSession } = useWebRTCStore.getState();
     const { setQuestionCount, sendInitSession } = get();
@@ -216,10 +222,10 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           sendInitSession();
           get().startUserQuestion();
           set({ isSessionStarted: true });
-        }
+        } // AI가 응답 만들기 시작
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
-        }
+        } // AI 음성 출력 완료
         if (serverEvent.type === "output_audio_buffer.stopped") {
           trackingPlayerEvent("story_ai_answer");
           if (get().questionCount > 0) {
@@ -228,7 +234,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           }
           closeWebRTCSession();
         }
-
+        // 세션 만료 이벤트
         if (serverEvent.type === "error") {
           if (serverEvent.error.code === "session_expired") {
             const disconnectAndReconnect = async () => {
@@ -250,6 +256,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       });
     }
   },
+  // 서버에 질답 내용 보내기
   sendCommuication: async () => {
     if (get().records.length === 0) return;
     const { storyId, currentPageIdx, prevSentence, currSentence } =
@@ -266,7 +273,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     await postCommuicationAPI(communication);
     set({ records: [] });
   },
-
+  // 유저 말 입력 시작
   startUserQuestion: async () => {
     const { prevSentence, currSentence, titleEng, fullContent } =
       usePlayerStore.getState();
@@ -274,7 +281,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
     setInstructions(titleEng, fullContent, prevSentence, currSentence);
     sendInputClear();
   },
-
+  // 유저 말 입력 종료 후 AI 대답 생성 요청
   finishUserQuestion: async () => {
     const { storyId } = usePlayerStore.getState();
     const { sendInputSignal, sendCreateResponse } = get();
@@ -289,7 +296,7 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       if (audioElement) audioElement.volume = 1;
     }
   },
-
+  // 백엔드 서버에 임시토큰 요청
   fetchToken: async () => {
     const { storyId, setFullContent } = usePlayerStore.getState();
     const { setQuestionCount } = get();

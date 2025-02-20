@@ -1,5 +1,7 @@
 import { apiClient } from "../lib/apiClient";
 
+// 유저 관련 api 집합
+
 export const fetchUser = async () => {
   try {
     const { data } = await apiClient.get("/users/me");

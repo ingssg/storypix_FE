@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
+// Google Analytics 4
 export default function useGtag() {
   const pathname = usePathname();
   const location = useSearchParams();

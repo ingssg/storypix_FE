@@ -16,6 +16,7 @@ interface Tale {
   isFree: boolean;
 }
 
+// 5개씩 가져옴
 const PAGE_COUNT = 5;
 
 const List = () => {
@@ -50,11 +51,12 @@ const List = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
+        // 대상 요소가 화면에 50% 이상 나타나고(hasMore이 true일 때) 추가 데이터를 로드
         if (entries[0].isIntersecting && hasMore) {
           loadMoreTales();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 } // 50% 이상 화면에 보일 때 이벤트 발생
     );
 
     if (observerRef.current) {

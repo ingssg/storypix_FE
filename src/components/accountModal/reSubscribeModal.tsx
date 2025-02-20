@@ -3,7 +3,7 @@ import Image from "next/image";
 import { apiClient } from "@/app/lib/apiClient";
 import aiSpeakAnimation from "@/animation/AISpeak.json";
 import dynamic from "next/dynamic";
-import { useModalStore } from "@/app/store/animateStore";
+import { useModalStore } from "@/app/store/modalStore";
 
 type Props = {
   renewsAt: string;

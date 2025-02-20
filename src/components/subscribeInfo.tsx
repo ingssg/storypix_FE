@@ -1,4 +1,4 @@
-import { useModalStore } from "@/app/store/animateStore";
+import { useModalStore } from "@/app/store/modalStore";
 import { formatDate } from "@/utils/formatDate";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";

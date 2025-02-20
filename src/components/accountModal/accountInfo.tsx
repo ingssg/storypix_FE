@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { trackingEvent } from "@/utils/gtagFunc";
 import { getNickName } from "@/utils/stores";
 import ReSubscribeModal from "./reSubscribeModal";
-import { useModalStore } from "@/app/store/animateStore";
+import { useModalStore } from "@/app/store/modalStore";
 import { formatDate } from "@/utils/formatDate";
 
 interface AccountInfoProps {

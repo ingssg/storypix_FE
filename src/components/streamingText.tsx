@@ -34,8 +34,12 @@ const StreamingText = () => {
   }, []);
 
   return (
-    <div className="mb-4 text-[#46474C] font-semibold text-sm">
-      {displayText}
+    <div className="overflow-y-auto h-full text-black w-full">
+      <div className="flex flex-col w-full text-xs">
+        <div className="mb-4 text-[#46474C] font-semibold text-sm">
+          {displayText}
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,12 +1,14 @@
 "use client";
 
-import AccountDeletionModal from "@/components/accountModal/accountDeletionModal";
-import LogOutModal from "@/components/accountModal/logoutModal";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 // import WithAuth from "@/components/HOC/withAuth";
+
+const LogOutModal = dynamic(() => import("@/components/accountModal/logoutModal"));
+const AccountDeletionModal = dynamic(() => import("@/components/accountModal/accountDeletionModal"));
 
 const Account = () => {
   const [isDeletionModalOpen, setIsDeletionModalOpen] = useState(false);

@@ -76,6 +76,7 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
                 trackingEvent("list_story_click", { story_id: taleInfo.id });
               }
         }
+        priority
       />
       <div className="w-full flex flex-col gap-1 mt-3 mb-2">
         <div

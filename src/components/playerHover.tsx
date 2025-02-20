@@ -3,11 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayController from "./playerHover/playController";
-import SettingModal from "./playerHover/settingModal";
 import { usePlayerStore } from "@/app/store/playerStore";
 import { useRouter } from "next/navigation";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const SettingModal = dynamic(() => import("./playerHover/settingModal"));
 
 const PlayerHover = () => {
   const {

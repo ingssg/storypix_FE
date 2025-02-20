@@ -4,17 +4,22 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayerHover from "@/components/playerHover";
 import { usePlayerStore } from "../store/playerStore";
-import AIModal from "@/components/aiModal";
-import ViewOptimizationModal from "@/components/viewOptimizationModal";
 import { useWebRTCStore } from "../store/webRTCStore";
 import { fetchTaleById } from "@/app/services/taleService";
 import { useRouter } from "next/navigation";
 // import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
-import TaleEndModal from "@/components/taleEndModal";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
-import AiGuide from "@/components/aiGuide";
 import { AnimatePresence } from "framer-motion";
+import AIModal from "@/components/aiModal";
+import AiGuide from "@/components/aiGuide";
+import dynamic from "next/dynamic";
+
+const ViewOptimizationModal = dynamic(() =>
+  import("@/components/viewOptimizationModal")
+);
+
+const TaleEndModal = dynamic(() => import("@/components/taleEndModal"));
 
 const Tale = () => {
   const router = useRouter();

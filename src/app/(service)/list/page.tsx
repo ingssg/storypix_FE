@@ -2,7 +2,10 @@
 
 import { fetchTales } from "@/app/services/taleService";
 import { fetchUser } from "@/app/services/userService";
+import { useModalStore } from "@/app/store/modalStore";
+import FirstGuide from "@/components/firstGuide";
 import Tale from "@/components/tale";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useEffect, useRef, useState } from "react";
 
 interface Tale {
@@ -26,6 +29,8 @@ const List = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isSubscribedUser, setIsSubscribedUser] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const { isFirstGuideModalOpen } = useModalStore();
 
   const loadMoreTales = async () => {
     if (isLoading || !hasMore) return;
@@ -75,13 +80,16 @@ const List = () => {
     return () => setTales([]);
   }, []);
 
+  useBodyScrollLock(isFirstGuideModalOpen);
+
   const lodaderClass =
-    "w-12 h-12 rounded-full border-t-4 border-t-[#FF7134] border-r-4 border-r-transparent animate-spin block";
+    "w-12 h-12 rounded-full border-t-4 border-t-[#FF7134] border-r-4 border-r-transparent animate-spin block z-[-1]";
 
   return (
     <div
       className={`max-w-[1000px] mx-auto pt-12 flex flex-col items-center px-[6%]`}
     >
+      {isFirstGuideModalOpen && <FirstGuide />}
       <p className="w-full mt-6 text-2xl font-semibold">작품 목록</p>
       <div className="mt-5 w-full">
         {tales.map((tale) => (

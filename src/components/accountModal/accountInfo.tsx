@@ -9,12 +9,11 @@ import { getNickName } from "@/utils/stores";
 import { useModalStore } from "@/app/store/modalStore";
 import { formatDate } from "@/utils/formatDate";
 import dynamic from "next/dynamic";
+import { useUserStore } from "@/app/store/userStore";
 
 const ReSubscribeModal = dynamic(() => import("./reSubscribeModal"));
 
 interface AccountInfoProps {
-  hasLogin: boolean;
-  setHasLogin: (value: boolean) => void;
   onClose: (value: boolean) => void;
 }
 
@@ -25,13 +24,14 @@ type SubscriptionInfo = {
 };
 
 // 사이드바 컴포넌트
-const AccountInfo = ({ hasLogin, setHasLogin, onClose }: AccountInfoProps) => {
+const AccountInfo = ({ onClose }: AccountInfoProps) => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [subscriptionInfo, setSubscriptionInfo] =
     useState<SubscriptionInfo | null>(null);
   const { isRenewModalOpen, setIsRenewModalOpen, isSidebarOpen } =
     useModalStore();
+  const { hasLogin, setHasLogin } = useUserStore();
 
   const router = useRouter();
   const pathname = usePathname();

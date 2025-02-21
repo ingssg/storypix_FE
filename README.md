@@ -83,7 +83,7 @@ lemon.js를 임베드 하여 구독 결제 시스템을 구현했습니다. 유�
 
 ## 서비스 도메인
 
-### [스토리픽스 바로가기](https://storypix.spartastudio.app);
+### [스토리픽스 바로가기](https://storypix.spartastudio.app)
 
 ## 폴더구조
 
@@ -160,6 +160,6 @@ lemon.js를 임베드 하여 구독 결제 시스템을 구현했습니다. 유�
  ┃ ┣ 📜 formatDate.ts       # 날짜 포맷 변환 함수
  ┃ ┣ 📜 gtagFunc.ts         # Google Analytics 관련 함수
  ┃ ┗ 📜 stores.ts           # localStorage 관련 함수
- ┗ 📜 middleware.ts          # Next.js 미들웨어 (유저 인증 및 "/" 페이지 웹플로우로 이동);
+ ┗ 📜 middleware.ts          # Next.js 미들웨어 (유저 인증 및 "/" 페이지 웹플로우로 이동)
 
  ```

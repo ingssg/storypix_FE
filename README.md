@@ -83,4 +83,83 @@ lemon.js를 임베드 하여 구독 결제 시스템을 구현했습니다. 유�
 
 ## 서비스 도메인
 
-### [스토리픽스 바로가기](https://storypix.spartastudio.app)
+### [스토리픽스 바로가기](https://storypix.spartastudio.app);
+
+## 폴더구조
+
+```
+📦 src                       
+ ┣ 📂 animation             # 애니메이션 관련 JSON
+ ┃ ┣ 📜 AISpeak.json       
+ ┃ ┗ 📜 userSpeak.json     
+ ┣ 📂 app                  
+ ┃ ┣ 📂 (service)          
+ ┃ ┃ ┣ 📂 account         # 계정 관련 페이지
+ ┃ ┃ ┃ ┗ 📜 page.tsx      
+ ┃ ┃ ┣ 📂 list            # 리스트 페이지
+ ┃ ┃ ┃ ┗ 📜 page.tsx      
+ ┃ ┃ ┣ 📂 subscribe       # 구독 관련 페이지
+ ┃ ┃ ┃ ┗ 📜 page.tsx      
+ ┃ ┃ ┗ 📜 layout.tsx      # 서비스 공통 레이아웃(gnb)
+ ┃ ┣ 📂 lib                # API 요청 및 유틸리티 라이브러리
+ ┃ ┃ ┗ 📜 apiClient.ts    # Axios 관련
+ ┃ ┣ 📂 services           # API 호출 및 비즈니스 로직 처리 서비스
+ ┃ ┃ ┣ 📜 aiService.ts    # AI 관련 API 요청 처리
+ ┃ ┃ ┣ 📜 taleService.ts  # 동화 관련 API 요청 처리
+ ┃ ┃ ┗ 📜 userService.ts  # 사용자 관련 API 요청 처리
+ ┃ ┣ 📂 store              # Zustand 상태 관리 스토어
+ ┃ ┃ ┣ 📜 modalStore.ts   # 모달 상태 관리
+ ┃ ┃ ┣ 📜 playerStore.ts  # 플레이어 상태 관리
+ ┃ ┃ ┣ 📜 realtimeAPIStore.ts # realtimeAPI 관련 상태 관리
+ ┃ ┃ ┣ 📜 userStore.ts    # 사용자 상태 관리
+ ┃ ┃ ┗ 📜 webRTCStore.ts  # WebRTC 관련 상태 관리
+ ┃ ┣ 📂 tale               
+ ┃ ┃ ┗ 📜 page.tsx        # player 페이지
+ ┃ ┣ 📜 apple-icon.png     # 애플 아이콘
+ ┃ ┣ 📜 favicon.ico        # 웹사이트 파비콘
+ ┃ ┣ 📜 globals.css        # 전역 스타일 파일
+ ┃ ┣ 📜 layout.tsx         # 앱 전체 레이아웃/ 폰트, gtag 
+ ┃ ┗ 📜 page.tsx           # 루트 페이지- 사용 x /  웹플로우로 대체
+ ┣ 📂 components            # UI 컴포넌트 모음
+ ┃ ┣ 📂 HOC                # 고차 컴포넌트
+ ┃ ┃ ┗ 📜 withAuth.tsx    # 인증이 필요한 페이지를 감싸는 HOC - 사용 x middleware.ts에서 인증하는 것으로 변경
+ ┃ ┣ 📂 accountModal       # 계정 관련 모달 컴포넌트 모음
+ ┃ ┃ ┣ 📜 accountDeletionModal.tsx  # 계정 삭제 확인 모달
+ ┃ ┃ ┣ 📜 accountInfo.tsx  # 계정 정보 표시 모달
+ ┃ ┃ ┣ 📜 logoutModal.tsx  # 로그아웃 확인 모달
+ ┃ ┃ ┗ 📜 reSubscribeModal.tsx # 재구독 모달
+ ┃ ┣ 📂 aiModalComponents  # AI 모달 내부 요소
+ ┃ ┃ ┣ 📜 aiButtonContainer.tsx # AI 버튼 컨테이너
+ ┃ ┃ ┣ 📜 aiThinking.tsx   # AI 생각 중 컴포넌트
+ ┃ ┃ ┣ 📜 cancelQuestion.tsx # 질문 취소 버튼 클릭시 컴포넌트
+ ┃ ┃ ┣ 📜 loadingAI.tsx    # AI 로딩 중 컴포넌트
+ ┃ ┃ ┗ 📜 userSpeaking.tsx # 사용자 발화 중 컴포넌트
+ ┃ ┣ 📂 playerHover        # 플레이어 관련 UI
+ ┃ ┃ ┣ 📜 pageController.tsx  # 페이지 이동 컨트롤러
+ ┃ ┃ ┣ 📜 playController.tsx  # 재생 컨트롤러
+ ┃ ┃ ┗ 📜 settingModal.tsx    # 설정 모달
+ ┃ ┣ 📜 aiGuide.tsx          # 질문하기 버튼 위 AI 가이드 컴포넌트
+ ┃ ┣ 📜 aiModal.tsx          # AI질문 모달 컴포넌트
+ ┃ ┣ 📜 firstGuide.tsx       # 첫 사용자를 위한 가이드 UI
+ ┃ ┣ 📜 gtagWrapper.tsx      # Google Analytics(Gtag) 래퍼 컴포넌트
+ ┃ ┣ 📜 playerHover.tsx      # 플레이어 UI 컨트롤러
+ ┃ ┣ 📜 progressbar.tsx      # 진행 바(Progress Bar) UI
+ ┃ ┣ 📜 serviceGNB.tsx       # 상단 네비게이션 바(GNB)
+ ┃ ┣ 📜 streamingText.tsx    # 스트리밍되는 텍스트 애니메이션
+ ┃ ┣ 📜 subscribeInfo.tsx    # 구독 관련 정보 표시 컴포넌트
+ ┃ ┣ 📜 tale.tsx             # list 페이지 내 하나의 이야기(Tale) 컴포넌트
+ ┃ ┣ 📜 taleEndModal.tsx     # 이야기 종료 시 표시되는 모달
+ ┃ ┗ 📜 viewOptimizationModal.tsx # 가로모드 권장 모달
+ ┣ 📂 fonts                 # 프로젝트에서 사용하는 폰트 파일 모음
+ ┃ ┣ 📜 HammersmithOne-Regular.ttf  # HammersmithOne 폰트
+ ┃ ┗ 📜 PretendardVariable.woff2    # Pretendard 가변 폰트
+ ┣ 📂 hooks                 # 커스텀 훅(Custom Hooks)
+ ┃ ┣ 📜 useBodyScrollLock.ts  # 스크롤 락 방지 훅 (모달 열릴 때 사용)
+ ┃ ┗ 📜 useGtag.ts            # Google Analytics(Gtag) 추적 훅
+ ┣ 📂 utils                 # 유틸리티 함수 모음
+ ┃ ┣ 📜 formatDate.ts       # 날짜 포맷 변환 함수
+ ┃ ┣ 📜 gtagFunc.ts         # Google Analytics 관련 함수
+ ┃ ┗ 📜 stores.ts           # localStorage 관련 함수
+ ┗ 📜 middleware.ts          # Next.js 미들웨어 (유저 인증 및 "/" 페이지 웹플로우로 이동);
+
+ ```

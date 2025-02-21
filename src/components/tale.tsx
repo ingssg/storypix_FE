@@ -66,7 +66,7 @@ const Tale = ({ taleInfo, isSubscribedUser }: TaleProps) => {
       <Image
         src={taleInfo.image}
         alt="fairyTale_Thumbnail"
-        width={1920}
+        width={1000}
         height={230}
         className="rounded-xl hover:cursor-pointer"
         onClick={

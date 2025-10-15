@@ -65,102 +65,60 @@ https://github.com/user-attachments/assets/ca2bc41a-3faf-4d2b-9813-076e71279435
 
 ## ⌨️ 개발 내용
 
-### OpenAI Realtime API를 활용한 WebRTC 기반 실시간 음성 질의응답 시스템 구축
+### 1️⃣ OpenAI Realtime API를 활용한 WebRTC 기반 실시간 음성 질의응답 시스템 구축
 
-OpenAI Realtime API와 클라이언트 간의 WebRTC 통신으로 실시간 음성 질의응답 시스템을 구축했습니다. 클라이언트가 음성으로 질문하면 AI가 낮은 지연속도로 음성 답변을 제공합니다.
-<br/>
+클라이언트와 OpenAI Realtime API 간의 WebRTC 양방향 오디오 스트리밍 통신을 직접 구현했습니다.
 
-### 동화 구연 서비스 제공
+브라우저의 마이크 입력을 실시간으로 캡처해 전송하고, AI가 생성한 음성 응답을 지연 없이 재생할 수 있도록 구성하여,<br>
+실제 서비스 환경에서도 끊김 없는 대화형 경험을 제공했습니다.
 
-백엔드 서버로부터 동화 데이터(음성, 이미지, 텍스트)를 페이지네이션으로 받아오고, 이 동화 데이터를 유저에게 제공합니다. 유저가 플레이어 화면을 터치하여 재생 컨트롤러 버튼을 열어, 재생/일시정지, 문장/페이지 이동, 재생 속도 설정, ai 응답 언어 설정을 할 수 있습니다.
-<br/>
+이 기능은 실제 사용자 서비스에 반영되어, 유저가 AI와 자연스럽게 음성으로 질의응답할 수 있습니다.<br><br>
 
-### OAuth 2.0 기반 카카오 로그인 서비스 연동 및 인증 시스템 구축
+### 2️⃣ 동화 구연 서비스 (AI 음성 + 이미지 + 텍스트)
 
-카카오 로그인 API를 활용하여 유저의 카카오 계정을 통해 로그인 및 회원가입을 할 수 있도록 구현했습니다. 또한, 액세스 토큰 및 리프레쉬 토큰을 활용하여 로그인 상태를 유지하고, next.js middleware에서 인증 로직을 구현하여 로그인을 한 유저만이 동화 구연 서비스를 이용할 수 있도록 구현했습니다.
-<br/>
+백엔드 서버로부터 동화 데이터를 페이지 단위로 비동기 요청(음성, 이미지, 텍스트)하여 유저에게 제공합니다.
 
-### 레몬스퀴지 구독 결제 시스템 구현
+플레이어 화면에서 재생/일시정지, 문장 및 페이지 이동, 재생 속도 조절, AI 응답 언어 설정이 가능하도록 UI를 직접 구현했습니다.
 
-lemon.js를 임베드 하여 구독 결제 시스템을 구현했습니다. 유저가 구독을 신청하면, 결제 정보를 입력하고 결제를 완료하면, 구독이 완료되고, 유저는 구독 서비스를 이용할 수 있습니다.
-<br/>
+다음 페이지 데이터 비동기 프리로딩을 통해 초기 로딩 속도를 약 60% 개선하고, 페이지 전환 시 끊김이 없도록 최적화했습니다.
+
+해당 기능은 실제 유저가 사용하는 서비스에 배포되어, AI가 읽어주는 동화를 들으며 상호작용할 수 있는 환경을 완성했습니다.<br><br>
+
+
+### 3️⃣ OAuth 2.0 기반 카카오 로그인 및 인증 시스템 구축
+
+카카오 OAuth 2.0 API를 활용해 카카오 계정을 통한 로그인 및 회원가입 기능을 직접 구현했습니다.
+
+로그인 후 액세스 토큰(HttpOnly 쿠키)과 리프레시 토큰을 관리하여, 새로고침이나 재방문 시에도 로그인 상태가 유지되도록 설계했습니다.
+
+Next.js middleware를 활용하여 인증 검증 및 접근 제한 로직을 구축하고, 로그인된 사용자만 서비스에 접근할 수 있도록 했습니다.
+
+서비스 런칭 후 실제 유저의 로그인 세션이 안정적으로 유지되며, 인증 실패 시 재로그인 절차가 자연스럽게 동작하도록 검증했습니다.<br><br>
+
+
+### 4️⃣ 레몬스퀴지(Lemon Squeezy) 구독 결제 시스템 연동
+
+lemon.js를 직접 임베드하여, 프론트엔드 단에서 결제 플로우 전반을 구현했습니다.
+
+유저가 결제 정보를 입력하고 결제가 완료되면, 백엔드와 통신하여 구독 상태를 즉시 업데이트하도록 설계했습니다.
+
+Zustand로 결제 상태를 관리해 결제 완료 후 UI에 실시간 반영되도록 구성했습니다.
+
+실제 유저 결제 환경에서 테스트 및 운영이 이루어졌으며, 결제 후 즉시 서비스 이용이 가능하도록 최종 배포했습니다.<br><br>
+
 
 
 ## 폴더구조
 
 ```
-📦 src                       
- ┣ 📂 animation             # 애니메이션 관련 JSON
- ┃ ┣ 📜 AISpeak.json       
- ┃ ┗ 📜 userSpeak.json     
- ┣ 📂 app                  
- ┃ ┣ 📂 (service)          
- ┃ ┃ ┣ 📂 account         # 계정 관련 페이지
- ┃ ┃ ┃ ┗ 📜 page.tsx      
- ┃ ┃ ┣ 📂 list            # 리스트 페이지
- ┃ ┃ ┃ ┗ 📜 page.tsx      
- ┃ ┃ ┣ 📂 subscribe       # 구독 관련 페이지
- ┃ ┃ ┃ ┗ 📜 page.tsx      
- ┃ ┃ ┗ 📜 layout.tsx      # 서비스 공통 레이아웃(gnb)
- ┃ ┣ 📂 lib                # API 요청 및 유틸리티 라이브러리
- ┃ ┃ ┗ 📜 apiClient.ts    # Axios 관련
- ┃ ┣ 📂 services           # API 호출 및 비즈니스 로직 처리 서비스
- ┃ ┃ ┣ 📜 aiService.ts    # AI 관련 API 요청 처리
- ┃ ┃ ┣ 📜 taleService.ts  # 동화 관련 API 요청 처리
- ┃ ┃ ┗ 📜 userService.ts  # 사용자 관련 API 요청 처리
- ┃ ┣ 📂 store              # Zustand 상태 관리 스토어
- ┃ ┃ ┣ 📜 modalStore.ts   # 모달 상태 관리
- ┃ ┃ ┣ 📜 playerStore.ts  # 플레이어 상태 관리
- ┃ ┃ ┣ 📜 realtimeAPIStore.ts # realtimeAPI 관련 상태 관리
- ┃ ┃ ┣ 📜 userStore.ts    # 사용자 상태 관리
- ┃ ┃ ┗ 📜 webRTCStore.ts  # WebRTC 관련 상태 관리
- ┃ ┣ 📂 tale               
- ┃ ┃ ┗ 📜 page.tsx        # player 페이지
- ┃ ┣ 📜 apple-icon.png     # 애플 아이콘
- ┃ ┣ 📜 favicon.ico        # 웹사이트 파비콘
- ┃ ┣ 📜 globals.css        # 전역 스타일 파일
- ┃ ┣ 📜 layout.tsx         # 앱 전체 레이아웃/ 폰트, gtag 
- ┃ ┗ 📜 page.tsx           # 루트 페이지- 사용 x /  웹플로우로 대체
- ┣ 📂 components            # UI 컴포넌트 모음
- ┃ ┣ 📂 HOC                # 고차 컴포넌트
- ┃ ┃ ┗ 📜 withAuth.tsx    # 인증이 필요한 페이지를 감싸는 HOC - 사용 x middleware.ts에서 인증하는 것으로 변경
- ┃ ┣ 📂 accountModal       # 계정 관련 모달 컴포넌트 모음
- ┃ ┃ ┣ 📜 accountDeletionModal.tsx  # 계정 삭제 확인 모달
- ┃ ┃ ┣ 📜 accountInfo.tsx  # 계정 정보 표시 모달
- ┃ ┃ ┣ 📜 logoutModal.tsx  # 로그아웃 확인 모달
- ┃ ┃ ┗ 📜 reSubscribeModal.tsx # 재구독 모달
- ┃ ┣ 📂 aiModalComponents  # AI 모달 내부 요소
- ┃ ┃ ┣ 📜 aiButtonContainer.tsx # AI 버튼 컨테이너
- ┃ ┃ ┣ 📜 aiThinking.tsx   # AI 생각 중 컴포넌트
- ┃ ┃ ┣ 📜 cancelQuestion.tsx # 질문 취소 버튼 클릭시 컴포넌트
- ┃ ┃ ┣ 📜 loadingAI.tsx    # AI 로딩 중 컴포넌트
- ┃ ┃ ┗ 📜 userSpeaking.tsx # 사용자 발화 중 컴포넌트
- ┃ ┣ 📂 playerHover        # 플레이어 관련 UI
- ┃ ┃ ┣ 📜 pageController.tsx  # 페이지 이동 컨트롤러
- ┃ ┃ ┣ 📜 playController.tsx  # 재생 컨트롤러
- ┃ ┃ ┗ 📜 settingModal.tsx    # 설정 모달
- ┃ ┣ 📜 aiGuide.tsx          # 질문하기 버튼 위 AI 가이드 컴포넌트
- ┃ ┣ 📜 aiModal.tsx          # AI질문 모달 컴포넌트
- ┃ ┣ 📜 firstGuide.tsx       # 첫 사용자를 위한 가이드 UI
- ┃ ┣ 📜 gtagWrapper.tsx      # Google Analytics(Gtag) 래퍼 컴포넌트
- ┃ ┣ 📜 playerHover.tsx      # 플레이어 UI 컨트롤러
- ┃ ┣ 📜 progressbar.tsx      # 진행 바(Progress Bar) UI
- ┃ ┣ 📜 serviceGNB.tsx       # 상단 네비게이션 바(GNB)
- ┃ ┣ 📜 streamingText.tsx    # 스트리밍되는 텍스트 애니메이션
- ┃ ┣ 📜 subscribeInfo.tsx    # 구독 관련 정보 표시 컴포넌트
- ┃ ┣ 📜 tale.tsx             # list 페이지 내 하나의 이야기(Tale) 컴포넌트
- ┃ ┣ 📜 taleEndModal.tsx     # 이야기 종료 시 표시되는 모달
- ┃ ┗ 📜 viewOptimizationModal.tsx # 가로모드 권장 모달
- ┣ 📂 fonts                 # 프로젝트에서 사용하는 폰트 파일 모음
- ┃ ┣ 📜 HammersmithOne-Regular.ttf  # HammersmithOne 폰트
- ┃ ┗ 📜 PretendardVariable.woff2    # Pretendard 가변 폰트
- ┣ 📂 hooks                 # 커스텀 훅(Custom Hooks)
- ┃ ┣ 📜 useBodyScrollLock.ts  # 스크롤 락 방지 훅 (모달 열릴 때 사용)
- ┃ ┗ 📜 useGtag.ts            # Google Analytics(Gtag) 추적 훅
- ┣ 📂 utils                 # 유틸리티 함수 모음
- ┃ ┣ 📜 formatDate.ts       # 날짜 포맷 변환 함수
- ┃ ┣ 📜 gtagFunc.ts         # Google Analytics 관련 함수
- ┃ ┗ 📜 stores.ts           # localStorage 관련 함수
- ┗ 📜 middleware.ts          # Next.js 미들웨어 (유저 인증 및 "/" 페이지 웹플로우로 이동)
+📦 src
+ ┣ 📂 app                # 페이지 라우팅 및 레이아웃 관리 (Next.js App Router)
+ ┣ 📂 components         # 재사용 가능한 UI 컴포넌트 모음
+ ┣ 📂 services           # API 호출 및 비즈니스 로직 분리
+ ┣ 📂 store              # Zustand를 활용한 전역 상태 관리
+ ┣ 📂 hooks              # 커스텀 훅 (GA 추적, 스크롤 제어 )
+ ┣ 📂 utils              # 공통 유틸리티 함수
+ ┣ 📂 animation / fonts  # 애니메이션 JSON 및 폰트 리소스
+ ┗ 📜 middleware.ts      # 인증 및 리디렉션 처리
 
  ```

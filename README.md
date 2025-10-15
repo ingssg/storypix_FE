@@ -14,15 +14,15 @@
 <table>
   <tr>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/fd03f5e0-8d75-44b4-9d4f-b0210dc3b022" width="200" height="400"/><br>
+      <img src="./img,videos/랜딩.jpeg" width="200" height="400"/><br>
       <span>랜딩 페이지</span>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/2638bf97-0040-4dfc-af8c-eb4151b4f10b" width="200" height="400"/><br>
+      <img src="./img,videos/리스트.jpeg" width="200" height="400"/><br>
       <span>리스트 페이지</span>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/f12b6137-1bf1-4aa5-8acf-8bbf908a9434" width="200" height="400"/><br>
+      <img src="./img,videos/구독페이지.jpeg" width="200" height="400"/><br>
       <span>구독 페이지</span>
     </td>
   </tr>
@@ -35,7 +35,9 @@
 
 유저가 플레이어 화면을 터치하여 재생 컨트롤러 버튼을 열어, 재생/일시정지, 문장/페이지 이동, 재생 속도, ai 응답 언어 설정을 할 수 있습니다.
 
-https://github.com/user-attachments/assets/ef71e98e-e7ac-4175-91db-109dda7a041f
+https://github.com/user-attachments/assets/e828aa33-9bd4-4a82-9ee2-889a7c992342
+
+
 
 <br/><br/>
 
@@ -43,7 +45,10 @@ https://github.com/user-attachments/assets/ef71e98e-e7ac-4175-91db-109dda7a041f
 
 유저가 질문하기 버튼을 클릭하여 일정 횟수 ai에게 동화 관련 질문 및 영어 질문을 할 수 있습니다.
 
-https://github.com/user-attachments/assets/7728b616-bc79-4d66-8b90-a01ae03ec9b5
+
+https://github.com/user-attachments/assets/ca2bc41a-3faf-4d2b-9813-076e71279435
+
+
 
 <br/><br/>
 

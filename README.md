@@ -35,7 +35,8 @@
 
 유저가 플레이어 화면을 터치하여 재생 컨트롤러 버튼을 열어, 재생/일시정지, 문장/페이지 이동, 재생 속도, ai 응답 언어 설정을 할 수 있습니다.
 
-https://github.com/user-attachments/assets/e828aa33-9bd4-4a82-9ee2-889a7c992342
+https://github.com/user-attachments/assets/f02faa0c-e83a-46e6-b26c-86bcdc9d5a0d
+
 
 
 
@@ -46,7 +47,8 @@ https://github.com/user-attachments/assets/e828aa33-9bd4-4a82-9ee2-889a7c992342
 유저가 질문하기 버튼을 클릭하여 일정 횟수 ai에게 동화 관련 질문 및 영어 질문을 할 수 있습니다.
 
 
-https://github.com/user-attachments/assets/ca2bc41a-3faf-4d2b-9813-076e71279435
+https://github.com/user-attachments/assets/8dd5a83d-ff97-4127-92f2-df72567be063
+
 
 
 

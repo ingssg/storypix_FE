@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+// import type { NextRequest } from "next/server";
 
 // ============================================
 // 백엔드 없이 동작하도록 수정됨 (인증 체크 우회)
@@ -7,7 +7,7 @@ import type { NextRequest } from "next/server";
 // 기존 백엔드 인증 로직은 아래 주석 처리된 코드 참고
 // ============================================
 
-export async function middleware(req: NextRequest) {
+export async function middleware() {
   // 모든 요청을 그대로 통과시킴 (인증 체크 없음)
   return NextResponse.next();
 }

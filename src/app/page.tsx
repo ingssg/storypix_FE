@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // 웹플로우 랜딩페이지로 대체
 // 사용 x
 const Home = () => {
-  
+  const router = useRouter();
+
+  const handleNavigate = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <>
       <div className="home flex flex-col items-center justify-center">
@@ -16,7 +22,10 @@ const Home = () => {
             width={180}
             height={50}
           />
-          <button className="rounded-lg bg-[#A607AE] w-30 h-9 px-3 py-1 text-sm">
+          <button
+            onClick={() => handleNavigate("/list")}
+            className="rounded-lg bg-[#A607AE] w-30 h-9 px-3 py-1 text-sm"
+          >
             작품 무료 체험하기
           </button>
         </div>
@@ -30,7 +39,10 @@ const Home = () => {
             질문에 답해주는 AI 동화 서비스, 스토리픽스
           </p>
         </div>
-        <button className="rounded-xl bg-[#A607AE] w-48 h-12 px-4 py-2 mb-12 text-lg">
+        <button
+          onClick={() => handleNavigate("/list")}
+          className="rounded-xl bg-[#A607AE] w-48 h-12 px-4 py-2 mb-12 text-lg"
+        >
           작품 무료 체험하기
         </button>
         <Image

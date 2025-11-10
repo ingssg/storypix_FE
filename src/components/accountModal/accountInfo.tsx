@@ -1,4 +1,7 @@
-import { fetchUser } from "@/app/services/userService";
+// ============================================
+// 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+// ============================================
+// import { fetchUser } from "@/app/services/userService";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -25,13 +28,15 @@ type SubscriptionInfo = {
 
 // 사이드바 컴포넌트
 const AccountInfo = ({ onClose }: AccountInfoProps) => {
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [subscriptionInfo, setSubscriptionInfo] =
-    useState<SubscriptionInfo | null>(null);
+  // ============================================
+  // 🔧 백엔드 없이 동작하도록 사용하지 않는 변수들
+  // ============================================
+  const [nickname] = useState("");
+  const [email] = useState("");
+  const [subscriptionInfo] = useState<SubscriptionInfo | null>(null);
   const { isRenewModalOpen, setIsRenewModalOpen, isSidebarOpen } =
     useModalStore();
-  const { hasLogin, setHasLogin } = useUserStore();
+  const { hasLogin } = useUserStore();
 
   const router = useRouter();
   const pathname = usePathname();

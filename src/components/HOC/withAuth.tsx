@@ -1,6 +1,9 @@
 'use client';
 
-import { fetchUser } from "@/app/services/userService";
+// ============================================
+// 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+// ============================================
+// import { fetchUser } from "@/app/services/userService";
 import React, { ComponentType, useEffect, useState } from "react";
 
 // HOC 패턴으로 로그인 안한 유저 막기

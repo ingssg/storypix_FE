@@ -2,10 +2,13 @@ import { create } from "zustand";
 import { useWebRTCStore } from "./webRTCStore";
 import { usePlayerStore } from "./playerStore";
 import {
-  Communication,
-  decreaseCommuiationCountAPI,
-  getTokenAPI,
-  postCommuicationAPI,
+  // ============================================
+  // 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+  // ============================================
+  // Communication,
+  // decreaseCommuiationCountAPI,
+  // getTokenAPI,
+  // postCommuicationAPI,
   Record,
 } from "../services/aiService";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
@@ -320,8 +323,11 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   // ============================================
   // 백엔드 서버에 임시토큰 요청 (이제 프론트엔드에서 직접 받아옴)
   fetchToken: async () => {
-    const { storyId, setFullContent } = usePlayerStore.getState();
-    const { setQuestionCount } = get();
+    // ============================================
+    // 🔧 백엔드 없이 동작하도록 사용하지 않는 변수들
+    // ============================================
+    // const { storyId, setFullContent } = usePlayerStore.getState();
+    // const { setQuestionCount } = get();
     // ============================================
     // 🔧 questionCount는 초기값 20으로 유지, API 성공 시에만 업데이트
     // ============================================

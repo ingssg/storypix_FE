@@ -212,8 +212,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       storyContents,
       setCurrPrevSentence,
       totalPage,
-      lastFetchedPage,
-      fetchPage,
+      // ============================================
+      // 🔧 더미 데이터 사용 시 사용하지 않는 변수들
+      // ============================================
+      // lastFetchedPage,
+      // fetchPage,
       hasStarted,
       playHandler,
       audioPlayer,
@@ -229,10 +232,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         setCurrentSentenceIdx(currentSentenceIdx + 1);
         setCurrPrevSentence();
       } else if (currentPageIdx < totalPage - 1) {
-        const nextPage = currentPageIdx + 2; // page는 1-based index
         // ============================================
         // 🔧 더미 데이터 사용 시 fetchPage 호출 주석 처리됨
         // ============================================
+        // const nextPage = currentPageIdx + 2; // page는 1-based index
         // if (nextPage === lastFetchedPage - 1) {
         //   fetchPage(lastFetchedPage + 1);
         //   set({ lastFetchedPage: lastFetchedPage + 1 });
@@ -295,18 +298,21 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentPageIdx,
       setCurrPrevSentence,
       totalPage,
-      lastFetchedPage,
-      fetchPage,
+      // ============================================
+      // 🔧 더미 데이터 사용 시 사용하지 않는 변수들
+      // ============================================
+      // lastFetchedPage,
+      // fetchPage,
       hoverTimer,
       resetHoverTimer,
     } = get();
 
     if (currentPageIdx < totalPage - 1) {
       setCurrentPageIdx(currentPageIdx + 1);
-      const nextPage = currentPageIdx + 2; // page는 1-based index
       // ============================================
       // 🔧 더미 데이터 사용 시 fetchPage 호출 주석 처리됨
       // ============================================
+      // const nextPage = currentPageIdx + 2; // page는 1-based index
       // if (nextPage === lastFetchedPage - 1) {
       //   fetchPage(lastFetchedPage + 1);
       //   set({ lastFetchedPage: lastFetchedPage + 1 });

@@ -1,6 +1,9 @@
 import React from "react";
 import Image from "next/image";
-import { signout } from "@/app/services/userService";
+// ============================================
+// 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+// ============================================
+// import { signout } from "@/app/services/userService";
 import { trackingEvent } from "@/utils/gtagFunc";
 import { getNickName } from "@/utils/stores";
 

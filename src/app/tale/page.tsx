@@ -5,7 +5,10 @@ import Image from "next/image";
 import PlayerHover from "@/components/playerHover";
 import { usePlayerStore } from "../store/playerStore";
 import { useWebRTCStore } from "../store/webRTCStore";
-import { fetchTaleById } from "@/app/services/taleService";
+// ============================================
+// 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+// ============================================
+// import { fetchTaleById } from "@/app/services/taleService";
 import { useRouter } from "next/navigation";
 // import WithAuth from "@/components/HOC/withAuth";
 import { useRealtimeAPIStore } from "../store/realtimeAPIStore";
@@ -38,7 +41,10 @@ const Tale = () => {
     isPageMoveTriggered,
     setEnterTime,
     setIsPageMoveTriggered,
-    lastFetchedPage,
+    // ============================================
+    // 🔧 더미 데이터 사용 시 사용하지 않는 변수
+    // ============================================
+    // lastFetchedPage,
     isHoverOpen,
     setTitleEng,
     setFullContent,
@@ -50,7 +56,10 @@ const Tale = () => {
   const {
     questionCount,
     startUserQuestion,
-    sendCommuication,
+    // ============================================
+    // 🔧 백엔드 없이 동작하도록 사용하지 않는 변수
+    // ============================================
+    // sendCommuication,
     isOpenAIModal,
     setIsOpenAIModal,
     fetchToken,

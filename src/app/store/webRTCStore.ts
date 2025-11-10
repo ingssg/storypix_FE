@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { useRealtimeAPIStore } from "./realtimeAPIStore";
-import { getTokenAPI } from "../services/aiService";
-import { usePlayerStore } from "./playerStore";
+// ============================================
+// 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+// ============================================
+// import { getTokenAPI } from "../services/aiService";
+// import { usePlayerStore } from "./playerStore";
 
 interface WebRTCState {
   peerConnection: RTCPeerConnection | null;

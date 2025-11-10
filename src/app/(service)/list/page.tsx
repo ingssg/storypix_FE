@@ -1,12 +1,15 @@
 "use client";
 
-import { fetchTales } from "@/app/services/taleService";
-import { fetchUser } from "@/app/services/userService";
+// ============================================
+// 🔧 백엔드 없이 동작하도록 import 주석 처리됨
+// ============================================
+// import { fetchTales } from "@/app/services/taleService";
+// import { fetchUser } from "@/app/services/userService";
 import { useModalStore } from "@/app/store/modalStore";
 import FirstGuide from "@/components/firstGuide";
 import Tale from "@/components/tale";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Tale {
   id: number;
@@ -30,7 +33,7 @@ const List = () => {
   // const [page, setPage] = useState(1);
   // const [isLoading, setIsLoading] = useState(false);
   // const [hasMore, setHasMore] = useState(true);
-  const [isSubscribedUser, setIsSubscribedUser] = useState(false);
+  const [isSubscribedUser] = useState(false);
   // const observerRef = useRef<HTMLDivElement | null>(null);
 
   const { isFirstGuideModalOpen } = useModalStore();
@@ -108,8 +111,11 @@ const List = () => {
 
   useBodyScrollLock(isFirstGuideModalOpen);
 
-  const lodaderClass =
-    "w-12 h-12 rounded-full border-t-4 border-t-[#FF7134] border-r-4 border-r-transparent animate-spin block z-[-1]";
+  // ============================================
+  // 🔧 페이지네이션 로딩 UI 주석 처리됨
+  // ============================================
+  // const lodaderClass =
+  //   "w-12 h-12 rounded-full border-t-4 border-t-[#FF7134] border-r-4 border-r-transparent animate-spin block z-[-1]";
 
   return (
     <div

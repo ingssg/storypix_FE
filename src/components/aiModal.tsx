@@ -20,7 +20,6 @@ type Props = {
   onClose: () => void;
 };
 
-
 // AI 질문 모달 컴포넌트
 const AIModal = ({ onClose }: Props) => {
   const questionParagraph = useRef<HTMLParagraphElement>(null);
@@ -129,7 +128,7 @@ const AIModal = ({ onClose }: Props) => {
             )}
           </>
         )}
-        <AiButtonContainer setIsCancelled={setIsCancelled}/>
+        <AiButtonContainer setIsCancelled={setIsCancelled} />
       </div>
     </div>
   );

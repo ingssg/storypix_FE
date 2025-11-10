@@ -10,18 +10,22 @@ const WithAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
   const AuthComponent = (props: P) => {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-      const authenticate = async () => {
-        try {
-          await fetchUser(); // users/me 에 유저정보  조회를 요청하면서 로그인 여부 확인
-          setIsLoading(false);
-        } catch (error) {
-          console.error(error);
-          alert("로그인이 필요합니다.");
-          const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
-          window.location.href = loginURL;
-        }
-      };
-      authenticate();
+      // ============================================
+      // 🔧 백엔드 API 호출 주석 처리됨
+      // ============================================
+      // const authenticate = async () => {
+      //   try {
+      //     await fetchUser(); // users/me 에 유저정보  조회를 요청하면서 로그인 여부 확인
+      //     setIsLoading(false);
+      //   } catch (error) {
+      //     console.error(error);
+      //     alert("로그인이 필요합니다.");
+      //     const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
+      //     window.location.href = loginURL;
+      //   }
+      // };
+      // authenticate();
+      setIsLoading(false);
     }, []);
 
     if (isLoading)

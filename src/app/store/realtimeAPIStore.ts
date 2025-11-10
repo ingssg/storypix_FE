@@ -10,8 +10,7 @@ import {
 } from "../services/aiService";
 import { trackingPlayerEvent } from "@/utils/gtagFunc";
 
-
-// OPENAI 관련 전역 상태 
+// OPENAI 관련 전역 상태
 
 interface RealtimeAPIState {
   currentQuestion: string;
@@ -54,7 +53,15 @@ interface RealtimeAPIState {
   sendCommuication: () => void;
   startUserQuestion: () => void;
   finishUserQuestion: () => void;
-  fetchToken: () => Promise<string>;
+  fetchToken: () => Promise<{
+    session: {
+      client_secret: {
+        value: string;
+      };
+    };
+    instruction: string;
+    remainedCount: number;
+  } | null>;
 
   reset: () => void;
 }
@@ -72,7 +79,7 @@ export const useRealtimeAPIStore = create<RealtimeAPIState>((set, get) => ({
 {content} ##############
 
 REMEMBER: answer in {language}, even if I speak another language.`,
-  questionCount: 0,
+  questionCount: 20, // 🔧 더미 데이터 사용 시 기본 질문 횟수 20으로 설정
   isSpeaking: false,
   isAISpeaking: false,
   instructions: "",
@@ -196,19 +203,21 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           serverEvent.type ===
           "conversation.item.input_audio_transcription.completed"
         ) {
-          set({ currentQuestion: serverEvent.transcript });
+          const userMessage = serverEvent.transcript;
+          set({ currentQuestion: userMessage });
           const userRecord: Record = {
-            text: serverEvent.transcript,
+            text: userMessage,
             isUser: true,
             createdAt: new Date(),
           };
           set((state) => ({ records: [...state.records, userRecord] }));
         }
         if (serverEvent.type === "response.audio_transcript.done") {
-          set({ currentAnswer: serverEvent.transcript });
+          const aiMessage = serverEvent.transcript;
+          set({ currentAnswer: aiMessage });
           setQuestionCount((prevCount) => prevCount - 1);
           const aiRecord: Record = {
-            text: serverEvent.transcript,
+            text: aiMessage,
             isUser: false,
             createdAt: new Date(),
           };
@@ -222,7 +231,8 @@ REMEMBER: answer in {language}, even if I speak another language.`,
           sendInitSession();
           get().startUserQuestion();
           set({ isSessionStarted: true });
-        } // AI가 응답 만들기 시작
+        }
+        // AI가 응답 만들기 시작
         if (serverEvent.type === "response.output_item.added") {
           set({ isAISpeaking: false });
         } // AI 음성 출력 완료
@@ -237,20 +247,23 @@ REMEMBER: answer in {language}, even if I speak another language.`,
         // 세션 만료 이벤트
         if (serverEvent.type === "error") {
           if (serverEvent.error.code === "session_expired") {
-            const disconnectAndReconnect = async () => {
-              get().setIsOpenAIModal(false);
-              await closeWebRTCSession();
-              try {
-                get()
-                  .fetchToken()
-                  .then(() => {
-                    useWebRTCStore.getState().createPeerConnection();
-                  });
-              } catch (error) {
-                console.error("토큰 요청 오류", error);
-              }
-            };
-            disconnectAndReconnect();
+            // ============================================
+            // 🔧 백엔드 API 호출 주석 처리됨
+            // ============================================
+            // const disconnectAndReconnect = async () => {
+            //   get().setIsOpenAIModal(false);
+            //   await closeWebRTCSession();
+            //   try {
+            //     get()
+            //       .fetchToken()
+            //       .then(() => {
+            //         useWebRTCStore.getState().createPeerConnection();
+            //       });
+            //   } catch (error) {
+            //     console.error("토큰 요청 오류", error);
+            //   }
+            // };
+            // disconnectAndReconnect();
           }
         }
       });
@@ -259,18 +272,21 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   // 서버에 질답 내용 보내기
   sendCommuication: async () => {
     if (get().records.length === 0) return;
-    const { storyId, currentPageIdx, prevSentence, currSentence } =
-      usePlayerStore.getState();
-    const communication: Communication = {
-      storyId: storyId,
-      openaiSessionId: get().sessionId,
-      questionPage: currentPageIdx + 1,
-      previousSentence: prevSentence,
-      currentSentence: currSentence,
-      records: get().records,
-      createdAt: get().sessionCreatedAt,
-    };
-    await postCommuicationAPI(communication);
+    // ============================================
+    // 🔧 백엔드 API 호출 주석 처리됨
+    // ============================================
+    // const { storyId, currentPageIdx, prevSentence, currSentence } =
+    //   usePlayerStore.getState();
+    // const communication: Communication = {
+    //   storyId: storyId,
+    //   openaiSessionId: get().sessionId,
+    //   questionPage: currentPageIdx + 1,
+    //   previousSentence: prevSentence,
+    //   currentSentence: currSentence,
+    //   records: get().records,
+    //   createdAt: get().sessionCreatedAt,
+    // };
+    // await postCommuicationAPI(communication);
     set({ records: [] });
   },
   // 유저 말 입력 시작
@@ -283,11 +299,14 @@ REMEMBER: answer in {language}, even if I speak another language.`,
   },
   // 유저 말 입력 종료 후 AI 대답 생성 요청
   finishUserQuestion: async () => {
-    const { storyId } = usePlayerStore.getState();
+    // ============================================
+    // 🔧 백엔드 API 호출 주석 처리됨
+    // ============================================
+    // const { storyId } = usePlayerStore.getState();
     const { sendInputSignal, sendCreateResponse } = get();
     const { closeWebRTCSession, audioElement } = useWebRTCStore.getState();
     try {
-      decreaseCommuiationCountAPI(storyId);
+      // decreaseCommuiationCountAPI(storyId);
       sendInputSignal();
       sendCreateResponse();
     } catch {
@@ -296,17 +315,84 @@ REMEMBER: answer in {language}, even if I speak another language.`,
       if (audioElement) audioElement.volume = 1;
     }
   },
-  // 백엔드 서버에 임시토큰 요청
+  // ============================================
+  // 🔧 프론트엔드에서 OpenAI Realtime API 임시 토큰 직접 받아오기
+  // ============================================
+  // 백엔드 서버에 임시토큰 요청 (이제 프론트엔드에서 직접 받아옴)
   fetchToken: async () => {
     const { storyId, setFullContent } = usePlayerStore.getState();
     const { setQuestionCount } = get();
-    setQuestionCount(() => 0);
-    const token = await getTokenAPI(storyId);
-    if (token === null) return;
-    setFullContent(token.instruction);
-    setQuestionCount(() => token.remainedCount);
+    // ============================================
+    // 🔧 questionCount는 초기값 20으로 유지, API 성공 시에만 업데이트
+    // ============================================
+    // setQuestionCount(() => 0); // 제거: 초기값 20 유지
 
-    return token;
+    try {
+      // OpenAI Realtime API에서 세션 생성하여 임시 토큰 받아오기
+      const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+      if (!apiKey) {
+        console.error("NEXT_PUBLIC_OPENAI_API_KEY가 설정되지 않았습니다.");
+        return null;
+      }
+
+      const response = await fetch(
+        "https://api.openai.com/v1/realtime/sessions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error(
+          "OpenAI 세션 생성 실패:",
+          response.status,
+          await response.text()
+        );
+        return null;
+      }
+
+      const sessionData = await response.json();
+
+      // OpenAI Realtime API 응답 형식:
+      // {
+      //   "id": "session_id",
+      //   "client_secret": {
+      //     "value": "ephemeral_key"
+      //   }
+      // }
+
+      // 기존 백엔드 응답 형식과 호환되도록 변환
+      const token = {
+        session: {
+          client_secret: {
+            value:
+              sessionData.client_secret?.value || sessionData.client_secret,
+          },
+        },
+        instruction: "", // 더미 데이터 사용 시 빈 문자열
+        remainedCount: 20, // 🔧 기본 질문 횟수 20으로 설정
+      };
+
+      // ============================================
+      // 🔧 fullContent는 tale/page.tsx에서 더미 데이터 설정 시 설정됨
+      // fetchToken에서는 instruction만 설정 (더미 데이터 사용 시 빈 문자열)
+      // ============================================
+      // setFullContent(token.instruction); // 제거: tale/page.tsx에서 설정
+      // ============================================
+      // 🔧 questionCount는 세션 재생성 시에도 유지되도록 설정하지 않음
+      // 초기 로드 시에만 20으로 설정되고, 이후 세션 재생성 시에는 현재 값 유지
+      // ============================================
+      // setQuestionCount(() => token.remainedCount); // 제거: 현재 값 유지
+
+      return token;
+    } catch (error) {
+      console.error("임시 토큰 요청 오류:", error);
+      return null;
+    }
   },
 
   reset: () =>

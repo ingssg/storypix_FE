@@ -37,9 +37,14 @@ const AccountInfo = ({ onClose }: AccountInfoProps) => {
   const pathname = usePathname();
 
   const handleLogin = () => {
-    const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
-    window.location.href = loginURL;
-    trackingEvent("login_btn_click");
+    alert("추후 업데이트 예정");
+    return;
+    // ============================================
+    // 🔧 백엔드 없이 동작하도록 로그인 기능 비활성화
+    // ============================================
+    // const loginURL = process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
+    // window.location.href = loginURL;
+    // trackingEvent("login_btn_click");
   };
 
   const manageAccount = () => {
@@ -67,23 +72,26 @@ const AccountInfo = ({ onClose }: AccountInfoProps) => {
   };
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const data = await fetchUser();
-        const { userInfo, subscriptionInfo } = data;
-        setNickname(userInfo.nickname);
-        setEmail(userInfo.email);
-        setSubscriptionInfo(subscriptionInfo);
-        setHasLogin(true);
-      } catch (error) {
-        console.error(error);
-        setSubscriptionInfo(null);
-        setHasLogin(false);
-        setEmail("");
-        setNickname("");
-      }
-    };
-    fetchUserInfo();
+    // ============================================
+    // 🔧 백엔드 API 호출 주석 처리됨
+    // ============================================
+    // const fetchUserInfo = async () => {
+    //   try {
+    //     const data = await fetchUser();
+    //     const { userInfo, subscriptionInfo } = data;
+    //     setNickname(userInfo.nickname);
+    //     setEmail(userInfo.email);
+    //     setSubscriptionInfo(subscriptionInfo);
+    //     setHasLogin(true);
+    //   } catch (error) {
+    //     console.error(error);
+    //     setSubscriptionInfo(null);
+    //     setHasLogin(false);
+    //     setEmail("");
+    //     setNickname("");
+    //   }
+    // };
+    // fetchUserInfo();
   }, []);
 
   return (

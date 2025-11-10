@@ -14,15 +14,22 @@ const AccountDeletionModal = ({ onClose }: Props) => {
   const modalClose = () => onClose();
   const [inputValue, setInputValue] = useState("");
   const deleteAccount = async () => {
-    try {
-      await deleteUser();
-      modalClose();
-      trackingEvent("account_deactivate", {"user_id": getNickName()});
-      localStorage.removeItem("nickname");
-      window.location.href = "/list";
-    } catch (error) {
-      console.error(error);
-    }
+    // ============================================
+    // 🔧 백엔드 API 호출 주석 처리됨
+    // ============================================
+    // try {
+    //   await deleteUser();
+    //   modalClose();
+    //   trackingEvent("account_deactivate", {"user_id": getNickName()});
+    //   localStorage.removeItem("nickname");
+    //   window.location.href = "/list";
+    // } catch (error) {
+    //   console.error(error);
+    // }
+    modalClose();
+    trackingEvent("account_deactivate", {"user_id": getNickName()});
+    localStorage.removeItem("nickname");
+    window.location.href = "/list";
   };
 
   return (

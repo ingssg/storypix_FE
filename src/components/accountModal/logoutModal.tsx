@@ -12,15 +12,22 @@ const LogOutModal = ({ onClose }: Props) => {
   const modalClose = () => onClose();
 
   const handleLogout = async () => {
-    try {
-      await signout();
-      modalClose();
-      trackingEvent("sign_out", {"user_id": getNickName()});
-      localStorage.removeItem("nickname");
-      window.location.href = "/list";
-    } catch (error) {
-      console.error(error);
-    }
+    // ============================================
+    // 🔧 백엔드 API 호출 주석 처리됨
+    // ============================================
+    // try {
+    //   await signout();
+    //   modalClose();
+    //   trackingEvent("sign_out", {"user_id": getNickName()});
+    //   localStorage.removeItem("nickname");
+    //   window.location.href = "/list";
+    // } catch (error) {
+    //   console.error(error);
+    // }
+    modalClose();
+    trackingEvent("sign_out", {"user_id": getNickName()});
+    localStorage.removeItem("nickname");
+    window.location.href = "/list";
   };
 
   return (

@@ -33,10 +33,10 @@ interface PlayerState {
   isEnd: boolean;
   isPageMoveTriggered: boolean;
   enterTime: number;
-  prevTimer: NodeJS.Timeout | null;     // 문장 전 1초 텀 
-  nextTimer: NodeJS.Timeout | null;     // 문장 후 1초 텀
+  prevTimer: NodeJS.Timeout | null; // 문장 전 1초 텀
+  nextTimer: NodeJS.Timeout | null; // 문장 후 1초 텀
   isHoverOpen: boolean;
-  hoverTimer: NodeJS.Timeout | null;    // 호버 닫히는 타이머
+  hoverTimer: NodeJS.Timeout | null; // 호버 닫히는 타이머
 
   setIsPlaying: (value: boolean) => void;
   setHasStarted: (value: boolean) => void;
@@ -54,7 +54,7 @@ interface PlayerState {
   setEnterTime: (value: number) => void;
   setIsHoverOpen: (value: boolean) => void;
   setHoverTimer: (value: NodeJS.Timeout | null) => void;
-  
+
   resetHoverTimer: () => void;
 
   // 속도 및 언어 설정 함수
@@ -202,7 +202,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ prevTimer: newTimer });
   },
 
-  playNextSentence: (value:number = 0) => {
+  playNextSentence: (value: number = 0) => {
     const {
       setCurrentSentenceIdx,
       setCurrentPageIdx,
@@ -230,10 +230,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         setCurrPrevSentence();
       } else if (currentPageIdx < totalPage - 1) {
         const nextPage = currentPageIdx + 2; // page는 1-based index
-        if (nextPage === lastFetchedPage - 1) {
-          fetchPage(lastFetchedPage + 1);
-          set({ lastFetchedPage: lastFetchedPage + 1 });
-        }
+        // ============================================
+        // 🔧 더미 데이터 사용 시 fetchPage 호출 주석 처리됨
+        // ============================================
+        // if (nextPage === lastFetchedPage - 1) {
+        //   fetchPage(lastFetchedPage + 1);
+        //   set({ lastFetchedPage: lastFetchedPage + 1 });
+        // }
 
         setCurrentPageIdx(currentPageIdx + 1);
         setCurrentSentenceIdx(0);
@@ -301,10 +304,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (currentPageIdx < totalPage - 1) {
       setCurrentPageIdx(currentPageIdx + 1);
       const nextPage = currentPageIdx + 2; // page는 1-based index
-      if (nextPage === lastFetchedPage - 1) {
-        fetchPage(lastFetchedPage + 1);
-        set({ lastFetchedPage: lastFetchedPage + 1 });
-      }
+      // ============================================
+      // 🔧 더미 데이터 사용 시 fetchPage 호출 주석 처리됨
+      // ============================================
+      // if (nextPage === lastFetchedPage - 1) {
+      //   fetchPage(lastFetchedPage + 1);
+      //   set({ lastFetchedPage: lastFetchedPage + 1 });
+      // }
       setCurrentSentenceIdx(0);
       setCurrPrevSentence();
       set({ isPageMoveTriggered: true });
@@ -323,7 +329,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentPageIdx,
       setCurrPrevSentence,
       hoverTimer,
-      resetHoverTimer
+      resetHoverTimer,
     } = get();
 
     if (currentPageIdx > 0) {
@@ -405,9 +411,12 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       setStoryContents([...storyContents!, ...data]);
     } catch (error) {
       console.error("데이터 로딩 오류", error);
-      alert("다시 로그인해주세요");
-      window.location.href =
-        process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
+      // ============================================
+      // 🔧 백엔드 없이 동작하도록 alert 주석 처리됨
+      // ============================================
+      // alert("다시 로그인해주세요");
+      // window.location.href =
+      //   process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/kakao";
     }
   },
 

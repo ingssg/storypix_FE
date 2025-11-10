@@ -7,7 +7,7 @@ type Props = {
   setIsCancelled: (value: boolean) => void;
 };
 
-function AiButtonContainer({setIsCancelled}: Props) {
+function AiButtonContainer({ setIsCancelled }: Props) {
   const {
     isSessionStarted,
     isButtonVisible,

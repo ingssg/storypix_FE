@@ -63,8 +63,11 @@ export const useWebRTCStore = create<WebRTCState>((set, get) => ({
       console.error("PeerConnection is not initialized");
       return;
     }
+    // ============================================
+    // 🔧 프론트엔드에서 OpenAI Realtime API 임시 토큰 받아오기
+    // ============================================
     // 임시 토큰 유출되지 않도록 바로 받아서 사용(open ai docs에서는 1분 지나면 만료시킨다고했는데 확인해보니 현재 2시간동안 유효함)
-    const token = await getTokenAPI(usePlayerStore.getState().storyId);
+    const token = await useRealtimeAPIStore.getState().fetchToken();
     if (token === null) return;
     const ephemeralKey = token.session.client_secret.value;
 

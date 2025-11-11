@@ -345,6 +345,8 @@ const Tale = () => {
             fetchToken().then(() => {
               createPeerConnection();
               isDisconnectedRef.current = false;
+              // 재연결 후 초기값 20으로 설정
+              useRealtimeAPIStore.getState().setQuestionCount(() => 20);
             });
           } catch (error) {
             console.error(error);
